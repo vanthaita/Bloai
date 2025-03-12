@@ -6,10 +6,13 @@ import {
   FaRegClock, FaHeart, FaTimes, FaBars,
   FaPlus
 } from 'react-icons/fa';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const Sidebar = ({ onToggle }: { onToggle: (isOpen: boolean) => void }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);  
+  const pathname = usePathname();
 
   // Kiểm tra kích thước màn hình và cập nhật trạng thái
   useEffect(() => {
@@ -40,7 +43,7 @@ const Sidebar = ({ onToggle }: { onToggle: (isOpen: boolean) => void }) => {
     {
       title: "Menu",
       items: [
-        { name: "Home", icon: <FaHome /> },
+        { name: "Home", icon: <FaHome />, href: "/" },
         { name: "Following", icon: <FaUsers /> },
         { name: "Tags", icon: <FaTag /> },
       ]
@@ -73,7 +76,9 @@ const Sidebar = ({ onToggle }: { onToggle: (isOpen: boolean) => void }) => {
           } bg-sidebar-bg border-r text-content-primary overflow-y-auto shadow-sm transition-all duration-300`}
         >
           <div className={`flex justify-between items-center p-4 border-b ${isMobile ? 'text-center' : ''}`}>
-            <h1 className={`font-bold text-xl ${isMobile ? 'flex-1 text-center' : ''}`}>.Devlife</h1>
+            <Link href="/landing" className={`font-bold text-xl ${isMobile ? 'flex-1 text-center' : ''}`}>
+              .Devlife
+            </Link>
             <button 
               onClick={handleToggle}
               className={`p-2 hover:bg-gray-100 rounded-lg transition-colors ${isMobile ? 'absolute right-4' : ''}`}
@@ -97,15 +102,33 @@ const Sidebar = ({ onToggle }: { onToggle: (isOpen: boolean) => void }) => {
                 </h3>
                 <ul className="space-y-1">
                   {section.items.map((item, itemIndex) => (
-                    <li 
-                      key={itemIndex} 
-                      className={`flex items-center gap-3 text-sm py-2 px-2 rounded-lg 
-                        cursor-pointer transition-colors
-                        hover:bg-sidebar-hover hover:text-primary-600
-                        ${isMobile ? 'justify-center' : ''}`}
-                    >
-                      <span className="text-primary-500">{item.icon}</span>
-                      <span>{item.name}</span>
+                    <li key={itemIndex}>
+                      {item.href ? (
+                        <Link
+                          href={item.href}
+                          className={`flex items-center gap-3 text-sm py-2 px-2 rounded-lg 
+                            cursor-pointer transition-colors
+                            ${pathname === item.href 
+                              ? 'bg-blue-50 text-blue-600' 
+                              : 'hover:bg-sidebar-hover hover:text-primary-600'
+                            }
+                            ${isMobile ? 'justify-center' : ''}`}
+                        >
+                          <span className={pathname === item.href ? 'text-blue-600' : 'text-primary-500'}>
+                            {item.icon}
+                          </span>
+                          <span>{item.name}</span>
+                        </Link>
+                      ) : (
+                        <div className={`flex items-center gap-3 text-sm py-2 px-2 rounded-lg 
+                          cursor-pointer transition-colors
+                          hover:bg-sidebar-hover hover:text-primary-600
+                          ${isMobile ? 'justify-center' : ''}`}
+                        >
+                          <span className="text-primary-500">{item.icon}</span>
+                          <span>{item.name}</span>
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>
