@@ -6,9 +6,9 @@ interface BlogContentProps {
 }
 
 const BlogContent = ({ blog }: BlogContentProps) => {
-  // Kiểm tra blog và blog.tags tồn tại
+  // Check if blog and blog.tags exist
   if (!blog?.tags) {
-    return null; // hoặc return một UI placeholder
+    return null; // or return a placeholder UI
   }
 
   return (
@@ -56,16 +56,8 @@ const BlogContent = ({ blog }: BlogContentProps) => {
       {/* Stats Section */}
       <div className="flex items-center gap-6 mb-8 text-sm text-content-secondary">
         <div className="flex items-center gap-2">
-          <FaEye className="text-primary-500" />
-          <span>{blog.views} views</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <FaHeart className="text-primary-500" />
-          <span>{blog.likes} likes</span>
-        </div>
-        <div className="flex items-center gap-2">
           <FaComment className="text-primary-500" />
-          <span>{blog.comments} comments</span>
+          <span>{blog.comments.length} comments</span>
         </div>
       </div>
 
@@ -78,6 +70,25 @@ const BlogContent = ({ blog }: BlogContentProps) => {
           prose-img:rounded-lg prose-img:shadow-md"
         dangerouslySetInnerHTML={{ __html: blog.content }} 
       />
+
+      {/* Comments Section */}
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-4">Comments</h2>
+        {blog.comments.map((comment) => (
+          <div key={comment.id} className="mb-4">
+            <div className="flex items-center gap-2">
+              <img 
+                src={comment.author.avatar}
+                alt={comment.author.name}
+                className="w-6 h-6 rounded-full"
+              />
+              <span className="font-bold">{comment.author.name}</span>
+              <span className="text-sm text-gray-500">{comment.createdAt}</span>
+            </div>
+            <p className="text-content-secondary mt-2">{comment.content}</p>
+          </div>
+        ))}
+      </div>
     </article>
   );
 };
