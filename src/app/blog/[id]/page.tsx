@@ -4,16 +4,49 @@ import BlogContent from '@/components/blog/BlogContent';
 import Discussion from '@/components/blog/Discussion';
 import { Blog } from '@/types/blog';
 
-// Thêm params để lấy id từ URL
-interface PageProps {
-  params: {
-    id: string;
-  };
+// Define the BlogPost component
+export default async function BlogPost({ 
+  params 
+}: { 
+  params: { id: string } 
+}) {
+  const resolvedParams = await params;
+  
+  // Validate blog ID
+  if (!resolvedParams?.id) {
+    return <div>Invalid blog ID</div>;
+  }
+
+  try {
+    const blogData = await fetchBlogData(resolvedParams.id);
+    const relatedPosts = await fetchRelatedPosts(resolvedParams.id);
+
+    if (!blogData) {
+      return <div>Blog not found</div>;
+    }
+
+    return (
+      <div className="flex min-h-screen">
+        {/* Main content */}
+        <div className="flex-1 max-w-4xl mx-auto px-4 py-6">
+          <BlogContent blog={blogData} />
+          <Discussion comments={blogData.comments} />
+        </div>
+        
+        {/* Right sidebar - Related posts */}
+        <div className="hidden lg:block w-80 p-6 border-l">
+          <RelatedPosts posts={relatedPosts} />
+        </div>
+      </div>
+    );
+  } catch (error) {
+    console.error('Error fetching blog data:', error);
+    return <div>Error loading blog</div>;
+  }
 }
 
-// Tạm thời mock data, sau này sẽ fetch từ API/Database
 async function fetchBlogData(id: string): Promise<Blog> {
-  // Mock data with longer content and random image
+  // Mock data 
   return {
     id,
     title: "Chat with Posts Using AI: Transforming Communication",
@@ -63,7 +96,7 @@ async function fetchBlogData(id: string): Promise<Blog> {
 }
 
 async function fetchRelatedPosts(id: string): Promise<Blog[]> {
-  // Mock data with random images
+  // Mock data
   return [
     {
       id: "1",
@@ -79,40 +112,6 @@ async function fetchRelatedPosts(id: string): Promise<Blog[]> {
       comments: [],
       tags: ["AI", "Programming"]
     },
-    // Thêm các related posts khác...
+    
   ];
-}
-
-export default async function BlogPost({ params }: PageProps) {
-  // Đảm bảo params.id tồn tại trước khi sử dụng
-  if (!params?.id) {
-    return <div>Invalid blog ID</div>;
-  }
-
-  try {
-    const blogData = await fetchBlogData(params.id);
-    const relatedPosts = await fetchRelatedPosts(params.id);
-
-    if (!blogData) {
-      return <div>Blog not found</div>;
-    }
-
-    return (
-      <div className="flex min-h-screen">
-        {/* Main content */}
-        <div className="flex-1 max-w-4xl mx-auto px-4 py-6">
-          <BlogContent blog={blogData} />
-          <Discussion comments={blogData.comments} />
-        </div>
-        
-        {/* Right sidebar - Related posts */}
-        <div className="hidden lg:block w-80 p-6 border-l">
-          <RelatedPosts posts={relatedPosts} />
-        </div>
-      </div>
-    );
-  } catch (error) {
-    console.error('Error fetching blog data:', error);
-    return <div>Error loading blog</div>;
-  }
 }

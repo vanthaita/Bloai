@@ -57,7 +57,7 @@ const BlogContent = ({ blog }: BlogContentProps) => {
       <div className="flex items-center gap-6 mb-8 text-sm text-content-secondary">
         <div className="flex items-center gap-2">
           <FaEye className="text-primary-500" />
-          <span>{blog.views} views</span>
+          <span>{blog.views || 0} views</span>
         </div>
         <div className="flex items-center gap-2">
           <FaHeart className="text-primary-500" />

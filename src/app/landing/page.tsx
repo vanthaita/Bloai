@@ -8,7 +8,6 @@ const LandingPage = () => {
   const [randomImage, setRandomImage] = useState('');
 
   useEffect(() => {
-    // Generate a random image URL on the client side
     setRandomImage(`https://picsum.photos/600/400?random=10)}`);
   }, []);
 
