@@ -1,5 +1,5 @@
-import React from 'react';
-import { FaSearch, FaBell, FaUser, FaCog } from 'react-icons/fa';
+import Link from 'next/link';
+import { FaSearch, FaBell, FaCog, FaUser } from 'react-icons/fa';
 
 const Navbar = () => {
   return (
@@ -31,9 +31,12 @@ const Navbar = () => {
         <button className="hidden sm:flex p-1.5 min-[375px]:p-2 text-gray-600 hover:text-blue-600 transition-colors">
           <FaCog className="w-4 h-4 min-[375px]:w-5 min-[375px]:h-5" />
         </button>
-        <button className="p-1.5 min-[375px]:p-2 text-gray-600 hover:text-blue-600 transition-colors">
+        <Link 
+          href="/auth/register"
+          className="p-1.5 min-[375px]:p-2 text-gray-600 hover:text-blue-600 transition-colors"
+        >
           <FaUser className="w-4 h-4 min-[375px]:w-5 min-[375px]:h-5" />
-        </button>
+        </Link>
       </div>
     </nav>
   );
