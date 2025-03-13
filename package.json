@@ -47,6 +47,7 @@
     "zod": "^3.23.3"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^15.2.2",
     "@tailwindcss/typography": "^0.5.16",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.14.10",
