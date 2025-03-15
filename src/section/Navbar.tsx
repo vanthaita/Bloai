@@ -4,7 +4,7 @@ import { FaSearch, FaBell, FaCog, FaUser } from 'react-icons/fa';
 const Navbar = () => {
   return (
     <nav className="h-14 min-[375px]:h-16 bg-white border-b flex items-center justify-between px-2 min-[375px]:px-4 md:px-6 lg:px-8 shadow-sm">
-      <div className="flex-1 max-w-[200px] min-[375px]:max-w-[280px] sm:max-w-[320px] md:max-w-xl">
+      <div className="flex-1 max-w-[200px] min-[375px]:max-w-[280px] md:max-w-xl">
         <div className="relative">
           <input
             type="text"

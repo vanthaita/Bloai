@@ -6,14 +6,11 @@ interface BlogContentProps {
 }
 
 const BlogContent = ({ blog }: BlogContentProps) => {
-  // Check if blog and blog.tags exist
   if (!blog?.tags) {
-    return null; // or return a placeholder UI
+    return null;
   }
-
   return (
     <article className="max-w-none mb-12">
-      {/* Hero Section */}
       <div className="relative h-[500px] group mb-8">
         <img 
           src={blog.image}
@@ -53,7 +50,6 @@ const BlogContent = ({ blog }: BlogContentProps) => {
         </div>
       </div>
 
-      {/* Stats Section */}
       <div className="flex items-center gap-6 mb-8 text-sm text-content-secondary">
         <div className="flex items-center gap-2">
           <FaComment className="text-primary-500" />
@@ -61,7 +57,6 @@ const BlogContent = ({ blog }: BlogContentProps) => {
         </div>
       </div>
 
-      {/* Content Section */}
       <div 
         className="prose prose-lg max-w-none prose-headings:text-content-primary prose-p:text-content-secondary
           prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline
@@ -71,7 +66,6 @@ const BlogContent = ({ blog }: BlogContentProps) => {
         dangerouslySetInnerHTML={{ __html: blog.content }} 
       />
 
-      {/* Comments Section */}
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-4">Comments</h2>
         {blog.comments.map((comment) => (
