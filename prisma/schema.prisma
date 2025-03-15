@@ -59,12 +59,14 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    bio           String?   @db.Text  
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
     blogs         Blog[]    @relation("UserBlogs")
-    comments      Comment[]   @relation("UserComments")
+    comments      Comment[] @relation("UserComments")
 }
+
 
 model VerificationToken {
     identifier String
@@ -75,28 +77,44 @@ model VerificationToken {
 }
 
 model Blog {
-    id          String    @id @default(cuid())
-    title       String
-    content     String    @db.Text
-    imageUrl    String
-    author      User      @relation("UserBlogs", fields: [authorId], references: [id])
-    authorId    String
-    publishDate DateTime  @default(now())
-    readTime    String
-    views       Int       @default(0)
-    likes       Int       @default(0)
-    tags        Tag[]
-    comments    Comment[]
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
+    id               String     @id @default(cuid())
+    title            String
+    slug             String     @unique
+    metaDescription  String     @db.VarChar(160)  // Optimal length for SEO
+    content          String     @db.Text
+    imageUrl         String
+    imageAlt         String?    // Alt text for image SEO
+    author           User       @relation("UserBlogs", fields: [authorId], references: [id])
+    authorId         String
+    publishDate      DateTime   @default(now())
+    updatedAt        DateTime   @updatedAt       // Important for content freshness
+    readTime         Int        // In minutes for better structured data
+    views            Int        @default(0)
+    likes            Int        @default(0)
+    tags             Tag[]
+    comments         Comment[]
+    keywords         String[]   // SEO keywords array
+    canonicalUrl     String?    // For duplicate content issues
+    structuredData   Json?      // For JSON-LD rich snippets
+    ogTitle          String?
+    ogDescription    String?
+    ogImageUrl       String?
+    twitterCard      String?    // Twitter card type
+    featured         Boolean    @default(false)
+
+    @@index([title])
+    @@index([slug])
+    @@index([publishDate])
 }
+
 
 model Tag {
-    id    String @id @default(cuid())
-    name  String @unique
-    blogs Blog[]
+    id          String   @id @default(cuid())
+    name        String   @unique
+    description String?  @db.Text 
+    blogs       Blog[]
+    @@index([name])
 }
-
 model Comment {
     id        String   @id @default(cuid())
     content   String
