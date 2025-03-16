@@ -7,8 +7,8 @@ export default function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html suppressHydrationWarning>
-      <body suppressHydrationWarning className="antialiased scroll-custom">
+    <html lang="en" suppressHydrationWarning>
+      <body  className="antialiased scroll-custom" suppressHydrationWarning>
         <main className="">
           <div className="min-h-screen bg-[#e8e8e8] flex">
               <div className="hidden lg:block w-1/2">

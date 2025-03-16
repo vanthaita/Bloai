@@ -2,6 +2,7 @@ export const DEFAULT_SIGNIN_REDIRECT = "/";
 
 export const AUTH_ROUTES = [
   "/auth/signin",
+  "/auth/signup",
   "/auth/signout",
   "/auth/error",
 ];
