@@ -45,12 +45,11 @@ export function AuthBackground() {
           
           <CardContent className="flex flex-col gap-6 p-8 items-center text-center">
             <div className="flex flex-col items-center gap-4">
-              <Rocket className="h-12 w-12 text-primary animate-pulse" />
+              <Rocket className="h-12 w-12 text-primary animate-pulse ml-6" />
               <div className="space-y-4">
                 <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-cyan-500 bg-clip-text text-neutral-500">
-                  Devlife
+                  Bloai
                 </CardTitle>
-                
                 <div className="h-12 flex items-center justify-center">
                   <AnimatePresence mode="wait">
                     <motion.div

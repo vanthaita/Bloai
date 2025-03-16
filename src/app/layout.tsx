@@ -17,7 +17,7 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await auth();
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={session} >
       <html lang="en" className={`${GeistSans.variable} antialiased scroll-custom`} suppressHydrationWarning>
         <body className="bg-gray-50" suppressHydrationWarning>
           <TRPCReactProvider>
