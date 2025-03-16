@@ -3,7 +3,7 @@ import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "@/server/db";
-
+import { env } from "@/env";
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -34,7 +34,8 @@ export const authConfig = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      checks: ["none"]
     })
     // DiscordProvider,
     /**
@@ -47,15 +48,21 @@ export const authConfig = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  session: { strategy: "jwt" },
+  secret: env.AUTH_SECRET,
   adapter: PrismaAdapter(db),
   callbacks: {
-    session: ({ session, user }) => ({
+    session: ({ session, user, token }) => ({
       ...session,
       user: {
         ...session.user,
-        id: user.id,
+        id: token.sub,
       },
+      token,
     }),
+    async jwt({ token }) {
+      return token;
+    },
   },
   pages: {
     signIn: "/auth/signin",

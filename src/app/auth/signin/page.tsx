@@ -1,6 +1,6 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { FcGoogle } from 'react-icons/fc';
 import { useState } from 'react';
@@ -9,6 +9,7 @@ import { Mail,LockKeyhole  } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
+import { auth } from '@/server/auth';
 const SignInPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();

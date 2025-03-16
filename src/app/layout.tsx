@@ -2,21 +2,33 @@ import React from "react";
 import "@/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { TRPCReactProvider } from "@/trpc/react";
-import Sidebar from "@/components/layout/Sidebar";
-import Navbar from "@/section/Navbar";
+import AppSidebarProvider from "@/provider/app.sidebar";
+import { auth } from "@/server/auth";
+import { SessionProvider } from "next-auth/react";
+import { Metadata } from "next";
 
-export default function RootLayout({
+export const metadata: Metadata = {
+  title: "Bloai",
+  description: "Blog Tech",
+  icons: [{ rel: "icon", url: "/favicon.ico" }],
+};
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const session = await auth();
   return (
-    <html lang="en" className={`${GeistSans.variable} antialiased scroll-custom`} suppressHydrationWarning>
-      <body className="bg-gray-50" suppressHydrationWarning>
-        <TRPCReactProvider>
-          <main>
-            {children}
-          </main>
-        </TRPCReactProvider>
-      </body>
-    </html>
+    <SessionProvider session={session}>
+      <html lang="en" className={`${GeistSans.variable} antialiased scroll-custom`} suppressHydrationWarning>
+        <body className="bg-gray-50" suppressHydrationWarning>
+          <TRPCReactProvider>
+            <main>
+              <AppSidebarProvider>
+                {children}
+              </AppSidebarProvider>
+            </main>
+          </TRPCReactProvider>
+        </body>
+      </html>
+    </SessionProvider>
   );
 }
