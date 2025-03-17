@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useIsMobile } from '@/hook/use-mobile';
 import { cn } from '@/lib/utils';
 import { useOpenAppSidebar } from '@/hook/use-app-sidebar';
+import Image from 'next/image';
 
 const Navbar = () => {
   const user = useCurrentUser();
@@ -82,9 +83,11 @@ const Navbar = () => {
               aria-expanded={isOpen}
             >
               {user.image ? (
-                <img
+                <Image
                   src={user.image}
                   alt="User avatar"
+                  width={32}
+                  height={32}
                   className="w-8 h-8 rounded-full border-2 border-gray-200"
                 />
               ) : (

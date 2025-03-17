@@ -14,13 +14,14 @@ import Navbar from '@/section/Navbar';
 import { useIsMobile } from '@/hook/use-mobile';
 import { useOpenAppSidebar } from '@/hook/use-app-sidebar';
 import { AUTH_ROUTES } from '@/lib/route';
+import NewsMarquee from '@/section/NewsMarquee';
+import Footer from '@/components/Footer';
 const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
   const {isOpenAppSidebar, setIsOpenAppSidebar} = useOpenAppSidebar();
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
-  console.log(pathname, AUTH_ROUTES, isAuthRoute);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isMobile && isOpenAppSidebar && sidebarRef.current && 
@@ -163,9 +164,14 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
               (isOpenAppSidebar ? 'ml-0' : 'ml-20') : 
               (isOpenAppSidebar ? 'ml-64' : 'ml-20')
           )}>
-            <Navbar />
-            <div className='h-14 w-[calc(100%-80px)]'/>
+            <div className='h-14'> 
+              <Navbar />
+            </div>
+            <div className='w-full overflow-y-hidden'>
+              <NewsMarquee />
+            </div>
             {children}
+            <Footer />
           </main>
         </section>
       )
