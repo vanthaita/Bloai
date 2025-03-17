@@ -4,6 +4,7 @@ import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "@/server/db";
 import { env } from "@/env";
+import Google from "next-auth/providers/google";
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -32,11 +33,12 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      checks: ["none"]
-    })
+    Google
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    //   // checks: ["none"]
+    // })
     // DiscordProvider,
     /**
      * ...add more providers here.
