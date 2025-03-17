@@ -1,4 +1,4 @@
-# https://www.devlife.com
+# https://www.bloai.blog
 User-agent: *
 Allow: /
 
@@ -8,4 +8,4 @@ Disallow: /admin/
 Disallow: /404
 
 # Sitemap
-Sitemap: https://www.devlife.com/sitemap.xml
+Sitemap: https://www.bloai.blog/sitemap.xml

@@ -71,7 +71,7 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
           <aside
             ref={sidebarRef}
             className={cn(
-              'h-screen border-r-2 border-black/70 fixed bg-background transition-all duration-300 z-50 bg-white',
+              'h-full border-r-2 border-black/70 fixed bg-background transition-all duration-300 z-50 bg-white',
               isOpenAppSidebar ? (isMobile ? 'w-full bg-white' : 'w-64') : 'w-20'
             )}
           >
