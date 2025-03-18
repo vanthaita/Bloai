@@ -16,9 +16,12 @@ export const env = createEnv({
     AUTH_GOOGLE_ID: z.string(),
     AUTH_GOOGLE_SECRET: z.string(),
     DATABASE_URL: z.string().url(),
+    GOOGLE_GEMINI_API: z.string(),
+  
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+      
   },
 
   /**
@@ -28,6 +31,11 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_APP_URL: z.string(),
+    NEXT_PUBLIC_CLOUDINARY_API_KEY:z.string(),
+    NEXT_PUBLIC_CLOUDINARY_API_SECRET:z.string(),
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME:z.string(),
+    NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: z.string(),
   },
 
   /**
@@ -40,7 +48,13 @@ export const env = createEnv({
     // AUTH_DISCORD_SECRET: process.env.AUTH_DISCORD_SECRET,
     AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
     AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
+    GOOGLE_GEMINI_API: process.env.GOOGLE_GEMINI_API,
     DATABASE_URL: process.env.DATABASE_URL,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_CLOUDINARY_API_KEY:process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
+    NEXT_PUBLIC_CLOUDINARY_API_SECRET: process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET,
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
     NODE_ENV: process.env.NODE_ENV,
   },
   /**

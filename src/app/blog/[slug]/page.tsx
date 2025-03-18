@@ -7,15 +7,45 @@ import { Textarea } from '@/components/ui/textarea';
 import { useCurrentUser } from '@/hook/use-current-user';
 import { FaComments, FaFacebook, FaLinkedin, FaTwitter, FaUser } from 'react-icons/fa';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { api } from '@/trpc/react';
+import { usePathname } from 'next/navigation';
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import remarkGfm from 'remark-gfm';
 
 interface BlogPost {
+  id: string;
   title: string;
-  description: string;
+  slug: string;
+  metaDescription: string;
   content: string;
-  date: Date;
-  author: string;
-  tags: string[];
+  imageUrl: string | null;
+  imageAlt: string | null;
+  authorId: string;
+  publishDate: Date;
+  updatedAt: Date;
+  readTime: number;
+  views: number;
+  likes: number;
+  keywords: string[];
+  canonicalUrl: string | null;
+  structuredData: string | null;
+  ogTitle: string | null;
+  ogDescription: string | null;
+  ogImageUrl: string | null;
+  twitterCard: string | null;
+  featured: boolean;
+  tags: { id: string; name: string; description: string | null }[];
+  author: {
+    id: string;
+    name: string;
+    email: string;
+    emailVerified: Date | null;
+    image: string | null;
+    bio: string | null;
+  } | null;
 }
+
 
 interface Author {
   name: string;
@@ -99,7 +129,7 @@ const CommentComponent = ({ comment, level, activeReplyId, setActiveReplyId, han
             viewBox="0 0 20 20"
             fill="currentColor"
           >
-            <path fillRule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+            <path fillRule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 011.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
           </svg>
           Reply
         </button>
@@ -152,69 +182,12 @@ export default function BlogPostPage() {
   const [views, setViews] = useState<number>(0);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const user = useCurrentUser();
-  console.log(user);
-  const blogPost: BlogPost = {
-    title: 'Boost Your Coding Velocity: Unleashing the Power of AI with Cursor IDE',
-    description: 'Discover how Cursor IDE leverages cutting-edge AI to revolutionize your coding workflow, from instant code generation to intelligent debugging, making development faster and more intuitive than ever.',
-    content: `
-  ## The Dawn of AI-Powered Development: Meet Cursor IDE
+  const pathname = usePathname();
+  const slug = pathname.split('/blog/')[1]?.split('/')[0] || '';
+  const { data: blog, isLoading, error } = api.blog.getBlog.useQuery({ slug });
+  console.log(blog);
 
-  In the ever-evolving world of software development, efficiency and speed are paramount.  We're constantly searching for tools that not only simplify our tasks but also amplify our creative potential. Enter **Cursor IDE**, a revolutionary code editor that's rapidly changing the way developers write code, thanks to its deeply integrated and incredibly powerful AI.
 
-  Cursor IDE isn't just another text editor with a few AI bells and whistles. It's built from the ground up with AI at its core, transforming mundane coding tasks into effortless flows. Forget endless boilerplate, repetitive function writing, or wrestling with syntax errors for hours. Cursor empowers you to focus on the bigger picture – architecture, logic, and innovation – while its AI engine takes care of the nitty-gritty.
-
-  ### Code Generation That Feels Like Magic
-
-  Imagine typing a comment describing a function you need, and Cursor IDE instantly generates the code, often perfectly tailored to your project's context. Sounds like science fiction? With Cursor, it's everyday reality. Whether you're crafting utility functions, complex algorithms, or even entire components, the AI-powered code generation is astoundingly accurate and context-aware.
-
-  **Example:** Need a function to fetch data from an API and handle errors? Simply comment:
-
-  \`\`\`javascript
-  // Function to fetch user data from /api/users and handle fetch errors
-  \`\`\`
-
-  ...and watch as Cursor intelligently generates a robust function complete with error handling, promises, and type hints (if you're using TypeScript). It's not just about saving keystrokes; it's about drastically reducing cognitive load and keeping your momentum high.
-
-  ### Beyond Autocomplete: Intelligent Code Completion and Suggestions
-
-  Traditional autocomplete is helpful, but Cursor's AI-driven completion is on a different level. It anticipates not just keywords but entire code blocks, understanding your coding style and the patterns within your codebase. It suggests code completions that are not only syntactically correct but also semantically relevant to what you're building.
-
-  This "smart completion" extends to suggesting relevant functions, variables, and even code snippets based on your project's structure and imported libraries. It's like having a senior developer pair programming with you, constantly offering insightful suggestions to accelerate your coding process.
-
-  ### AI-Powered Debugging and Code Explanation
-
-  Stuck with a bug you can't quite decipher? Cursor’s AI debugging assistant can step in to analyze your code, identify potential issues, and suggest solutions.  It goes beyond simple linting and delves into the logic of your code to help pinpoint elusive errors.
-
-  Furthermore, the AI can explain complex code snippets in plain English.  Encounter a piece of legacy code you don't understand, or struggling to grasp a complex library function?  Cursor can provide clear and concise explanations, breaking down the code's functionality step by step. This feature is invaluable for onboarding new team members, understanding unfamiliar codebases, or simply solidifying your own understanding of intricate logic.
-
-  ### Refactoring and Code Optimization Made Easy
-
-  Refactoring is a crucial but often tedious part of development. Cursor’s AI assists in streamlining this process, suggesting intelligent refactorings to improve code readability, performance, and maintainability.  It can identify opportunities to simplify complex logic, extract reusable components, or optimize code for better performance, often with just a few clicks.
-
-  Imagine highlighting a block of code and asking Cursor to "refactor this for readability."  The AI analyzes the code, proposes cleaner structures, and implements the refactoring, saving you valuable time and ensuring a more polished and maintainable codebase.
-
-  ### The Future is Intelligent: Embrace Cursor IDE
-
-  Cursor IDE isn't just the next step in code editors; it's a leap forward. It’s a testament to how AI can truly augment human creativity and productivity in software development. By offloading repetitive tasks, providing intelligent assistance, and fostering a more intuitive coding experience, Cursor empowers developers to build better software, faster.
-
-  If you're looking to experience the future of coding today,  give Cursor IDE a try. Prepare to be amazed at how AI can transform your development workflow and unlock a new level of coding velocity.  The age of AI-powered development is here, and Cursor IDE is leading the charge.
-    `,
-    date: new Date('2024-03-15'),
-    author: 'Sarah Johnson',
-    tags: ['ai', 'ide', 'cursor', 'coding', 'productivity', 'developer tools']
-  };
-
-  const author: Author = {
-    name: 'Sarah Johnson',
-    bio: 'Senior Full Stack Developer specializing in modern web technologies. Passionate about developer experience and clean code.',
-    avatar: 'https://picsum.photos/id/237/200/200',
-    followers: 2845,
-    following: 342,
-    social: {
-      twitter: '@sarah_dev',
-      linkedin: 'in/sarah-johnson-dev'
-    }
-  };
   const techCategories = [
     { title: "Smartphones & Accessories", amount: 150 },
     { title: "Laptops & Ultrabooks", amount: 120 },
@@ -302,6 +275,18 @@ export default function BlogPostPage() {
     setComments(updateComments(comments));
     setActiveReplyId(null);
   };
+
+  if (isLoading) {
+    return <div>Loading blog post...</div>;
+  }
+
+  if (error || !blog) {
+    return <div>Error loading blog post.</div>;
+  }
+  if (!blog.author) {
+    return <div>Author information is missing.</div>;
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex gap-12">
@@ -342,18 +327,23 @@ export default function BlogPostPage() {
           <article className="max-w-3xl mx-auto">
             <div className="mb-8">
               <div className="flex gap-2 mb-6">
-                {blogPost.tags.map((tag, index) => (
+                {blog.tags.slice(0, 5).map((tag, index) => ( 
                   <span
                     key={index}
                     className="px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 text-sm font-medium text-blue-600 rounded-full"
                   >
-                    #{tag.toUpperCase()}
+                    #{tag.name.toUpperCase()}
                   </span>
                 ))}
+                {blog.tags.length > 5 && (
+                  <span className="text-sm text-gray-500">
+                    + {blog.tags.length - 5} more
+                  </span>
+                )}
               </div>
 
               <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
-                {blogPost.title}
+                {blog.title}
               </h1>
 
               <div className="flex items-center gap-4 text-gray-500 mb-8">
@@ -366,23 +356,27 @@ export default function BlogPostPage() {
                   >
                     <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                   </svg>
-                  {blogPost.date.toLocaleDateString('en-US', {
+                  {new Date(blog.publishDate).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                   })}
                 </span>
                 <span className="h-1 w-1 bg-gray-400 rounded-full" />
-                <span>{blogPost.author}</span>
+                <span>{blog.author?.name}</span>
               </div>
             </div>
 
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              {blogPost.description}
+              {blog.metaDescription}
             </p>
 
             <div className="prose prose-lg max-w-none text-gray-700 mb-12">
-              {blogPost.content}
+              <ReactMarkdown
+                rehypePlugins={[rehypeRaw]}
+                remarkPlugins={[remarkGfm]}
+                children={blog.content}
+              />
             </div>
             <div className='w-full grid grid-cols-4 gap-4'>
               {[
@@ -415,30 +409,62 @@ export default function BlogPostPage() {
             <div className='w-full flex items-center justify-center'>
               <div className="flex flex-col justify-center items-center text-center mt-8">
                 <div className="flex gap-2 mb-6">
-                  {blogPost.tags.map((tag, index) => (
+                  {blog.tags.slice(0, 5).map((tag, index) => (
                     <span
                       key={index}
                       className="px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 text-sm font-medium text-blue-600 rounded-full"
+                      style={{ wordBreak: 'break-word' }} 
                     >
-                      #{tag.toUpperCase()}
+                      #{tag.name.toUpperCase()}
                     </span>
                   ))}
+                  {blog.tags.length > 5 && (
+                    <span className="text-sm text-gray-500">
+                      + {blog.tags.length - 5} more
+                    </span>
+                  )}
                 </div>
                 <Image
-                  src={author.avatar}
-                  alt={author.name}
+                  src={blog.author?.image || '/fallback-avatar.png'}
+                  alt={blog.author?.name || 'Author Name'}
                   width={146}
                   height={146}
                   className="rounded-full object-cover mb-4 border-4 border-white shadow-lg"
                 />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{author.name}</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{blog.author?.name}</h3>
                 <p className="text-gray-600 mb-6 leading-relaxed max-w-md">
-                  {author.bio}
+                  {blog.author?.bio || 'No bio available.'}
                 </p>
                 <div className="flex gap-3 w-full items-center justify-center">
                   <div className="flex gap-2">
+                    {/* Social links would ideally come from the author data if available in your API */}
+                    {/* Example -  if blog.author?.twitter and blog.author?.linkedin existed */}
+                    {/*
+                    {blog.author?.twitter && (
+                      <a
+                        href={`https://twitter.com/${blog.author.twitter}`}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Twitter Profile"
+                      >
+                        <FaTwitter className="w-5 h-5 " />
+                      </a>
+                    )}
+                    {blog.author?.linkedin && (
+                      <a
+                        href={`https://linkedin.com/${blog.author.linkedin}`}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="LinkedIn Profile"
+                      >
+                        <FaFacebook className="w-5 h-5 " />
+                      </a>
+                    )}
+                    */}
                     <a
-                      href={`https://twitter.com/${author.social.twitter}`}
+                      href={`https://twitter.com/`}
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -447,7 +473,7 @@ export default function BlogPostPage() {
                       <FaTwitter className="w-5 h-5 " />
                     </a>
                     <a
-                      href={`https://linkedin.com/${author.social.linkedin}`}
+                      href={`https://linkedin.com/in/`} 
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -514,21 +540,21 @@ export default function BlogPostPage() {
             <div className="p-2 bg-white rounded-xl ">
               <div className="flex flex-col items-center text-center">
                 <Image
-                  src={author.avatar}
-                  alt={author.name}
+                  src={blog.author?.image || ''} 
+                  alt={blog.author?.name || 'Author Name'}
                   width={96}
                   height={96}
                   className="rounded-full object-cover mb-4 border-4 border-white shadow-lg"
                 />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{author.name}</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{blog.author?.name}</h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                  {author.bio}
+                  {blog.author?.bio || 'No bio available.'}
                 </p>
 
                 <div className="flex gap-3 w-full items-center justify-center">
                   <div className="flex gap-2">
                     <a
-                      href={`https://twitter.com/${author.social.twitter}`}
+                      href={`https://twitter.com/`}
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -537,7 +563,7 @@ export default function BlogPostPage() {
                       <FaTwitter className="w-5 h-5 " />
                     </a>
                     <a
-                      href={`https://linkedin.com/${author.social.linkedin}`}
+                      href={`https://linkedin.com/in/`} 
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                       target="_blank"
                       rel="noopener noreferrer"
