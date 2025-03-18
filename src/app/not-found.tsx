@@ -135,25 +135,23 @@ const Rocket404 = () => {
                 background: 'linear-gradient(to left, #F87171, #FB923C)'
               }}
             />
-
-            {/* Hiệu ứng lửa phụt ra từ tên lửa */}
             <motion.div
-              className="absolute -bottom-20 left-[20%] transform -translate-x-1/2"
+              className="absolute -bottom-24 left-[20%] transform -translate-x-1/2" // Lower flames
               animate={{
-                scaleY: [0.8, 1.2, 0.8], // Co giãn theo chiều dọc
-                translateY: [0, -5, 0], // Di chuyển lên xuống nhẹ
-                opacity: [0.8, 1, 0.8], // Thay đổi độ trong suốt
+                scaleY: [0.9, 1.3, 0.9], // More pronounced scaling
+                translateY: [0, -8, 0],  // Increased vertical movement
+                opacity: [0.7, 1, 0.7],   // More variation in opacity
               }}
               transition={{
-                duration: 0.1, // Thời gian ngắn để tạo hiệu ứng chớp nháy
+                duration: 0.1,
                 repeat: Infinity,
                 ease: 'linear',
               }}
             >
-              {/* Các lớp lửa với hiệu ứng blur khác nhau */}
-              <div className="w-12 h-32 bg-gradient-to-t from-yellow-400 to-orange-600 rounded-full blur-md opacity-90"></div>
-              <div className="absolute top-4 left-1/2 -translate-x-1/2 w-8 h-24 bg-gradient-to-t from-orange-300 to-red-600 rounded-full blur-sm opacity-95"></div>
-              <div className="absolute top-8 left-1/2 -translate-x-1/2 w-4 h-16 bg-red-700 rounded-full opacity-100"></div>
+                {/* Multiple flame layers for depth */}
+              <div className="w-14 h-40 bg-gradient-to-t from-yellow-300 via-yellow-500 to-orange-600 rounded-full blur-lg opacity-90"></div> {/* Larger blur */}
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 w-10 h-32 bg-gradient-to-t from-orange-300 via-red-500 to-red-700 rounded-full blur-md opacity-95"></div> {/* Medium blur */}
+              <div className="absolute top-10 left-1/2 -translate-x-1/2 w-6 h-20 bg-gradient-to-t from-red-600 to-red-800 rounded-full  opacity-100"></div> {/* No blur */}
             </motion.div>
           </div>
         </motion.div>
@@ -243,7 +241,7 @@ const Rocket404 = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2, duration: 0.8 }} // Hiệu ứng xuất hiện cuối cùng
         >
-          <Link href="/" className="hover:text-blue-400 transition-colors">.Devlife</Link> {/* Liên kết về trang chủ */}
+          <Link href="/" className="hover:text-blue-400 transition-colors">.Bloai</Link> {/* Liên kết về trang chủ */}
         </motion.div>
       </div>
     </div>

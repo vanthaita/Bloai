@@ -1,13 +1,13 @@
-// components/ui/dropzone.tsx
 "use client"
 
 import React, { useState, useCallback, useRef } from 'react'
-import { UploadIcon } from 'lucide-react' // Hoặc import SVG tự tạo
+import { UploadIcon } from 'lucide-react' 
 
 interface DropzoneProps {
   onDrop: (files: File[]) => void
   accept?: string
   maxFiles?: number
+  maxSize?: number
 }
 
 export const Dropzone = ({ onDrop, accept, maxFiles }: DropzoneProps) => {
@@ -17,13 +17,11 @@ export const Dropzone = ({ onDrop, accept, maxFiles }: DropzoneProps) => {
   const processFiles = (files: File[]) => {
     let acceptedFiles = files
 
-    // Lọc theo định dạng file
     if (accept) {
       const acceptedTypes = accept.split(',').map(type => type.trim())
       acceptedFiles = files.filter(file => acceptedTypes.includes(file.type))
     }
 
-    // Giới hạn số lượng file
     if (maxFiles) {
       acceptedFiles = acceptedFiles.slice(0, maxFiles)
     }
@@ -60,7 +58,7 @@ export const Dropzone = ({ onDrop, accept, maxFiles }: DropzoneProps) => {
 
   return (
     <div
-      className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+      className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer h-full min-h-[200px] ${
         isDragActive 
           ? 'border-primary bg-primary/10' 
           : 'border-muted-foreground/30 hover:border-muted-foreground/50'
