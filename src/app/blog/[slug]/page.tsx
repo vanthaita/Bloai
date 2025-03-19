@@ -12,6 +12,8 @@ import { usePathname } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
+import { NextSeo } from 'next-seo';
+import { env } from '@/env';
 
 interface BlogPost {
   id: string;
@@ -82,7 +84,7 @@ const CommentForm = ({ onSubmit }: { onSubmit: (content: string) => void }) => {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           className='w-full p-2 border-2 border-black resize-none rounded-xl'
-          placeholder='Write your comment here...'
+          placeholder='Viết bình luận của bạn ở đây...'
           rows={4}
           required
         />
@@ -92,7 +94,7 @@ const CommentForm = ({ onSubmit }: { onSubmit: (content: string) => void }) => {
           type='submit'
           className='px-6 py-2 bg-black text-white hover:bg-gray-800 transition-colors rounded-xl'
         >
-          Post Comment
+          Đăng bình luận
         </button>
       </div>
     </form>
@@ -131,7 +133,7 @@ const CommentComponent = ({ comment, level, activeReplyId, setActiveReplyId, han
           >
             <path fillRule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 011.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
           </svg>
-          Reply
+          Trả lời
         </button>
 
         {activeReplyId === comment.id && (
@@ -139,7 +141,7 @@ const CommentComponent = ({ comment, level, activeReplyId, setActiveReplyId, han
             <Textarea
               value={replyContent}
               onChange={(e) => setReplyContent(e.target.value)}
-              placeholder='Write your reply...'
+              placeholder='Viết câu trả lời của bạn...'
               className='mb-2'
             />
             <div className='flex gap-2 justify-end'>
@@ -151,13 +153,13 @@ const CommentComponent = ({ comment, level, activeReplyId, setActiveReplyId, han
                 }}
                 className='px-4 py-2 bg-black text-white hover:bg-gray-800 rounded-lg text-sm'
               >
-                Post Reply
+                Đăng trả lời
               </button>
               <button
                 onClick={() => setActiveReplyId(null)}
                 className='px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm'
               >
-                Cancel
+                Hủy
               </button>
             </div>
           </div>
@@ -211,7 +213,7 @@ export default function BlogPostPage() {
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    alert('Link copied to clipboard!');
+    alert('Đã sao chép liên kết vào clipboard!');
   };
   const [comments, setComments] = useState<Comment[]>([
     {
@@ -277,335 +279,358 @@ export default function BlogPostPage() {
   };
 
   if (isLoading) {
-    return <div>Loading blog post...</div>;
+    return <div>Đang tải bài viết...</div>;
   }
 
   if (error || !blog) {
-    return <div>Error loading blog post.</div>;
+    return <div>Lỗi khi tải bài viết.</div>;
   }
   if (!blog.author) {
-    return <div>Author information is missing.</div>;
+    return <div>Thông tin tác giả bị thiếu.</div>;
   }
 
+  const blogPostSeo = {
+    title: blog.title,
+    description: blog.metaDescription,
+    canonical: blog.canonicalUrl || `${env.NEXT_PUBLIC_APP_URL}/blog/${blog.slug}`,
+    openGraph: {
+      title: blog.ogTitle || blog.title,
+      description: blog.ogDescription || blog.metaDescription,
+      url: blog.canonicalUrl || `${env.NEXT_PUBLIC_APP_URL}/blog/${blog.slug}`,
+      images: blog.ogImageUrl ? [{ url: blog.ogImageUrl }] : (blog.imageUrl ? [{ url: blog.imageUrl }] : []),
+      siteName: 'BloAI',
+    },
+    twitter: {
+      handle: '@yourTwitterHandle',
+      site: '@site',
+      cardType: blog.twitterCard || 'summary_large_image',
+    },
+    //...
+  };
+
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex gap-12">
-        <main className="flex-1 ">
-          <div className="sticky top-28 hidden lg:block float-left -ml-20 mr-6 h-[calc(100vh-10rem)]">
-            <div className="flex flex-col items-center gap-8 h-full">
-              <div className="flex flex-col gap-6">
-                <button
-                  onClick={handleShare}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors group"
-                  aria-label="Share article"
-                >
-                  <Share className="w-6 h-6 text-gray-600 group-hover:text-blue-600" />
-                </button>
-
-                <div className="flex flex-col items-center gap-2 text-gray-600">
-                  <EyeIcon className="w-5 h-5" />
-                  <span className="text-sm font-medium">{views.toLocaleString()}</span>
-                </div>
-
-                <div className="h-px w-8 bg-gradient-to-b from-transparent via-gray-300 to-transparent" />
-
-                <div className="flex flex-col gap-4">
-                  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Share on Twitter">
-                    <FaTwitter className="w-5 h-5 text-gray-600 hover:text-[#1DA1F2]" />
-                  </button>
-                  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Share on Facebook">
-                    <FaFacebook className="w-5 h-5 text-gray-600 hover:text-[#1877F2]" />
-                  </button>
-                  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Share on LinkedIn">
-                    <FaLinkedin className="w-5 h-5 text-gray-600 hover:text-[#0A66C2]" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <article className="max-w-3xl mx-auto">
-            <div className="mb-8">
-              <div className="flex gap-2 mb-6">
-                {blog.tags.slice(0, 5).map((tag, index) => ( 
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 text-sm font-medium text-blue-600 rounded-full"
+    <>
+      <NextSeo {...blogPostSeo} />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex gap-12">
+          <main className="flex-1 ">
+            <div className="sticky top-28 hidden lg:block float-left -ml-20 mr-6 h-[calc(100vh-10rem)]">
+              <div className="flex flex-col items-center gap-8 h-full">
+                <div className="flex flex-col gap-6">
+                  <button
+                    onClick={handleShare}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors group"
+                    aria-label="Chia sẻ bài viết"
                   >
-                    #{tag.name.toUpperCase()}
-                  </span>
-                ))}
-                {blog.tags.length > 5 && (
-                  <span className="text-sm text-gray-500">
-                    + {blog.tags.length - 5} more
-                  </span>
-                )}
-              </div>
+                    <Share className="w-6 h-6 text-gray-600 group-hover:text-blue-600" />
+                  </button>
 
-              <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
-                {blog.title}
-              </h1>
-
-              <div className="flex items-center gap-4 text-gray-500 mb-8">
-                <span className="flex items-center gap-1.5">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                  </svg>
-                  {new Date(blog.publishDate).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </span>
-                <span className="h-1 w-1 bg-gray-400 rounded-full" />
-                <span>{blog.author?.name}</span>
-              </div>
-            </div>
-
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              {blog.metaDescription}
-            </p>
-
-            <div className="prose prose-lg max-w-none text-gray-700 mb-12">
-              <ReactMarkdown
-                rehypePlugins={[rehypeRaw]}
-                remarkPlugins={[remarkGfm]}
-                children={blog.content}
-              />
-            </div>
-            <div className='w-full grid grid-cols-4 gap-4'>
-              {[
-                { emotion: 'love', label: 'IN LOVE' },
-                { emotion: 'happy-face', label: 'HAPPY' },
-                { emotion: 'depressed', label: 'NOT SURE' },
-                { emotion: 'shocked', label: 'OMG' }
-              ].map(({ emotion, label }) => (
-                <div key={emotion} className='h-44 w-full p-1 flex rounded-2xl flex-col bg-black'>
-                  <div className='p-2 rounded-xl bg-white flex justify-center items-center flex-1'>
-                    <div className='flex flex-col gap-y-2'>
-                      <Image
-                        src={`/images/${emotion}.png`}
-                        alt={label}
-                        width={80}
-                        height={80}
-                        className="w-20 h-20 mx-auto"
-                      />
-                      <p className='text-center'>7</p>
-                    </div>
+                  <div className="flex flex-col items-center gap-2 text-gray-600">
+                    <EyeIcon className="w-5 h-5" />
+                    <span className="text-sm font-medium">{views.toLocaleString()}</span>
                   </div>
-                  <div className='mt-2'>
-                    <p className='text-center font-medium text-white'>{label}</p>
+
+                  <div className="h-px w-8 bg-gradient-to-b from-transparent via-gray-300 to-transparent" />
+
+                  <div className="flex flex-col gap-4">
+                    <button className="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Chia sẻ lên Twitter">
+                      <FaTwitter className="w-5 h-5 text-gray-600 hover:text-[#1DA1F2]" />
+                    </button>
+                    <button className="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Chia sẻ lên Facebook">
+                      <FaFacebook className="w-5 h-5 text-gray-600 hover:text-[#1877F2]" />
+                    </button>
+                    <button className="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Chia sẻ lên LinkedIn">
+                      <FaLinkedin className="w-5 h-5 text-gray-600 hover:text-[#0A66C2]" />
+                    </button>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
 
-            {/*  */}
-            <div className='w-full flex items-center justify-center'>
-              <div className="flex flex-col justify-center items-center text-center mt-8">
+            <article className="max-w-3xl mx-auto">
+              <div className="mb-8">
                 <div className="flex gap-2 mb-6">
                   {blog.tags.slice(0, 5).map((tag, index) => (
                     <span
                       key={index}
                       className="px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 text-sm font-medium text-blue-600 rounded-full"
-                      style={{ wordBreak: 'break-word' }} 
                     >
                       #{tag.name.toUpperCase()}
                     </span>
                   ))}
                   {blog.tags.length > 5 && (
                     <span className="text-sm text-gray-500">
-                      + {blog.tags.length - 5} more
+                      + {blog.tags.length - 5} thêm
                     </span>
                   )}
                 </div>
-                <Image
-                  src={blog.author?.image || '/fallback-avatar.png'}
-                  alt={blog.author?.name || 'Author Name'}
-                  width={146}
-                  height={146}
-                  className="rounded-full object-cover mb-4 border-4 border-white shadow-lg"
+
+                <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                  {blog.title}
+                </h1>
+
+                <div className="flex items-center gap-4 text-gray-500 mb-8">
+                  <span className="flex items-center gap-1.5">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                    </svg>
+                    {new Date(blog.publishDate).toLocaleDateString('vi-VN', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </span>
+                  <span className="h-1 w-1 bg-gray-400 rounded-full" />
+                  <span>{blog.author?.name}</span>
+                </div>
+              </div>
+
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                {blog.metaDescription}
+              </p>
+
+              <div className="prose prose-lg max-w-none text-gray-700 mb-12">
+                <ReactMarkdown
+                  rehypePlugins={[rehypeRaw]}
+                  remarkPlugins={[remarkGfm]}
+                  children={blog.content}
                 />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{blog.author?.name}</h3>
-                <p className="text-gray-600 mb-6 leading-relaxed max-w-md">
-                  {blog.author?.bio || 'No bio available.'}
-                </p>
-                <div className="flex gap-3 w-full items-center justify-center">
-                  <div className="flex gap-2">
-                    {/* Social links would ideally come from the author data if available in your API */}
-                    {/* Example -  if blog.author?.twitter and blog.author?.linkedin existed */}
-                    {/*
-                    {blog.author?.twitter && (
+              </div>
+              <div className='w-full grid grid-cols-4 gap-4'>
+                {[
+                  { emotion: 'love', label: 'YÊU THÍCH' },
+                  { emotion: 'happy-face', label: 'HẠNH PHÚC' },
+                  { emotion: 'depressed', label: 'KHÔNG CHẮC' },
+                  { emotion: 'shocked', label: 'OMG' }
+                ].map(({ emotion, label }) => (
+                  <div key={emotion} className='h-44 w-full p-1 flex rounded-2xl flex-col bg-black'>
+                    <div className='p-2 rounded-xl bg-white flex justify-center items-center flex-1'>
+                      <div className='flex flex-col gap-y-2'>
+                        <Image
+                          src={`/images/${emotion}.png`}
+                          alt={label}
+                          width={80}
+                          height={80}
+                          className="w-20 h-20 mx-auto"
+                        />
+                        <p className='text-center'>7</p>
+                      </div>
+                    </div>
+                    <div className='mt-2'>
+                      <p className='text-center font-medium text-white'>{label}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/*  */}
+              <div className='w-full flex items-center justify-center'>
+                <div className="flex flex-col justify-center items-center text-center mt-8">
+                  <div className="flex gap-2 mb-6">
+                    {blog.tags.slice(0, 5).map((tag, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 text-sm font-medium text-blue-600 rounded-full"
+                        style={{ wordBreak: 'break-word' }}
+                      >
+                        #{tag.name.toUpperCase()}
+                      </span>
+                    ))}
+                    {blog.tags.length > 5 && (
+                      <span className="text-sm text-gray-500">
+                        + {blog.tags.length - 5} thêm
+                      </span>
+                    )}
+                  </div>
+                  <Image
+                    src={blog.author?.image || '/fallback-avatar.png'}
+                    alt={blog.author?.name || 'Tên tác giả'}
+                    width={146}
+                    height={146}
+                    className="rounded-full object-cover mb-4 border-4 border-white shadow-lg"
+                  />
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{blog.author?.name}</h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed max-w-md">
+                    {blog.author?.bio || 'Không có tiểu sử.'}
+                  </p>
+                  <div className="flex gap-3 w-full items-center justify-center">
+                    <div className="flex gap-2">
+                      {/* Social links would ideally come from the author data if available in your API */}
+                      {/* Example -  if blog.author?.twitter and blog.author?.linkedin existed */}
+                      {/*
+                      {blog.author?.twitter && (
+                        <a
+                          href={`https://twitter.com/${blog.author.twitter}`}
+                          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Twitter Profile"
+                        >
+                          <FaTwitter className="w-5 h-5 " />
+                        </a>
+                      )}
+                      {blog.author?.linkedin && (
+                        <a
+                          href={`https://linkedin.com/${blog.author.linkedin}`}
+                          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="LinkedIn Profile"
+                        >
+                          <FaFacebook className="w-5 h-5 " />
+                        </a>
+                      )}
+                      */}
                       <a
-                        href={`https://twitter.com/${blog.author.twitter}`}
+                        href={`https://twitter.com/`}
                         className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="Twitter Profile"
+                        aria-label="Hồ sơ Twitter"
                       >
                         <FaTwitter className="w-5 h-5 " />
                       </a>
-                    )}
-                    {blog.author?.linkedin && (
                       <a
-                        href={`https://linkedin.com/${blog.author.linkedin}`}
+                        href={`https://linkedin.com/in/`}
                         className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label="LinkedIn Profile"
+                        aria-label="Hồ sơ LinkedIn"
                       >
                         <FaFacebook className="w-5 h-5 " />
                       </a>
-                    )}
-                    */}
-                    <a
-                      href={`https://twitter.com/`}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Twitter Profile"
-                    >
-                      <FaTwitter className="w-5 h-5 " />
-                    </a>
-                    <a
-                      href={`https://linkedin.com/in/`} 
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="LinkedIn Profile"
-                    >
-                      <FaFacebook className="w-5 h-5 " />
-                    </a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className='w-full h-auto mt-4'>
+                <div className='border-2 border-black p-4 rounded-xl'>
+                  <div className='w-full flex flex-col justify-center items-center'>
+                    <div className='mb-4'>
+                      <FaComments className='w-14 h-14' />
+                    </div>
+                    <h1 className='text-center text-xl font-medium mb-4'>BẠN NGHĨ GÌ?</h1>
+
+                  </div>
+
+                  <div className='space-y-6'>
+                    {comments.map((comment) => (
+                      <CommentComponent
+                        key={comment.id}
+                        comment={comment}
+                        level={0}
+                        activeReplyId={activeReplyId}
+                        setActiveReplyId={setActiveReplyId}
+                        handleReplySubmit={handleReplySubmit}
+                      />
+                    ))}
+                  </div>
+
+                  <div className='mt-8'>
+                    <CommentForm onSubmit={handleCommentSubmit} />
                   </div>
                 </div>
               </div>
+            </article>
+          </main>
 
-            </div>
-            <div className='w-full h-auto mt-4'>
-              <div className='border-2 border-black p-4 rounded-xl'>
-                <div className='w-full flex flex-col justify-center items-center'>
-                  <div className='mb-4'>
-                    <FaComments className='w-14 h-14' />
-                  </div>
-                  <h1 className='text-center text-xl font-medium mb-4'>WHAT DO YOU THINK?</h1>
-
-                </div>
-
-                <div className='space-y-6'>
-                  {comments.map((comment) => (
-                    <CommentComponent
-                      key={comment.id}
-                      comment={comment}
-                      level={0}
-                      activeReplyId={activeReplyId}
-                      setActiveReplyId={setActiveReplyId}
-                      handleReplySubmit={handleReplySubmit}
+          <aside className="hidden lg:block w-80 xl:w-96 shrink-0">
+            <div className='bg-black p-1 rounded-2xl relative'>
+              <div className="flex flex-row absolute w-full justify-between gap-4 right-0 p-1 top-[40%]">
+                <div className='flex flex-col gap-y-[2px] items-start'>
+                  {[15, 15, 20, 30, 20, 15, 10].map((width, index) => (
+                    <div
+                      className={`h-1 bg-black ${index === 3 ? 'w-[30px]' : `w-[${width}px]`}`}
+                      key={index}
                     />
                   ))}
                 </div>
-
-                <div className='mt-8'>
-                  <CommentForm onSubmit={handleCommentSubmit} />
+                <div className='flex flex-col gap-y-[2px] items-end transform -scale-y-180'>
+                  {[10, 15, 20, 30, 20, 15, 10].map((width, index) => (
+                    <div
+                      className={`h-1 bg-black ${index === 3 ? 'w-[30px]' : `w-[${width}px]`}`}
+                      key={index}
+                    />
+                  ))}
                 </div>
               </div>
-            </div>
-          </article>
-        </main>
-
-        <aside className="hidden lg:block w-80 xl:w-96 shrink-0">
-          <div className='bg-black p-1 rounded-2xl relative'>
-            <div className="flex flex-row absolute w-full justify-between gap-4 right-0 p-1 top-[40%]">
-              <div className='flex flex-col gap-y-[2px] items-start'>
-                {[15, 15, 20, 30, 20, 15, 10].map((width, index) => (
-                  <div
-                    className={`h-1 bg-black ${index === 3 ? 'w-[30px]' : `w-[${width}px]`}`}
-                    key={index}
+              <div className="p-2 bg-white rounded-xl ">
+                <div className="flex flex-col items-center text-center">
+                  <Image
+                    src={blog.author?.image || ''}
+                    alt={blog.author?.name || 'Tên tác giả'}
+                    width={96}
+                    height={96}
+                    className="rounded-full object-cover mb-4 border-4 border-white shadow-lg"
                   />
-                ))}
-              </div>
-              <div className='flex flex-col gap-y-[2px] items-end transform -scale-y-180'>
-                {[10, 15, 20, 30, 20, 15, 10].map((width, index) => (
-                  <div
-                    className={`h-1 bg-black ${index === 3 ? 'w-[30px]' : `w-[${width}px]`}`}
-                    key={index}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="p-2 bg-white rounded-xl ">
-              <div className="flex flex-col items-center text-center">
-                <Image
-                  src={blog.author?.image || ''} 
-                  alt={blog.author?.name || 'Author Name'}
-                  width={96}
-                  height={96}
-                  className="rounded-full object-cover mb-4 border-4 border-white shadow-lg"
-                />
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{blog.author?.name}</h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  {blog.author?.bio || 'No bio available.'}
-                </p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{blog.author?.name}</h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    {blog.author?.bio || 'Không có tiểu sử.'}
+                  </p>
 
-                <div className="flex gap-3 w-full items-center justify-center">
-                  <div className="flex gap-2">
-                    <a
-                      href={`https://twitter.com/`}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Twitter Profile"
-                    >
-                      <FaTwitter className="w-5 h-5 " />
-                    </a>
-                    <a
-                      href={`https://linkedin.com/in/`} 
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="LinkedIn Profile"
-                    >
-                      <FaLinkedin className="w-5 h-5 " />
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-            <div className='bg-black top-28  rounded-b-xl mt-1'>
-              <h2 className='text-white font-medium text-xl text-center'>ABOUT ME</h2>
-            </div>
-          </div>
-
-          <div className='bg-black p-1 rounded-2xl relative mt-10'>
-            <div className=" top-28 p-2 bg-white rounded-xl ">
-              {techCategories.map((techCategory) => {
-                return (
-                  <div key={techCategory.title} className="flex gap-3 relative w-full rounded-xl items-center  mb-4 text-sm  border-2  border-black font-medium">
-                    <Link
-                      href={`#${techCategory.title.toLowerCase()}`}
-                      className="py-1 px-2 rounded-lg transition-colors"
-                    >
-                      {techCategory.title.toUpperCase()}
-                    </Link>
-                    <div className='p-1 border-2 border-black h-full rounded-xl rounded-l-[10px] absolute -right-[1.5px] cursor-pointer text-center bg-yellow-400'>
-                      {techCategory.amount}
+                  <div className="flex gap-3 w-full items-center justify-center">
+                    <div className="flex gap-2">
+                      <a
+                        href={`https://twitter.com/`}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Hồ sơ Twitter"
+                      >
+                        <FaTwitter className="w-5 h-5 " />
+                      </a>
+                      <a
+                        href={`https://linkedin.com/in/`}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Hồ sơ LinkedIn"
+                      >
+                        <FaLinkedin className="w-5 h-5 " />
+                      </a>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+
+              </div>
+              <div className='bg-black top-28  rounded-b-xl mt-1'>
+                <h2 className='text-white font-medium text-xl text-center'>VỀ TÔI</h2>
+              </div>
             </div>
 
-            <div className='bg-black top-28  rounded-b-xl mt-1'>
-              <h2 className='text-white font-medium text-xl text-center'>CATEGORIES</h2>
+            <div className='bg-black p-1 rounded-2xl relative mt-10'>
+              <div className=" top-28 p-2 bg-white rounded-xl ">
+                {techCategories.map((techCategory) => {
+                  return (
+                    <div key={techCategory.title} className="flex gap-3 relative w-full rounded-xl items-center  mb-4 text-sm  border-2  border-black font-medium">
+                      <Link
+                        href={`#${techCategory.title.toLowerCase()}`}
+                        className="py-1 px-2 rounded-lg transition-colors"
+                      >
+                        {techCategory.title.toUpperCase()}
+                      </Link>
+                      <div className='p-1 border-2 border-black h-full rounded-xl rounded-l-[10px] absolute -right-[1.5px] cursor-pointer text-center bg-yellow-400'>
+                        {techCategory.amount}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className='bg-black top-28  rounded-b-xl mt-1'>
+                <h2 className='text-white font-medium text-xl text-center'>DANH MỤC</h2>
+              </div>
             </div>
-          </div>
-        </aside>
+          </aside>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

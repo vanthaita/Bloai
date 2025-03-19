@@ -37,7 +37,7 @@ const NewPost = () => {
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState('')
   const [thumbnail, setThumbnail] = useState<File | null>(null)
-  const [content, setContent] = useState('**Hello world!!!**')
+  const [content, setContent] = useState('**Xin chào thế giới!!!**')
   const [title, setTitle] = useState('')
   const [slug, setSlug] = useState('')
   const [metaDescription, setMetaDescription] = useState('')
@@ -65,7 +65,7 @@ const NewPost = () => {
       setCanonicalUrl(`${env.NEXT_PUBLIC_APP_URL}/blog/${slug}`);
     }
   }, [slug, isAutoCanonical]);
-  
+
   useEffect(() => {
     if (title && !isGeneratingSlug) {
       const generatedSlug = slugify(title, {
@@ -129,7 +129,7 @@ const NewPost = () => {
 
 const handleSubmit = async (isDraft: boolean) => {
   if (!validateSEO()) {
-    alert('Please fill required SEO fields');
+    alert('Vui lòng điền các trường SEO bắt buộc');
     return;
   }
 
@@ -156,9 +156,9 @@ const handleSubmit = async (isDraft: boolean) => {
     setRouteToUrl(formData.slug);
   } catch (error) {
     console.error('Error submitting form:', error);
-    alert('An error occurred while submitting the form.');
+    alert('Đã xảy ra lỗi khi gửi biểu mẫu.');
   } finally {
-    setIsLoading(false); 
+    setIsLoading(false);
     router.push(`/blog/${routeToUrl}`)
   }
 };
@@ -172,12 +172,12 @@ const handleSubmit = async (isDraft: boolean) => {
 
   const insertMarkdown = (format: string) => {
     const examples: Record<string, string> = {
-      bold: '**bold text**',
-      italic: '*italicized text*',
-      link: '[title](https://)',
-      code: '`code`',
+      bold: '**chữ đậm**',
+      italic: '*chữ nghiêng*',
+      link: '[tiêu đề](https://)',
+      code: '`mã`',
       image: '![alt](https://)',
-      list: '- List item',
+      list: '- Mục danh sách',
     }
     setContent(content + ` ${examples[format]}`)
   }
@@ -186,14 +186,14 @@ const handleSubmit = async (isDraft: boolean) => {
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl flex items-center gap-2">
-            Create New Post
+            Tạo Bài Viết Mới
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
                   <HelpCircle className="w-4 h-4" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Fill required fields (*) and optimize SEO metadata for better visibility</p>
+                  <p>Điền đầy đủ các trường thông tin bắt buộc (*) và tối ưu hóa metadata SEO để bài viết hiển thị tốt hơn trên các công cụ tìm kiếm.</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -205,8 +205,8 @@ const handleSubmit = async (isDraft: boolean) => {
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="title" className="flex items-center gap-2">
-                  Title *
-                  <span className="text-xs text-muted-foreground">(Optimized for SEO)</span>
+                  Tiêu đề *
+                  <span className="text-xs text-muted-foreground">(Tối ưu hóa SEO)</span>
                   <Button
                     type="button"
                     variant="ghost"
@@ -226,16 +226,16 @@ const handleSubmit = async (isDraft: boolean) => {
                     {isGeneratingTitle ? (
                       <div className="flex items-center gap-2">
                         <Spinner className="h-4 w-4" />
-                        Generating...
+                        Đang tạo...
                       </div>
                     ) : (
-                      "Generate with AI"
+                      "Tạo bằng AI"
                     )}
                   </Button>
                 </Label>
                 <Input
                   id="title"
-                  placeholder="Enter post title"
+                  placeholder="Nhập tiêu đề bài viết"
                   value={title}
                   onChange={(e) => {
                     setTitle(e.target.value)
@@ -248,13 +248,13 @@ const handleSubmit = async (isDraft: boolean) => {
 
               <div className="space-y-2">
                 <Label htmlFor="slug" className="flex items-center gap-2">
-                  Slug *
+                  Đường dẫn thân thiện (Slug) *
                   <button
                     type="button"
                     onClick={() => setIsGeneratingSlug(!isGeneratingSlug)}
                     className="text-xs text-blue-600 hover:underline"
                   >
-                    {isGeneratingSlug ? 'Disable auto-generate' : 'Edit manually'}
+                    {isGeneratingSlug ? 'Tắt tự động tạo' : 'Chỉnh sửa thủ công'}
                   </button>
                 </Label>
                 <Input
@@ -267,7 +267,7 @@ const handleSubmit = async (isDraft: boolean) => {
 
               <div className="space-y-2">
                 <Label htmlFor="description" className="flex items-center gap-2">
-                  Description *
+                  Mô tả ngắn *
                   <Button
                     type="button"
                     variant="ghost"
@@ -287,16 +287,16 @@ const handleSubmit = async (isDraft: boolean) => {
                     {isGeneratingExcerpt ? (
                       <div className="flex items-center gap-2">
                         <Spinner className="h-4 w-4" />
-                        Generating...
+                        Đang tạo...
                       </div>
                     ) : (
-                      "Generate with AI"
+                      "Tạo bằng AI"
                     )}
                   </Button>
                 </Label>
                 <Textarea
                   id="description"
-                  placeholder="Write a short excerpt..."
+                  placeholder="Viết một đoạn mô tả ngắn gọn..."
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -305,8 +305,8 @@ const handleSubmit = async (isDraft: boolean) => {
 
               <div className="space-y-2">
                 <Label htmlFor="metaDescription" className="flex items-center gap-2">
-                  Meta Description *
-                  <span className="text-xs text-muted-foreground">({metaDescription.length}/160)</span>
+                  Meta Mô tả *
+                  <span className="text-xs text-muted-foreground">({metaDescription.length}/160 ký tự)</span>
                   <Button
                     type="button"
                     variant="ghost"
@@ -326,10 +326,10 @@ const handleSubmit = async (isDraft: boolean) => {
                     {isGeneratingMetaDescription ? (
                       <div className="flex items-center gap-2">
                         <Spinner className="h-4 w-4" />
-                        Generating...
+                        Đang tạo...
                       </div>
                     ) : (
-                      "Generate with AI"
+                      "Tạo bằng AI"
                     )}
                   </Button>
                 </Label>
@@ -341,12 +341,12 @@ const handleSubmit = async (isDraft: boolean) => {
                   className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   rows={3}
                   maxLength={160}
-                  placeholder="Enter meta description or generate with AI"
+                  placeholder="Nhập meta mô tả hoặc tạo bằng AI"
                 />
 
                 <div className="space-y-2">
                   <Label htmlFor="keywords" className="flex items-center gap-2">
-                    SEO Keywords
+                    Từ khóa SEO
                     <Button
                       type="button"
                       variant="ghost"
@@ -366,21 +366,21 @@ const handleSubmit = async (isDraft: boolean) => {
                       {isGeneratingKeywords ? (
                         <div className="flex items-center gap-2">
                           <Spinner className="h-4 w-4" />
-                          Generating...
+                          Đang tạo...
                         </div>
                       ) : (
-                        "Generate with AI"
+                        "Tạo bằng AI"
                       )}
                     </Button>
                   </Label>
                   <Input
                     id="keywords"
-                    placeholder="Comma-separated keywords"
+                    placeholder="Nhập từ khóa, cách nhau bằng dấu phẩy"
                     value={tags.join(', ')}
                     onChange={(e) => setTags(e.target.value.split(/,\s*/))}
                   />
                   <p className="text-sm text-muted-foreground">
-                    {tags.length}/15 keywords (recommended)
+                    {tags.length}/15 từ khóa (đề xuất)
                   </p>
                 </div>
               </div>
@@ -401,7 +401,7 @@ const handleSubmit = async (isDraft: boolean) => {
                     <div className="relative aspect-video rounded-lg overflow-hidden border-2 border-dashed border-muted">
                       <img
                         src={URL.createObjectURL(thumbnail)}
-                        alt="Preview"
+                        alt="Xem trước ảnh thu nhỏ"
                         className="object-cover w-full h-full"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -419,7 +419,7 @@ const handleSubmit = async (isDraft: boolean) => {
                       <Label className="flex items-center gap-2">
                         Alt Text (SEO)
                         <span className="text-sm text-muted-foreground">
-                          {imageAlt.length}/125 characters
+                          {imageAlt.length}/125 ký tự
                         </span>
                       </Label>
                       <Textarea
@@ -430,21 +430,21 @@ const handleSubmit = async (isDraft: boolean) => {
                         className="resize-none"
                       />
                       <p className="text-sm text-muted-foreground">
-                        Ví dụ: "Một developer đang làm việc với React và TypeScript"
+                        Ví dụ: "Ảnh chụp màn hình giao diện developer đang làm việc với React và TypeScript"
                       </p>
                     </div>
                   </div>
                 ) : (
                   <div className="hidden lg:flex items-center justify-center h-full min-h-[200px] border-2 border-dashed rounded-lg text-muted-foreground">
-                    Preview sẽ hiển thị ở đây
+                    Xem trước ảnh thu nhỏ sẽ hiển thị ở đây
                   </div>
                 )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="content" className="flex items-center gap-2">
-                  Content *
+                  Nội dung *
                   <span className="text-sm text-muted-foreground">
-                    Estimated read time: {readTime} mins
+                    Thời gian đọc ước tính: {readTime} phút
                   </span>
                 </Label>
                 <ContextMenu>
@@ -469,22 +469,22 @@ const handleSubmit = async (isDraft: boolean) => {
                   </ContextMenuTrigger>
                   <ContextMenuContent>
                     <ContextMenuItem onClick={() => insertMarkdown('bold')}>
-                      Bold
+                      Đậm
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => insertMarkdown('italic')}>
-                      Italic
+                      Nghiêng
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => insertMarkdown('link')}>
-                      Link
+                      Liên kết
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => insertMarkdown('image')}>
-                      Image
+                      Hình ảnh
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => insertMarkdown('code')}>
-                      Code
+                      Mã
                     </ContextMenuItem>
                     <ContextMenuItem onClick={() => insertMarkdown('list')}>
-                      List
+                      Danh sách
                     </ContextMenuItem>
                   </ContextMenuContent>
                 </ContextMenu>
@@ -494,23 +494,23 @@ const handleSubmit = async (isDraft: boolean) => {
 
           <div className="space-y-6">
             <div className="space-y-4">
-              <Label className="text-lg font-semibold">SEO Preview</Label>
+              <Label className="text-lg font-semibold">Xem trước SEO</Label>
               <div className="p-4 bg-background rounded-lg border">
-                <p className="font-medium text-blue-600">{title || 'Your Title'}</p>
+                <p className="font-medium text-blue-600">{title || 'Tiêu đề của bạn'}</p>
                 <p className="text-sm text-muted-foreground">
-                  {slug || 'your-slug'} • {readTime} min read
+                  {slug || 'duong-dan-than-thien'} • {readTime} phút đọc
                 </p>
                 <p className="text-sm text-gray-600 mt-2">
-                  {metaDescription || 'Meta description preview...'}
+                  {metaDescription || 'Xem trước meta mô tả...'}
                 </p>
               </div>
             </div>
 
             <div className="space-y-4">
-              <Label className="text-lg font-semibold">Advanced SEO</Label>
+              <Label className="text-lg font-semibold">SEO Nâng cao</Label>
               <div className="space-y-2">
                 <Label htmlFor="canonicalUrl" className="flex items-center gap-2">
-                  Canonical URL
+                  URL Canonical
                   {!isAutoCanonical && (
                     <Button
                       type="button"
@@ -519,7 +519,7 @@ const handleSubmit = async (isDraft: boolean) => {
                       className="text-blue-600 hover:text-blue-700"
                       onClick={() => setIsAutoCanonical(true)}
                     >
-                      Reset to auto
+                      Đặt về tự động
                     </Button>
                   )}
                 </Label>
@@ -534,13 +534,13 @@ const handleSubmit = async (isDraft: boolean) => {
                 />
                 {isAutoCanonical && (
                   <p className="text-sm text-muted-foreground">
-                    Auto-generated from slug
+                    Tự động tạo từ đường dẫn thân thiện (slug)
                   </p>
                 )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="ogTitle" className="flex items-center gap-2">
-                  Open Graph Title
+                  Tiêu đề Open Graph (OG Title)
                   <Button
                     type="button"
                     variant="ghost"
@@ -560,10 +560,10 @@ const handleSubmit = async (isDraft: boolean) => {
                     {isGeneratingOgTitle ? (
                       <div className="flex items-center gap-2">
                         <Spinner className="h-4 w-4" />
-                        Generating...
+                        Đang tạo...
                       </div>
                     ) : (
-                      "Generate with AI"
+                      "Tạo bằng AI"
                     )}
                   </Button>
                 </Label>
@@ -575,7 +575,7 @@ const handleSubmit = async (isDraft: boolean) => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="ogDescription" className="flex items-center gap-2">
-                  Open Graph Description
+                  Mô tả Open Graph (OG Description)
                   <Button
                     type="button"
                     variant="ghost"
@@ -595,10 +595,10 @@ const handleSubmit = async (isDraft: boolean) => {
                     {isGeneratingOgDescription ? (
                       <div className="flex items-center gap-2">
                         <Spinner className="h-4 w-4" />
-                        Generating...
+                        Đang tạo...
                       </div>
                     ) : (
-                      "Generate with AI"
+                      "Tạo bằng AI"
                     )}
                   </Button>
                 </Label>
@@ -616,7 +616,7 @@ const handleSubmit = async (isDraft: boolean) => {
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagKeyDown}
-                placeholder="Add tags (press Enter to add)"
+                placeholder="Thêm tag (nhấn Enter để thêm)"
               />
               <div className="flex flex-wrap gap-2">
                 {tags.map((tag, index) => (
@@ -634,17 +634,17 @@ const handleSubmit = async (isDraft: boolean) => {
 
             <Separator />
 
-            <div className="space-y-4">
-              <Label>Publish Settings</Label>
+            {/* <div className="space-y-4">
+              <Label>Thiết lập Xuất bản</Label>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Schedule Publish</span>
+                <span className="text-sm">Lên lịch Xuất bản</span>
                 <Switch />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Featured Post</span>
+                <span className="text-sm">Bài viết Nổi bật</span>
                 <Switch />
               </div>
-            </div>
+            </div> */}
 
           </div>
 
@@ -654,16 +654,16 @@ const handleSubmit = async (isDraft: boolean) => {
         <CardFooter className="flex justify-between items-center">
           <div className="text-sm text-muted-foreground">
             {validateSEO() ? (
-              <span className="text-green-600">✓ SEO Optimized</span>
+              <span className="text-green-600">✓ Đã Tối ưu SEO</span>
             ) : (
-              <span className="text-yellow-600">⚠ Needs SEO Attention</span>
+              <span className="text-yellow-600">⚠ Cần Chú ý SEO</span>
             )}
           </div>
           <div className="flex gap-4">
             {/* <Button variant="outline" className='bg-black text-white' onClick={() => handleSubmit(true)}>
-              Save Draft
+              Lưu Bản Nháp
             </Button> */}
-            <Button onClick={() => handleSubmit(false)} className='bg-black text-white' disabled={isLoading}>Publish Now</Button>
+            <Button onClick={() => handleSubmit(false)} className='bg-black text-white' disabled={isLoading}>Xuất bản Ngay</Button>
           </div>
         </CardFooter>
       </Card>
