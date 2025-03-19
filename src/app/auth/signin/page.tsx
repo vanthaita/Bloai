@@ -16,12 +16,13 @@ const SignInPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
+  const callbackUrl = '/'
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleGoogleLogin = async () => {
     try {
-      await signIn('google', { callbackUrl: DEFAULT_SIGNIN_REDIRECT });
+      await signIn('google', { callbackUrl });
     } catch (error) {
       setError('Failed to authenticate with Google');
     }

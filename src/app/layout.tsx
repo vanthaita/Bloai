@@ -6,7 +6,8 @@ import AppSidebarProvider from "@/provider/app.sidebar";
 import { auth } from "@/server/auth";
 import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
-
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 export const metadata: Metadata = {
   title: "Bloai",
   description: "Blog Tech",
@@ -24,6 +25,8 @@ export default async function RootLayout({
             <main>
               <AppSidebarProvider>
                 {children}
+                <Analytics />
+                <SpeedInsights />
               </AppSidebarProvider>
             </main>
           </TRPCReactProvider>

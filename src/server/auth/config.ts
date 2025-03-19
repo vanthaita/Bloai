@@ -33,12 +33,12 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    Google
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    //   // checks: ["none"]
-    // })
+    // Google
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      // checks: ["none"]
+    })
     // DiscordProvider,
     /**
      * ...add more providers here.
