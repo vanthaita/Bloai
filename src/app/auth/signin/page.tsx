@@ -10,17 +10,18 @@ import { FaGithub } from 'react-icons/fa';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
 import { auth } from '@/server/auth';
+import { env } from '@/env';
+import { AUTH_ROUTES, DEFAULT_SIGNIN_REDIRECT } from '@/lib/route';
 const SignInPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleGoogleLogin = async () => {
     try {
-      await signIn('google', { callbackUrl });
+      await signIn('google', { callbackUrl: DEFAULT_SIGNIN_REDIRECT });
     } catch (error) {
       setError('Failed to authenticate with Google');
     }
@@ -35,14 +36,14 @@ const SignInPage = () => {
         redirect: false,
         email,
         password,
-        callbackUrl,
+        // callbackUrl,
         type: 'login',
       });
 
       if (res?.error) {
         setError(res.error);
       } else {
-        router.push(callbackUrl);
+        // router.push(callbackUrl);
       }
     } catch (error) {
       setError('An unexpected error occurred');
