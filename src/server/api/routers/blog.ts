@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import { db } from "@/server/db";
 
 export const blogRouter = createTRPCRouter({
     create: protectedProcedure
@@ -22,6 +23,7 @@ export const blogRouter = createTRPCRouter({
       )
        .mutation(async ({ ctx, input }) => {
             try {
+                console.log(ctx.session)
                 const existingBlog = await ctx.db.blog.findUnique({
                     where: { slug: input.slug },
                 })
@@ -41,6 +43,16 @@ export const blogRouter = createTRPCRouter({
                 //     }
                 // }
                 const result = await ctx.db.$transaction(async (prisma) => {
+                    const user = await prisma.user.findUnique({
+                        where: { id: ctx.session.user.id }
+                    });
+                    
+                    if (!user) {
+                        throw new TRPCError({ 
+                            code: "UNAUTHORIZED", 
+                            message: "User not found" 
+                        });
+                    }
                     const tags = await Promise.all(
                         input.tags.map(async (tagName) => {
                           const normalizedTag = tagName.toLowerCase()
@@ -69,9 +81,7 @@ export const blogRouter = createTRPCRouter({
                             readTime: input.readTime,
                             keywords: input.tags,
                             //   structuredData: input.structuredData,
-                            author: {
-                                connect: { id: ctx.session.user.id }
-                            },
+                            authorId: ctx.session.user.id,
                             tags: {
                                 connect: tags.map((tag) => ({ id: tag.id }))
                             }
@@ -85,6 +95,7 @@ export const blogRouter = createTRPCRouter({
                     })
                 return { success: true, result }
             } catch (err) {
+                console.log(err);
                 // if (input.thumbnail) {
                 //     const publicId = extractPublicId(input.thumbnail)
                 //     await cloudinary.v2.uploader.destroy(publicId)
@@ -96,18 +107,31 @@ export const blogRouter = createTRPCRouter({
         getBlog: publicProcedure
             .input(z.object({ slug: z.string() }))
             .query(async ({ ctx, input }) => {
+                try {
                 const blog = await ctx.db.blog.findUnique({
                     where: { slug: input.slug },
                     include: {
-                        tags: true,
-                        author: true,
+                    tags: true,
+                    author: true,
                     },
                 });
+
                 if (!blog) {
                     throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
                 }
+
                 return blog;
-        }),
+                } catch (error) {
+                if (error instanceof TRPCError) {
+                    throw error;
+                }
+                console.error("Database error:", error);
+                throw new TRPCError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "Failed to fetch blog",
+                });
+                }
+            }),
 
         getAllBlog: publicProcedure
             .input(z.object({
