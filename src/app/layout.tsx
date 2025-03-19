@@ -8,18 +8,29 @@ import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+
 export const metadata: Metadata = {
-  title: "Bloai",
-  description: "Blog Tech",
+  title: "BloAI Blog - Kiến thức AI từ Cơ bản đến Nâng cao",
+  description: "Khám phá cách sử dụng AI trong mọi lĩnh vực, hướng dẫn chi tiết về Trí tuệ Nhân tạo, và ứng dụng thực tế của AI vào công việc và cuộc sống.",
+  keywords: "AI, Trí tuệ Nhân tạo, Ứng dụng AI, Hướng dẫn AI, Công nghệ AI, Machine Learning, AI cho Doanh nghiệp, AI trong Y tế, AI Giáo dục, Phát triển AI",
+  authors: [{ name: "BloAI Team" }],
+  openGraph: {
+    type: 'website',
+    locale: 'vi_VN',
+    url: 'https://bloai.blog',
+    siteName: 'BloAI Blog',
+  },
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  metadataBase: new URL('https://bloai.blog'),
 };
+
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await auth();
   return (
-    <SessionProvider session={session} >
-      <html lang="en" className={`${GeistSans.variable} antialiased scroll-custom`} suppressHydrationWarning>
+    <SessionProvider session={session}>
+      <html lang="vi" className={`${GeistSans.variable} antialiased scroll-custom`} suppressHydrationWarning>
         <body className="bg-gray-50" suppressHydrationWarning>
           <TRPCReactProvider>
             <main>

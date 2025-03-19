@@ -24,7 +24,7 @@ const SignInPage = () => {
     try {
       await signIn('google', { callbackUrl });
     } catch (error) {
-      setError('Failed to authenticate with Google');
+      setError('Xác thực với Google không thành công');
     }
   };
 
@@ -47,7 +47,7 @@ const SignInPage = () => {
         // router.push(callbackUrl);
       }
     } catch (error) {
-      setError('An unexpected error occurred');
+      setError('Đã xảy ra lỗi không mong muốn');
     }
   };
 
@@ -59,10 +59,10 @@ const SignInPage = () => {
     >
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2 font-mono">
-          Welcome Back
+          Chào mừng trở lại
         </h1>
         <p className="text-gray-600">
-           Sign in to continue your journey
+           Đăng nhập để tiếp tục hành trình của bạn
         </p>
       </div>
       {error && (
@@ -81,7 +81,7 @@ const SignInPage = () => {
       <form onSubmit={handleEmailSubmit} className="space-y-5">
         <div className="flex flex-col space-y-2">
           <label className="block text-sm font-medium text-gray-700">
-            Email address
+            Địa chỉ email
           </label>
           <div className="inputForm border border-gray-200 rounded-lg h-12 flex items-center pl-3 transition-all focus-within:border-blue-500">
             <Mail className="h-5 w-5 text-gray-500" aria-hidden="true" />
@@ -98,7 +98,7 @@ const SignInPage = () => {
 
         <div className="flex flex-col space-y-2">
           <label className="block text-sm font-medium text-gray-700">
-            Password
+            Mật khẩu
           </label>
           <div className="inputForm border border-gray-200 rounded-lg h-12 flex items-center pl-3 transition-all focus-within:border-blue-500">
             <LockKeyhole className="h-5 w-5 text-gray-500" aria-hidden="true" />
@@ -121,10 +121,10 @@ const SignInPage = () => {
               htmlFor="remember"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              Remember
+              Ghi nhớ
             </label>
           </div>
-          <span className="text-sm ml-1 text-blue-500 font-medium cursor-pointer hover:underline">Forgot password?</span>
+          <span className="text-sm ml-1 text-blue-500 font-medium cursor-pointer hover:underline">Quên mật khẩu?</span>
         </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -134,20 +134,20 @@ const SignInPage = () => {
                     py-3 px-6 rounded-lg hover:shadow-lg transition-all font-medium
                     focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          Sign In
+          Đăng nhập
         </motion.button>
       </form>
 
       <p className="mt-6 text-center text-gray-600 text-sm">
-        New to Devlife? {" "}
+        Bạn mới đến Devlife? {" "}
         <Link
           className="text-blue-600 hover:text-blue-700 underline font-medium transition-colors"
           href='/auth/signup'
         >
-          Create an account
+          Tạo một tài khoản
         </Link>
       </p>
-      <p className="text-center text-gray-900 text-sm mt-6 mb-2">Or With</p>
+      <p className="text-center text-gray-900 text-sm mt-6 mb-2">Hoặc với</p>
       <div className="flex flex-row space-x-4 mt-4">
         <button
           onClick={handleGoogleLogin}

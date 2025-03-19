@@ -23,7 +23,7 @@ const SignUpPage = () => {
     try {
       await signIn('google', { callbackUrl });
     } catch (error) {
-      setError('Failed to authenticate with Google');
+      setError('Xác thực với Google không thành công');
     }
   };
 
@@ -31,7 +31,7 @@ const SignUpPage = () => {
     try {
       await signIn('github', { callbackUrl });
     } catch (error) {
-      setError('Failed to authenticate with GitHub');
+      setError('Xác thực với GitHub không thành công');
     }
   };
 
@@ -55,7 +55,7 @@ const SignUpPage = () => {
         router.push(callbackUrl);
       }
     } catch (error) {
-      setError('An unexpected error occurred');
+      setError('Đã xảy ra lỗi không mong muốn');
     }
   };
 
@@ -67,10 +67,10 @@ const SignUpPage = () => {
     >
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2 font-mono">
-          Join Devlife
+          Tham gia Devlife
         </h1>
         <p className="text-gray-600">
-          Start sharing your developer journey
+          Bắt đầu chia sẻ hành trình phát triển của bạn
         </p>
       </div>
       {error && (
@@ -89,7 +89,7 @@ const SignUpPage = () => {
       <form onSubmit={handleEmailSubmit} className="space-y-5">
         <div className="flex flex-col space-y-2">
           <label className="block text-sm font-medium text-gray-700">
-            Name
+            Tên
           </label>
           <div className="inputForm border border-gray-200 rounded-lg h-12 flex items-center pl-3 transition-all focus-within:border-blue-500">
             <User className="h-5 w-5 text-gray-500" aria-hidden="true" />
@@ -98,7 +98,7 @@ const SignUpPage = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="input ml-3 border-none rounded-lg w-full h-full focus:outline-none bg-[#e8e8e8] placeholder-gray-400"
-              placeholder="Your name"
+              placeholder="Tên của bạn"
               required
             />
           </div>
@@ -106,7 +106,7 @@ const SignUpPage = () => {
 
         <div className="flex flex-col space-y-2">
           <label className="block text-sm font-medium text-gray-700">
-            Email address
+            Địa chỉ email
           </label>
           <div className="inputForm border border-gray-200 rounded-lg h-12 flex items-center pl-3 transition-all focus-within:border-blue-500">
             <Mail className="h-5 w-5 text-gray-500" aria-hidden="true" />
@@ -123,7 +123,7 @@ const SignUpPage = () => {
 
         <div className="flex flex-col space-y-2">
           <label className="block text-sm font-medium text-gray-700">
-            Password
+            Mật khẩu
           </label>
           <div className="inputForm border border-gray-200 rounded-lg h-12 flex items-center pl-3 transition-all focus-within:border-blue-500">
             <LockKeyhole className="h-5 w-5 text-gray-500" aria-hidden="true" />
@@ -146,7 +146,7 @@ const SignUpPage = () => {
               htmlFor="terms"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              I agree to the Terms and Conditions
+              Tôi đồng ý với Điều khoản và Điều kiện
             </label>
           </div>
         </div>
@@ -159,11 +159,11 @@ const SignUpPage = () => {
                     py-3 px-6 rounded-lg hover:shadow-lg transition-all font-medium
                     focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          Create Account
+          Tạo tài khoản
         </motion.button>
       </form>
 
-      <p className="text-center text-gray-900 text-sm mt-6 mb-2">Or With</p>
+      <p className="text-center text-gray-900 text-sm mt-6 mb-2">Hoặc với</p>
       <div className="flex flex-row space-x-4 mt-4">
         <button
           onClick={handleGoogleLogin}
@@ -182,12 +182,12 @@ const SignUpPage = () => {
       </div>
 
       <p className="mt-6 text-center text-gray-600 text-sm">
-        Already have an account? {' '}
+        Đã có tài khoản? {' '}
         <Link
           href="/auth/signin"
           className="text-blue-600 hover:text-blue-700 underline font-medium transition-colors"
         >
-          Sign In
+          Đăng nhập
         </Link>
       </p>
     </motion.div>
