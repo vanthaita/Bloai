@@ -16,7 +16,7 @@ export const blogRouter = createTRPCRouter({
           description: z.string().min(200).max(600),
           canonicalUrl: z.string().url().optional(),
           ogTitle: z.string().max(120).optional(),
-          ogDescription: z.string().max(200).optional(),
+          ogDescription: z.string().max(600).optional(),
           readTime: z.number().int().positive(),
         })
       )

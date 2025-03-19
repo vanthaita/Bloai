@@ -8,13 +8,7 @@ import "./src/env.js";
 const config = {
   images: {
     domains: ['picsum.photos', 'lh3.googleusercontent.com','res.cloudinary.com'],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-      },
-    ],
+    // imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 };
 
