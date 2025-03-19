@@ -19,6 +19,7 @@ export const env = createEnv({
     GOOGLE_GEMINI_API: z.string(),
     NEXTAUTH_URL: z.string(),
     AUTH_URL: z.string(),
+    DIRECT_URL: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -57,6 +58,7 @@ export const env = createEnv({
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
     NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
     AUTH_URL: process.env.AUTH_URL,
+    DIRECT_URL: process.env.DIRECT_URL,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NODE_ENV: process.env.NODE_ENV,
   },
