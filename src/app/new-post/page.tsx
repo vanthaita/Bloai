@@ -112,21 +112,14 @@ const NewPost = () => {
     formData.append('upload_preset', env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
 
     try {
-      const response = await axios(`https://api.cloudinary.com/v1_1/${env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        data: formData,
-      });
-
+      const response = await axios.post(`https://api.cloudinary.com/v1_1/${env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, formData);
       if (!response) {
         console.error('Cloudinary upload failed:', response);
         return null;
       }
-
-      const data = await response.data;
-      return data.secure_url;
+      const data = await response.data.url;
+      console.log(data);
+      return data;
     } catch (error) {
       console.error('Error uploading to Cloudinary:', error);
       return null;
@@ -160,7 +153,7 @@ const handleSubmit = async (isDraft: boolean) => {
     };
 
     const result = await createPost(formData);
-    setRouteToUrl(`${result?.result.slug}`)
+    setRouteToUrl(formData.slug);
   } catch (error) {
     console.error('Error submitting form:', error);
     alert('An error occurred while submitting the form.');
