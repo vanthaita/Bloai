@@ -1,26 +1,35 @@
 import { cn } from "@/lib/utils";
 
 export default function Spinner({ className }: { className?: string }) {
-    return (
-      <svg
-        className={cn("animate-spin", className)}
-        xmlns="http://www.w3.org/2000/svg"
+  return (
+    <svg
+      className={cn("animate-spin h-8 w-8", className)}
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="bloai-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3B82F6" />
+          <stop offset="100%" stopColor="#8B5CF6" /> 
+        </linearGradient>
+      </defs>
+      
+      <path
+        d="M32 58C46.3594 58 58 46.3594 58 32C58 17.6406 46.3594 6 32 6C17.6406 6 6 17.6406 6 32C6 46.3594 17.6406 58 32 58Z"
+        stroke="currentColor"
+        strokeOpacity="0.1"
+        strokeWidth="8"
         fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        />
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        />
-      </svg>
-    );
-  }
+      />
+      
+      <path
+        d="M32 6C17.6406 6 6 17.6406 6 32"
+        stroke="url(#bloai-gradient)"
+        strokeWidth="8"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
+  );
+}

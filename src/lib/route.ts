@@ -9,8 +9,7 @@ export const AUTH_ROUTES = [
 
 export const PUBLIC_ROUTES = [
   "/",
-//   AUTH_ROUTES.signIn,
-//   AUTH_ROUTES.error,
+  "/blog" 
 ];
 
 // For protected routes configuration

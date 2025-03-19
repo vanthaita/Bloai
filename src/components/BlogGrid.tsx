@@ -5,6 +5,7 @@ import { BentoGrid, BentoGridItem } from "./ui/bento-grid";
 import Link from 'next/link';
 import { api } from '@/trpc/react';
 import { CldImage } from 'next-cloudinary';
+import Spinner from './Snipper';
 type Blog = {
   id: string;
   title: string;
@@ -80,7 +81,10 @@ export function BlogGrid({ expanded = false }: BlogGridProps) {
     limit: 15
   });
   console.log(blogs);
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <div className='h-[calc(100vh-80px)] w-full flex justify-center items-center flex-col gap-2'>
+        <Spinner />
+        <h1 className='font-bold text-2xl'>BloAI</h1>
+      </div>;
   if (error || !blogs) return <div>Error loading blogs</div>;
 
   return (

@@ -75,15 +75,6 @@
   }
 } */
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background-main text-content-primary;
-  }
-}
-
 html {
   scroll-behavior: smooth;
 }
@@ -94,7 +85,7 @@ html {
 }
 
 .scroll-custom::-webkit-scrollbar-thumb {
-  @apply bg-primary-200 rounded-full;
+  @apply bg-black/50 rounded-full;
 }
 
 .scroll-custom::-webkit-scrollbar-track {
@@ -102,7 +93,7 @@ html {
 }
 
 .scroll-custom::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary-300;
+  @apply bg-black/70;
 }
 
 .bento-grid {
@@ -126,10 +117,13 @@ html {
 }
 
 /* Then use them in your Tailwind classes */
-.bg-primary {
-  background-color: var(--color-primary-500);
+
+@keyframes bloom {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
 }
 
-.text-primary {
-  color: var(--color-primary-600);
+.animate-bloom {
+  animation: bloom 1.5s ease-in-out infinite;
 }

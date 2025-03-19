@@ -2,18 +2,19 @@
 import React, { useState, useEffect } from 'react';
 import { Share, EyeIcon } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Textarea } from '@/components/ui/textarea';
 import { useCurrentUser } from '@/hook/use-current-user';
-import { FaComments, FaFacebook, FaLinkedin, FaTwitter, FaUser } from 'react-icons/fa';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { FaFacebook, FaLinkedin, FaTwitter, FaUser } from 'react-icons/fa';
 import { api } from '@/trpc/react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import { NextSeo } from 'next-seo';
 import { env } from '@/env';
+import Spinner from '@/components/Snipper';
+import { IconAlertCircle, IconUserOff } from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
 
 interface BlogPost {
   id: string;
@@ -186,10 +187,8 @@ export default function BlogPostPage() {
   const user = useCurrentUser();
   const pathname = usePathname();
   const slug = pathname.split('/blog/')[1]?.split('/')[0] || '';
-  const { data: blog, isLoading, error } = api.blog.getBlog.useQuery({ slug });
-  console.log(blog);
-
-
+  const { data: blog, isLoading, error } = api.blog.getBlog.useQuery({  slug: slug! });
+  const router = useRouter();
   const techCategories = [
     { title: "Smartphones & Accessories", amount: 150 },
     { title: "Laptops & Ultrabooks", amount: 120 },
@@ -279,14 +278,53 @@ export default function BlogPostPage() {
   };
 
   if (isLoading) {
-    return <div>Đang tải bài viết...</div>;
+    return <div className='h-[calc(100vh-80px)] w-full flex justify-center items-center flex-col gap-2 '>
+      <Spinner />
+      <h1 className='font-bold text-2xl'>BloAI</h1>
+    </div>
   }
 
   if (error || !blog) {
-    return <div>Lỗi khi tải bài viết.</div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px] gap-4 text-center">
+        <div className="inline-flex items-center gap-2 text-red-600">
+          <IconAlertCircle className="w-8 h-8 animate-pulse" />
+          <span className="text-2xl font-bold">Lỗi tải dữ liệu</span>
+        </div>
+        <p className="max-w-md text-gray-600">
+          Không thể tải bài viết. Vui lòng thử lại hoặc liên hệ hỗ trợ nếu lỗi vẫn tiếp diễn.
+        </p>
+        <div className="flex gap-3 mt-4">
+          <Button variant="outline" onClick={() => window.location.reload()}>
+            Thử lại
+          </Button>
+          <Button className="bg-purple-600 hover:bg-purple-700">
+            Liên hệ hỗ trợ
+          </Button>
+        </div>
+      </div>
+    );
   }
+  
   if (!blog.author) {
-    return <div>Thông tin tác giả bị thiếu.</div>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px] gap-4 text-center">
+        <div className="inline-flex items-center gap-2 text-amber-600">
+          <IconUserOff className="w-8 h-8 animate-bounce" />
+          <span className="text-2xl font-bold">Thiếu thông tin tác giả</span>
+        </div>
+        <p className="max-w-md text-gray-600">
+          Bài viết này hiện chưa có thông tin tác giả. Vui lòng kiểm tra lại sau.
+        </p>
+        <Button 
+          variant="ghost" 
+          className="text-blue-600 hover:text-blue-700"
+          onClick={() => router.back()}
+        >
+          &larr; Quay lại trang trước
+        </Button>
+      </div>
+    );
   }
 
   const blogPostSeo = {
@@ -402,7 +440,7 @@ export default function BlogPostPage() {
                   children={blog.content}
                 />
               </div>
-              <div className='w-full grid grid-cols-4 gap-4'>
+              {/* <div className='w-full grid grid-cols-4 gap-4'>
                 {[
                   { emotion: 'love', label: 'YÊU THÍCH' },
                   { emotion: 'happy-face', label: 'HẠNH PHÚC' },
@@ -427,7 +465,7 @@ export default function BlogPostPage() {
                     </div>
                   </div>
                 ))}
-              </div>
+              </div> */}
 
               {/*  */}
               <div className='w-full flex items-center justify-center'>
@@ -510,7 +548,7 @@ export default function BlogPostPage() {
                 </div>
 
               </div>
-              <div className='w-full h-auto mt-4'>
+              {/* <div className='w-full h-auto mt-4'>
                 <div className='border-2 border-black p-4 rounded-xl'>
                   <div className='w-full flex flex-col justify-center items-center'>
                     <div className='mb-4'>
@@ -537,7 +575,7 @@ export default function BlogPostPage() {
                     <CommentForm onSubmit={handleCommentSubmit} />
                   </div>
                 </div>
-              </div>
+              </div> */}
             </article>
           </main>
 
@@ -605,7 +643,7 @@ export default function BlogPostPage() {
               </div>
             </div>
 
-            <div className='bg-black p-1 rounded-2xl relative mt-10'>
+            {/* <div className='bg-black p-1 rounded-2xl relative mt-10'>
               <div className=" top-28 p-2 bg-white rounded-xl ">
                 {techCategories.map((techCategory) => {
                   return (
@@ -627,7 +665,7 @@ export default function BlogPostPage() {
               <div className='bg-black top-28  rounded-b-xl mt-1'>
                 <h2 className='text-white font-medium text-xl text-center'>DANH MỤC</h2>
               </div>
-            </div>
+            </div> */}
           </aside>
         </div>
       </div>

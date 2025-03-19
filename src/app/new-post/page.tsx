@@ -33,6 +33,8 @@ import { env } from '@/env'
 import { api } from '@/trpc/react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import useRefetch from '@/hook/use-refresh'
+import { FiLoader } from 'react-icons/fi';
 const NewPost = () => {
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState('')
@@ -59,6 +61,7 @@ const NewPost = () => {
   const { mutateAsync: createPost } = api.blog.create.useMutation();
   const [isLoading, setIsLoading] = useState(false);
   const [routeToUrl, setRouteToUrl] = useState('');
+  const refresh = useRefetch();
   const router = useRouter();
   useEffect(() => {
     if (isAutoCanonical && slug) {
@@ -159,7 +162,8 @@ const handleSubmit = async (isDraft: boolean) => {
     alert('Đã xảy ra lỗi khi gửi biểu mẫu.');
   } finally {
     setIsLoading(false);
-    router.push(`/blog/${routeToUrl}`)
+    refresh();
+    router.push(`/`)
   }
 };
   const removeTag = (index: number) => {
@@ -663,7 +667,12 @@ const handleSubmit = async (isDraft: boolean) => {
             {/* <Button variant="outline" className='bg-black text-white' onClick={() => handleSubmit(true)}>
               Lưu Bản Nháp
             </Button> */}
-            <Button onClick={() => handleSubmit(false)} className='bg-black text-white' disabled={isLoading}>Xuất bản Ngay</Button>
+            <Button onClick={() => handleSubmit(false)} className='bg-black text-white' disabled={isLoading}>{isLoading ? 
+            (
+              <FiLoader className="animate-spin inline-block align-middle" size={20} /> 
+            ) : (
+              "Xuất bản Ngay"
+            )}</Button>
           </div>
         </CardFooter>
       </Card>
