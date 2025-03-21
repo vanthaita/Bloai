@@ -326,30 +326,71 @@ export default function BlogPostPage() {
       </div>
     );
   }
-
+  function truncate(text: string, length: number) {
+    return text.length > length ? text.substring(0, length - 3) + '...' : text;
+  }
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": blog.title,
+    "image": blog.imageUrl ? [blog.imageUrl] : [],
+    "datePublished": blog.publishDate,
+    "dateModified": blog.updatedAt || blog.publishDate,
+    "author": {
+      "@type": "Person",
+      "name": blog.author?.name,
+      "url": `${env.NEXT_PUBLIC_APP_URL}/authors/${blog.author?.id}`
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "BloAI",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${env.NEXT_PUBLIC_APP_URL}/logo.png`
+      }
+    },
+    "description": blog.metaDescription,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": blog.canonicalUrl
+    }
+  };
   const blogPostSeo = {
-    title: blog.title,
-    description: blog.metaDescription,
+    title: `${blog.title} | BloAI Technology Blog`,
+    description: blog.metaDescription || truncate(blog.content, 160),
     canonical: blog.canonicalUrl || `${env.NEXT_PUBLIC_APP_URL}/blog/${blog.slug}`,
     openGraph: {
+      type: 'article',
       title: blog.ogTitle || blog.title,
-      description: blog.ogDescription || blog.metaDescription,
+      description: blog.ogDescription || blog.metaDescription || truncate(blog.content, 300),
       url: blog.canonicalUrl || `${env.NEXT_PUBLIC_APP_URL}/blog/${blog.slug}`,
-      images: blog.ogImageUrl ? [{ url: blog.ogImageUrl }] : (blog.imageUrl ? [{ url: blog.imageUrl }] : []),
-      siteName: 'BloAI',
+      images: blog.ogImageUrl ? [{
+        url: blog.ogImageUrl,
+        width: 1200,
+        height: 630,
+        alt: blog.title,
+      }] : (blog.imageUrl ? [{
+        url: blog.imageUrl,
+        width: 1200,
+        height: 630,
+        alt: blog.title,
+      }] : []),
+      article: {
+        publishedTime: blog.publishDate.toISOString(),
+        modifiedTime: blog.updatedAt ? blog.updatedAt.toISOString() : blog.publishDate.toISOString(),
+        authors: [blog.author?.name || 'BloAI Team'],
+        tags: blog.tags.map(tag => tag.name),
+      },
     },
-    twitter: {
-      handle: '@yourTwitterHandle',
-      site: '@site',
-      cardType: blog.twitterCard || 'summary_large_image',
-    },
-    //...
   };
-
 
   return (
     <>
       <NextSeo {...blogPostSeo} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex gap-12">
           <main className="flex-1 ">
