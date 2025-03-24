@@ -183,7 +183,7 @@ export default function BlogPostPage() {
         />
       )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="lg:flex gap-12 flex-col">
+        <div className="flex gap-12">
           <main className="flex-1 ">
             <div className="sticky top-28 hidden lg:block float-left -ml-20 mr-6 h-[calc(100vh-10rem)]">
               <div className="flex flex-col items-center gap-8 h-full">
