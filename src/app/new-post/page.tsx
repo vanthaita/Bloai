@@ -1,7 +1,5 @@
 'use client'
-import React, { useCallback } from 'react'
-import { useState, useEffect } from 'react'
-import MDEditor from '@uiw/react-md-editor'
+import React, { useCallback, useState, useEffect, Suspense, lazy } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -14,11 +12,10 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
 import { Dropzone } from '@/components/Dropzone'
 import slugify from 'slugify'
-import { HelpCircle, Info, TrashIcon } from 'lucide-react'
+import { HelpCircle, TrashIcon } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import {
   generateMetaDescription,
@@ -35,6 +32,11 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import useRefetch from '@/hook/use-refresh'
 import { FiLoader } from 'react-icons/fi';
+import { toast } from 'react-toastify';
+import { useDebounce } from 'use-debounce'; 
+
+const MDEditorComponent = lazy(() => import('@uiw/react-md-editor'));
+
 const NewPost = () => {
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState('')
@@ -55,14 +57,15 @@ const NewPost = () => {
   const [isGeneratingOgTitle, setIsGeneratingOgTitle] = useState(false);
   const [isGeneratingOgDescription, setIsGeneratingOgDescription] = useState(false);
   const [isGeneratingTitle, setIsGeneratingTitle] = useState(false);
-  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
   const [isGeneratingExcerpt, setIsGeneratingExcerpt] = useState(false);
   const [isAutoCanonical, setIsAutoCanonical] = useState(true);
   const { mutateAsync: createPost } = api.blog.create.useMutation();
   const [isLoading, setIsLoading] = useState(false);
-  const [routeToUrl, setRouteToUrl] = useState('');
   const refresh = useRefetch();
   const router = useRouter();
+
+  const [debouncedContent] = useDebounce(content, 300); 
+
   useEffect(() => {
     if (isAutoCanonical && slug) {
       setCanonicalUrl(`${env.NEXT_PUBLIC_APP_URL}/blog/${slug}`);
@@ -81,35 +84,36 @@ const NewPost = () => {
   }, [title, isGeneratingSlug])
 
   useEffect(() => {
-    const words = content.split(/\s+/).length
+    const words = debouncedContent.split(/\s+/).length; 
     const time = Math.ceil(words / 200)
     setReadTime(time)
-  }, [content])
+  }, [debouncedContent]) 
 
   useEffect(() => {
     if (!ogTitle) setOgTitle(title)
     if (!ogDescription) setOgDescription(metaDescription || description)
   }, [title, metaDescription, description])
 
-  const handleTagKeyDown = (e: React.KeyboardEvent) => {
+  const handleTagKeyDown = useCallback((e: React.KeyboardEvent) => { 
     if (['Enter', ','].includes(e.key) && tagInput.trim()) {
       e.preventDefault()
       if (tags.length < 5) {
-        setTags([...tags, tagInput.trim()])
+        setTags(prevTags => [...prevTags, tagInput.trim()]) 
         setTagInput('')
       }
     }
-  }
+  }, [tagInput, tags]) 
 
-  const validateSEO = () => {
+  const validateSEO = useCallback(() => { 
     return (
       metaDescription.length >= 120 &&
       metaDescription.length <= 160 &&
       title.length > 0 &&
       slug.length > 0
     )
-  }
-  const uploadImageToCloudinary = async (file: File): Promise<string | null> => {
+  }, [metaDescription, slug, title])
+
+  const uploadImageToCloudinary = useCallback(async (file: File): Promise<string | null> => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
@@ -121,60 +125,86 @@ const NewPost = () => {
         return null;
       }
       const data = await response.data.url;
-      console.log(data);
       return data;
     } catch (error) {
       console.error('Error uploading to Cloudinary:', error);
       return null;
     }
-  };
+  }, []) 
 
+  const handleSubmit = useCallback(async (isDraft: boolean) => { 
+    if (!validateSEO()) {
+      toast.error('Vui lòng điền đầy đủ các trường SEO bắt buộc (Tiêu đề, Slug, Meta Description từ 120-160 ký tự).', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return;
+    }
 
-const handleSubmit = async (isDraft: boolean) => {
-  if (!validateSEO()) {
-    alert('Vui lòng điền các trường SEO bắt buộc');
-    return;
-  }
+    setIsLoading(true);
 
-  setIsLoading(true);
+    try {
+      const url = await uploadImageToCloudinary(thumbnail as File) as string;
+      const formData = {
+        title,
+        slug,
+        content,
+        tags,
+        thumbnail: url,
+        metaDescription,
+        imageAlt,
+        description,
+        canonicalUrl,
+        ogTitle,
+        ogDescription,
+        readTime,
+      };
 
-  try {
-    const url = await uploadImageToCloudinary(thumbnail as File) as string;
-    const formData = {
-      title,
-      slug,
-      content,
-      tags,
-      thumbnail: url,
-      metaDescription,
-      imageAlt,
-      description,
-      canonicalUrl,
-      ogTitle,
-      ogDescription,
-      readTime,
-    };
+      await createPost(formData);
+      toast.success('Bài viết đã được xuất bản thành công!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      router.push(`/blog/${slug}`)
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('Đã xảy ra lỗi khi tạo bài viết. Vui lòng thử lại!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } finally {
+      setIsLoading(false);
+      refresh();
+    }
+  }, [validateSEO, uploadImageToCloudinary, thumbnail, title, slug, content, tags, metaDescription, imageAlt, description, canonicalUrl, ogTitle, ogDescription, createPost, router, refresh]);
 
-    const result = await createPost(formData);
-    setRouteToUrl(formData.slug);
-  } catch (error) {
-    console.error('Error submitting form:', error);
-    alert('Đã xảy ra lỗi khi gửi biểu mẫu.');
-  } finally {
-    setIsLoading(false);
-    refresh();
-    router.push(`/`)
-  }
-};
-  const removeTag = (index: number) => {
-    setTags(tags.filter((_, i) => i !== index))
-  }
+  const removeTag = useCallback((index: number) => {
+    setTags(prevTags => prevTags.filter((_, i) => i !== index)) 
+  }, []); 
 
-  const handleFileDrop = (acceptedFiles: File[]) => {
+  const handleFileDrop = useCallback((acceptedFiles: File[]) => {
     setThumbnail(acceptedFiles[0] as any)
-  }
+  }, []); 
 
-  const insertMarkdown = (format: string) => {
+  const insertMarkdown = useCallback((format: string) => {
     const examples: Record<string, string> = {
       bold: '**chữ đậm**',
       italic: '*chữ nghiêng*',
@@ -183,8 +213,52 @@ const handleSubmit = async (isDraft: boolean) => {
       image: '![alt](https://)',
       list: '- Mục danh sách',
     }
-    setContent(content + ` ${examples[format]}`)
-  }
+    setContent(prevContent => prevContent + ` ${examples[format]}`) 
+  }, []);
+
+
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+    setIsGeneratingSlug(false);
+  }, []);
+
+  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(e.target.value);
+  }, []);
+
+  const handleMetaDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMetaDescription(e.target.value);
+  }, []);
+
+  const handleKeywordsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setTags(e.target.value.split(/,\s*/));
+  }, []);
+
+  const handleImageAltChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setImageAlt(e.target.value.slice(0, 125));
+  }, []);
+
+  const handleCanonicalUrlChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setCanonicalUrl(e.target.value);
+    setIsAutoCanonical(false);
+  }, []);
+
+  const handleOgTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setOgTitle(e.target.value);
+  }, []);
+
+  const handleOgDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setOgDescription(e.target.value);
+  }, []);
+
+  const handleTagInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setTagInput(e.target.value);
+  }, []);
+
+  const handleSlugChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSlug(e.target.value);
+  }, []);
+
   return (
     <div className="bg-white min-h-screen p-1">
       <Card>
@@ -241,10 +315,7 @@ const handleSubmit = async (isDraft: boolean) => {
                   id="title"
                   placeholder="Nhập tiêu đề bài viết"
                   value={title}
-                  onChange={(e) => {
-                    setTitle(e.target.value)
-                    setIsGeneratingSlug(false)
-                  }}
+                  onChange={handleTitleChange}
                   className="text-lg font-medium"
                 />
               </div>
@@ -264,7 +335,7 @@ const handleSubmit = async (isDraft: boolean) => {
                 <Input
                   id="slug"
                   value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
+                  onChange={handleSlugChange} 
                   disabled={!isGeneratingSlug}
                 />
               </div>
@@ -303,7 +374,7 @@ const handleSubmit = async (isDraft: boolean) => {
                   placeholder="Viết một đoạn mô tả ngắn gọn..."
                   rows={3}
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  onChange={handleDescriptionChange} 
                 />
               </div>
 
@@ -341,7 +412,7 @@ const handleSubmit = async (isDraft: boolean) => {
                 <textarea
                   id="metaDescription"
                   value={metaDescription}
-                  onChange={(e) => setMetaDescription(e.target.value)}
+                  onChange={handleMetaDescriptionChange} 
                   className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   rows={3}
                   maxLength={160}
@@ -381,7 +452,7 @@ const handleSubmit = async (isDraft: boolean) => {
                     id="keywords"
                     placeholder="Nhập từ khóa, cách nhau bằng dấu phẩy"
                     value={tags.join(', ')}
-                    onChange={(e) => setTags(e.target.value.split(/,\s*/))}
+                    onChange={handleKeywordsChange}
                   />
                   <p className="text-sm text-muted-foreground">
                     {tags.length}/15 từ khóa (đề xuất)
@@ -391,7 +462,7 @@ const handleSubmit = async (isDraft: boolean) => {
               <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-start">
                 <div className="group relative h-full min-h-[200px]">
                   <Dropzone
-                    onDrop={handleFileDrop}
+                    onDrop={handleFileDrop} 
                     accept="image/png, image/jpeg, image/webp, image/avif"
                     maxFiles={1}
                     maxSize={5 * 1024 * 1024}
@@ -429,7 +500,7 @@ const handleSubmit = async (isDraft: boolean) => {
                       <Textarea
                         placeholder="Mô tả hình ảnh cho SEO..."
                         value={imageAlt}
-                        onChange={(e) => setImageAlt(e.target.value.slice(0, 125))}
+                        onChange={handleImageAltChange} 
                         rows={2}
                         className="resize-none"
                       />
@@ -454,21 +525,14 @@ const handleSubmit = async (isDraft: boolean) => {
                 <ContextMenu>
                   <ContextMenuTrigger>
                     <div data-color-mode="light">
-                      <MDEditor
-                        value={content}
-                        onChange={(val) => setContent(val || '')}
-                        height={500}
-                        previewOptions={{
-                          // transformLinkUri: (uri) => {
-                          //   try {
-                          //     new URL(uri)
-                          //     return uri
-                          //   } catch {
-                          //     return `https://${uri}`
-                          //   }
-                          // }
-                        }}
-                      />
+                      <Suspense fallback={<>Loading Editor...</>}> 
+                        <MDEditorComponent
+                          value={content}
+                          onChange={(val) => setContent(val || '')}
+                          height={500}
+                          previewOptions={{}}
+                        />
+                      </Suspense>
                     </div>
                   </ContextMenuTrigger>
                   <ContextMenuContent>
@@ -531,10 +595,7 @@ const handleSubmit = async (isDraft: boolean) => {
                   id="canonicalUrl"
                   placeholder="https://bloai.blog/blog/[slug]"
                   value={canonicalUrl}
-                  onChange={(e) => {
-                    setCanonicalUrl(e.target.value);
-                    setIsAutoCanonical(false);
-                  }}
+                  onChange={handleCanonicalUrlChange}
                 />
                 {isAutoCanonical && (
                   <p className="text-sm text-muted-foreground">
@@ -574,7 +635,7 @@ const handleSubmit = async (isDraft: boolean) => {
                 <Input
                   id="ogTitle"
                   value={ogTitle}
-                  onChange={(e) => setOgTitle(e.target.value)}
+                  onChange={handleOgTitleChange} 
                 />
               </div>
               <div className="space-y-2">
@@ -609,7 +670,7 @@ const handleSubmit = async (isDraft: boolean) => {
                 <Textarea
                   id="ogDescription"
                   value={ogDescription}
-                  onChange={(e) => setOgDescription(e.target.value)}
+                  onChange={handleOgDescriptionChange} 
                   rows={2}
                 />
               </div>
@@ -618,7 +679,7 @@ const handleSubmit = async (isDraft: boolean) => {
               <Label>Tags</Label>
               <Input
                 value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
+                onChange={handleTagInputChange} 
                 onKeyDown={handleTagKeyDown}
                 placeholder="Thêm tag (nhấn Enter để thêm)"
               />
@@ -628,51 +689,32 @@ const handleSubmit = async (isDraft: boolean) => {
                     key={index}
                     variant="secondary"
                     className="cursor-pointer hover:bg-primary/20 transition-colors"
-                    onClick={() => removeTag(index)}
+                    onClick={() => removeTag(index)} 
                   >
                     {tag} ×
                   </Badge>
                 ))}
               </div>
             </div>
-
             <Separator />
-
-            {/* <div className="space-y-4">
-              <Label>Thiết lập Xuất bản</Label>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Lên lịch Xuất bản</span>
-                <Switch />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Bài viết Nổi bật</span>
-                <Switch />
-              </div>
-            </div> */}
-
           </div>
-
-
         </CardContent>
 
         <CardFooter className="flex justify-between items-center">
           <div className="text-sm text-muted-foreground">
-            {validateSEO() ? (
+            {validateSEO() ? ( 
               <span className="text-green-600">✓ Đã Tối ưu SEO</span>
             ) : (
               <span className="text-yellow-600">⚠ Cần Chú ý SEO</span>
             )}
           </div>
           <div className="flex gap-4">
-            {/* <Button variant="outline" className='bg-black text-white' onClick={() => handleSubmit(true)}>
-              Lưu Bản Nháp
-            </Button> */}
             <Button onClick={() => handleSubmit(false)} className='bg-black text-white' disabled={isLoading}>{isLoading ? 
-            (
-              <FiLoader className="animate-spin inline-block align-middle" size={20} /> 
-            ) : (
-              "Xuất bản Ngay"
-            )}</Button>
+              (
+                <FiLoader className="animate-spin inline-block align-middle" size={20} />
+              ) : (
+                "Xuất bản Ngay"
+              )}</Button>
           </div>
         </CardFooter>
       </Card>
@@ -680,4 +722,4 @@ const handleSubmit = async (isDraft: boolean) => {
   )
 }
 
-export default NewPost
+export default NewPost;

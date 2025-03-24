@@ -81,37 +81,35 @@ model Blog {
     id               String     @id @default(cuid())
     title            String
     slug             String     @unique
-    metaDescription  String     @db.VarChar(160)  // Optimal length for SEO
+    metaDescription  String     @db.VarChar(160)
     content          String     @db.Text
     imageUrl         String
-    imageAlt         String?    // Alt text for image SEO
+    imageAlt         String?
     author           User       @relation("UserBlogs", fields: [authorId], references: [id])
     authorId         String
     publishDate      DateTime   @default(now())
-    updatedAt        DateTime   @updatedAt       // Important for content freshness
-    readTime         Int        // In minutes for better structured data
+    updatedAt        DateTime   @updatedAt
+    readTime         Int
     views            Int        @default(0)
     likes            Int        @default(0)
-    tags             Tag[]
+    tags             Tag[]     
     comments         Comment[]
-    keywords         String[]   // SEO keywords array
-    canonicalUrl     String?    // For duplicate content issues
-    structuredData   Json?      // For JSON-LD rich snippets
+    keywords         String[]
+    canonicalUrl     String?
+    structuredData   Json?
     ogTitle          String?
     ogDescription    String?
     ogImageUrl       String?
-    twitterCard      String?    // Twitter card type
+    twitterCard      String?
     featured         Boolean    @default(false)
 
     @@index([title])
     @@index([slug])
     @@index([publishDate])
 }
-
-
 model Tag {
     id          String   @id @default(cuid())
-    name        String   @unique
+    name        String   
     description String?  @db.Text 
     blogs       Blog[]
     @@index([name])
