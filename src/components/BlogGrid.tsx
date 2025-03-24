@@ -6,43 +6,6 @@ import Link from 'next/link';
 import { api } from '@/trpc/react';
 import { CldImage } from 'next-cloudinary';
 import Spinner from './Snipper';
-type Blog = {
-  id: string;
-  title: string;
-  slug: string;
-  metaDescription: string;
-  content: string;
-  imageUrl: string;
-  imageAlt: string | null;
-  authorId: string;
-  publishDate: Date | string;
-  updatedAt: string;
-  readTime: number;
-  views: number;
-  likes: number;
-  keywords: string[];
-  canonicalUrl: string;
-  structuredData: null;
-  ogTitle: string;
-  ogDescription: string;
-  ogImageUrl: null;
-  twitterCard: null;
-  featured: boolean;
-  tags: {
-    id: string;
-    name: string;
-    description: null;
-  }[];
-  author: {
-    id: string;
-    name: string | null;
-    email: string | null;
-    emailVerified: Date | null;
-    image: string | null;
-    bio: null;
-  };
-}
-
 type BlogGridProps = {
   expanded: boolean,
 }
@@ -80,18 +43,22 @@ export function BlogGrid({ expanded = false }: BlogGridProps) {
     page: 1,
     limit: 15
   });
-  console.log(blogs);
-  if (isLoading) return <div className='h-[calc(100vh-80px)] w-full flex justify-center items-center flex-col gap-2'>
-        <Spinner />
-        <h1 className='font-bold text-2xl'>BloAI</h1>
-      </div>;
+
+
+  if (isLoading) return (
+    <div className='h-[calc(100vh-80px)] w-full flex justify-center items-center flex-col gap-2'>
+      <Spinner />
+      <h1 className='font-bold text-2xl'>BloAI</h1>
+    </div>
+  );
+
   if (error || !blogs) return <div>Error loading blogs</div>;
 
   return (
     <BentoGrid expanded={expanded} className="max-w-8xl mx-auto px-4">
       {blogs.map((blog) => (
         <Link href={`/blog/${blog.slug}`} key={blog.id}>
-           <BentoGridItem className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden hover:shadow-2xl transition-all cursor-pointer group relative border border-gray-100 dark:border-gray-800">
+          <BentoGridItem className="group relative bg-white dark:bg-gray-900 rounded-xl overflow-hidden hover:shadow-2xl transition-all cursor-pointer border border-gray-100 dark:border-gray-800">
             <div className="relative h-48 overflow-hidden">
               <CldImage
                 width={600}
@@ -111,7 +78,7 @@ export function BlogGrid({ expanded = false }: BlogGridProps) {
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 via-transparent to-transparent" />
 
               <div className="absolute top-3 left-3 flex gap-2">
-                {blog.tags.slice(0, 3).map((tag, index) => ( 
+                {blog.tags.slice(0, 3).map((tag, index) => (
                   <span
                     key={`${tag.name}-${index}`}
                     className={`px-3 py-1 ${tagColors[tag.name] || getRandomColor()} text-white text-xs font-semibold rounded-full backdrop-blur-sm`}
@@ -140,7 +107,7 @@ export function BlogGrid({ expanded = false }: BlogGridProps) {
                 <div className="flex items-center space-x-4 text-gray-500 dark:text-gray-400">
                   <div className="flex items-center space-x-1">
                     <FaEye className="w-5 h-5 text-blue-500/80" />
-                    <span>{blog.views >= 1000 ? `${(blog.views/1000).toFixed(1)}k` : blog.views}</span>
+                    <span>{blog.views >= 1000 ? `${(blog.views / 1000).toFixed(1)}k` : blog.views}</span>
                   </div>
                   <div className="flex items-center space-x-1">
                     <FaHeart className="w-5 h-5 text-rose-500/80" />
@@ -159,7 +126,7 @@ export function BlogGrid({ expanded = false }: BlogGridProps) {
               </div>
             </div>
 
-            {blog.tags.some(tag => tag.name === 'Trending')  && (
+            {blog.tags.some(tag => tag.name === 'Trending') && (
               <div className="absolute top-0 right-0 bg-orange-500 text-white px-3 py-1 text-xs font-bold rounded-bl-lg">
                 TRENDING
               </div>

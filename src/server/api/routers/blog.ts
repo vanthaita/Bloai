@@ -55,14 +55,18 @@ export const blogRouter = createTRPCRouter({
                     }
                     const tags = await Promise.all(
                         input.tags.map(async (tagName) => {
-                          const normalizedTag = tagName.toLowerCase()
-                          return await prisma.tag.upsert({
-                            where: { name: normalizedTag },
-                            create: { name: normalizedTag },
-                            update: {}
-                          })
+                            const normalizedTag = tagName.toLowerCase();
+                            const existingTag = await prisma.tag.findFirst({
+                                where: { name: normalizedTag },
+                            });
+                            if (existingTag) {
+                                return existingTag;
+                            }
+                            return await prisma.tag.create({
+                                data: { name: normalizedTag },
+                            });
                         })
-                    )
+                    );
     
                     const blog = await prisma.blog.create({
                         data: {
@@ -96,10 +100,6 @@ export const blogRouter = createTRPCRouter({
                 return { success: true, result }
             } catch (err) {
                 console.log(err);
-                // if (input.thumbnail) {
-                //     const publicId = extractPublicId(input.thumbnail)
-                //     await cloudinary.v2.uploader.destroy(publicId)
-                // }
             }
             
         }),
