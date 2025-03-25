@@ -1,9 +1,9 @@
 'use client'
 import React from 'react';
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Share, EyeIcon } from 'lucide-react';
+import { Share, EyeIcon, ArrowUpIcon } from 'lucide-react';
 import Image from 'next/image';
-import { FaFacebook, FaLinkedin, FaTwitter } from 'react-icons/fa';
+import { FaArrowUp, FaFacebook, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import { api } from '@/trpc/react';
 import { usePathname, useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
@@ -20,7 +20,7 @@ export default function BlogPostPage() {
   const slug = pathname.split('/blog/')[1]?.split('/')[0] || '';
   const { data: blog, isLoading, error } = api.blog.getBlog.useQuery({ slug: slug! });
   const router = useRouter();
-
+  const [isVisible, setIsVisible] = useState(false); 
   const [views, setViews] = useState<number>(0);
 
   const handleShare = useCallback(() => {
@@ -123,6 +123,24 @@ export default function BlogPostPage() {
     return () => clearInterval(viewIncrementInterval);
   }, [slug]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) { 
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+
   if (isLoading) {
     return <div className='h-[calc(100vh-80px)] w-full flex justify-center items-center flex-col gap-2 '>
       <Spinner />
@@ -220,6 +238,7 @@ export default function BlogPostPage() {
 
             <article className="max-w-3xl mx-auto">
               <div className="mb-8">
+                
                 <div className="flex gap-2 mb-6">
                   {blogTagsMemo}
                   {blog.tags.length > 5 && (
@@ -232,7 +251,6 @@ export default function BlogPostPage() {
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
                   {blog.title}
                 </h1>
-
                 <div className="flex items-center gap-4 text-gray-500 mb-8 text-sm md:text-base">
                   <span className="flex items-center gap-1.5">
                     <svg
@@ -284,6 +302,7 @@ export default function BlogPostPage() {
                     height={146}
                     className="rounded-full object-cover mb-4 border-4 border-white shadow-lg"
                     priority
+                    quality={85}
                   />
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{blog.author?.name}</h3>
                   <p className="text-gray-600 mb-6 leading-relaxed max-w-md">
@@ -385,6 +404,15 @@ export default function BlogPostPage() {
           </aside>
         </div>
       </div>
+      {isVisible && (
+        <button
+            onClick={scrollToTop}
+            className="fixed bottom-8 right-8 bg-blue-400 rounded-full p-3 shadow-md hover:bg-blue-500 transition-colors"
+            aria-label='go to top'
+          >
+           <FaArrowUp className="text-neutral-950"/>
+        </button>
+      )}
     </>
   );
 }
