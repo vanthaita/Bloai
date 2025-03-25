@@ -112,7 +112,7 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
                       </Button>
 
                       <div className='-rotate-90 whitespace-nowrap'>
-                        <h1 className='font-bold text-4xl'>BloAI</h1>
+                        <span className='font-bold text-4xl'>BloAI</span>
                       </div>
 
                       <div className='flex flex-col gap-5'>
