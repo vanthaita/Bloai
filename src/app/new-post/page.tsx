@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useState, useEffect, Suspense, lazy } from 'react'
+import React, { useCallback, useState, useEffect, Suspense, lazy, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -25,7 +25,7 @@ import {
   generateTitleBlog,
   generateExcerpt
 } from '@/lib/action'
-import Spinner from '@/components/Snipper'
+import Spinner from '@/components/Snipper' 
 import { env } from '@/env'
 import { api } from '@/trpc/react'
 import axios from 'axios'
@@ -33,7 +33,7 @@ import { useRouter } from 'next/navigation'
 import useRefetch from '@/hook/use-refresh'
 import { FiLoader } from 'react-icons/fi';
 import { toast } from 'react-toastify';
-import { useDebounce } from 'use-debounce'; 
+import { useDebounce } from 'use-debounce';
 
 const MDEditorComponent = lazy(() => import('@uiw/react-md-editor'));
 
@@ -50,7 +50,7 @@ const NewPost = () => {
   const [canonicalUrl, setCanonicalUrl] = useState('')
   const [ogTitle, setOgTitle] = useState('')
   const [ogDescription, setOgDescription] = useState('')
-  const [isGeneratingSlug, setIsGeneratingSlug] = useState(false)
+  const [isGeneratingSlugManually, setIsGeneratingSlugManually] = useState(false);
   const [readTime, setReadTime] = useState(0)
   const [isGeneratingMetaDescription, setIsGeneratingMetaDescription] = useState(false);
   const [isGeneratingKeywords, setIsGeneratingKeywords] = useState(false);
@@ -60,11 +60,11 @@ const NewPost = () => {
   const [isGeneratingExcerpt, setIsGeneratingExcerpt] = useState(false);
   const [isAutoCanonical, setIsAutoCanonical] = useState(true);
   const { mutateAsync: createPost } = api.blog.create.useMutation();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); 
   const refresh = useRefetch();
   const router = useRouter();
 
-  const [debouncedContent] = useDebounce(content, 300); 
+  const [debouncedContent] = useDebounce(content, 500); 
 
   useEffect(() => {
     if (isAutoCanonical && slug) {
@@ -73,7 +73,7 @@ const NewPost = () => {
   }, [slug, isAutoCanonical]);
 
   useEffect(() => {
-    if (title && !isGeneratingSlug) {
+    if (title && !isGeneratingSlugManually) {
       const generatedSlug = slugify(title, {
         lower: true,
         strict: true,
@@ -81,37 +81,43 @@ const NewPost = () => {
       })
       setSlug(generatedSlug)
     }
-  }, [title, isGeneratingSlug])
+  }, [title, isGeneratingSlugManually])
 
   useEffect(() => {
-    const words = debouncedContent.split(/\s+/).length; 
-    const time = Math.ceil(words / 200)
+    const words = debouncedContent.split(/\s+/).filter(Boolean).length;
+    const time = Math.ceil(words / 200) 
     setReadTime(time)
-  }, [debouncedContent]) 
+  }, [debouncedContent])
 
   useEffect(() => {
     if (!ogTitle) setOgTitle(title)
-    if (!ogDescription) setOgDescription(metaDescription || description)
-  }, [title, metaDescription, description])
+  }, [title, ogTitle]) 
 
-  const handleTagKeyDown = useCallback((e: React.KeyboardEvent) => { 
+  useEffect(() => {
+    if (!ogDescription) setOgDescription(metaDescription || description)
+  }, [metaDescription, description, ogDescription])
+
+
+  const handleTagKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (['Enter', ','].includes(e.key) && tagInput.trim()) {
       e.preventDefault()
-      if (tags.length < 5) {
-        setTags(prevTags => [...prevTags, tagInput.trim()]) 
-        setTagInput('')
+      const newTag = tagInput.trim();
+      if (tags.length < 15 && !tags.includes(newTag)) { 
+        setTags(prevTags => [...prevTags, newTag])
       }
+      setTagInput('')
     }
-  }, [tagInput, tags]) 
+  }, [tagInput, tags])
 
-  const validateSEO = useCallback(() => { 
+  const isSEOValid = useMemo(() => {
     return (
       metaDescription.length >= 120 &&
       metaDescription.length <= 160 &&
-      title.length > 0 &&
-      slug.length > 0
+      title.trim().length > 0 &&
+      slug.trim().length > 0 &&
+      thumbnail !== null 
     )
-  }, [metaDescription, slug, title])
+  }, [metaDescription, slug, title, thumbnail])
 
   const uploadImageToCloudinary = useCallback(async (file: File): Promise<string | null> => {
     const formData = new FormData();
@@ -120,53 +126,71 @@ const NewPost = () => {
 
     try {
       const response = await axios.post(`https://api.cloudinary.com/v1_1/${env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, formData);
-      if (!response) {
-        console.error('Cloudinary upload failed:', response);
+      if (response?.data?.secure_url) {
+        return response.data.secure_url;
+      } else {
+        console.error('Cloudinary upload failed: No secure_url found', response);
         return null;
       }
-      const data = await response.data.url;
-      return data;
     } catch (error) {
       console.error('Error uploading to Cloudinary:', error);
       return null;
     }
   }, []) 
 
-  const handleSubmit = useCallback(async (isDraft: boolean) => { 
-    if (!validateSEO()) {
-      toast.error('Vui lòng điền đầy đủ các trường SEO bắt buộc (Tiêu đề, Slug, Meta Description từ 120-160 ký tự).', {
+
+  const handleSubmit = useCallback(async () => {
+    if (!isSEOValid) {
+      let errorMessage = 'Vui lòng điền đầy đủ thông tin và tối ưu SEO:';
+      if (!title.trim()) errorMessage += '\n- Tiêu đề còn trống.';
+      if (!slug.trim()) errorMessage += '\n- Đường dẫn (Slug) còn trống.';
+      if (!thumbnail) errorMessage += '\n- Ảnh thu nhỏ chưa được chọn.';
+      if (metaDescription.length < 120 || metaDescription.length > 160) {
+        errorMessage += `\n- Meta Description phải từ 120-160 ký tự (hiện tại ${metaDescription.length}).`;
+      }
+
+      toast.error(errorMessage, {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 7000, 
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
         theme: "light",
+        style: { whiteSpace: 'pre-line' } 
       });
       return;
     }
 
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     try {
-      const url = await uploadImageToCloudinary(thumbnail as File) as string;
-      const formData = {
-        title,
-        slug,
+      if (!thumbnail) {
+          throw new Error("Thumbnail file is missing.");
+      }
+      const imageUrl = await uploadImageToCloudinary(thumbnail);
+
+      if (!imageUrl) {
+        throw new Error("Không thể tải ảnh lên Cloudinary.");
+      }
+
+      const postData = {
+        title: title.trim(),
+        slug: slug.trim(),
         content,
         tags,
-        thumbnail: url,
-        metaDescription,
-        imageAlt,
-        description,
-        canonicalUrl,
-        ogTitle,
-        ogDescription,
+        thumbnail: imageUrl,
+        metaDescription: metaDescription.trim(),
+        imageAlt: imageAlt.trim().slice(0, 125), 
+        description: description.trim(),
+        canonicalUrl: canonicalUrl.trim() || `${env.NEXT_PUBLIC_APP_URL}/blog/${slug.trim()}`,
+        ogTitle: ogTitle.trim() || title.trim(), 
+        ogDescription: ogDescription.trim() || metaDescription.trim() || description.trim(),
         readTime,
       };
 
-      await createPost(formData);
+      await createPost(postData);
       toast.success('Bài viết đã được xuất bản thành công!', {
         position: "top-right",
         autoClose: 5000,
@@ -177,10 +201,11 @@ const NewPost = () => {
         progress: undefined,
         theme: "light",
       });
-      router.push(`/blog/${slug}`)
-    } catch (error) {
+      refresh(); 
+      router.push(`/blog/${postData.slug}`)
+    } catch (error: any) {
       console.error('Error submitting form:', error);
-      toast.error('Đã xảy ra lỗi khi tạo bài viết. Vui lòng thử lại!', {
+      toast.error(`Đã xảy ra lỗi: ${error.message || 'Vui lòng thử lại!'}`, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -191,18 +216,19 @@ const NewPost = () => {
         theme: "light",
       });
     } finally {
-      setIsLoading(false);
-      refresh();
+      setIsSubmitting(false);
     }
-  }, [validateSEO, uploadImageToCloudinary, thumbnail, title, slug, content, tags, metaDescription, imageAlt, description, canonicalUrl, ogTitle, ogDescription, createPost, router, refresh]);
+  }, [isSEOValid, uploadImageToCloudinary, thumbnail, title, slug, content, tags, metaDescription, imageAlt, description, canonicalUrl, ogTitle, ogDescription, readTime, createPost, router, refresh]); // Added readTime
 
-  const removeTag = useCallback((index: number) => {
-    setTags(prevTags => prevTags.filter((_, i) => i !== index)) 
-  }, []); 
+  const removeTag = useCallback((indexToRemove: number) => {
+    setTags(prevTags => prevTags.filter((_, index) => index !== indexToRemove))
+  }, []);
 
   const handleFileDrop = useCallback((acceptedFiles: File[]) => {
-    setThumbnail(acceptedFiles[0] as any)
-  }, []); 
+    if (acceptedFiles.length > 0) {
+      setThumbnail(acceptedFiles[0] as File); 
+    }
+  }, []);
 
   const insertMarkdown = useCallback((format: string) => {
     const examples: Record<string, string> = {
@@ -211,105 +237,133 @@ const NewPost = () => {
       link: '[tiêu đề](https://)',
       code: '`mã`',
       image: '![alt](https://)',
-      list: '- Mục danh sách',
+      list: '\n- Mục danh sách', 
     }
-    setContent(prevContent => prevContent + ` ${examples[format]}`) 
+    setContent(prevContent => prevContent + ` ${examples[format]}`)
   }, []);
 
+  const handleInputChange = useCallback((setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setter(e.target.value);
+  }, []);
 
   const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
-    setIsGeneratingSlug(false);
-  }, []);
-
-  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(e.target.value);
-  }, []);
-
-  const handleMetaDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMetaDescription(e.target.value);
-  }, []);
-
-  const handleKeywordsChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setTags(e.target.value.split(/,\s*/));
-  }, []);
-
-  const handleImageAltChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setImageAlt(e.target.value.slice(0, 125));
+    setIsGeneratingSlugManually(false); 
   }, []);
 
   const handleCanonicalUrlChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setCanonicalUrl(e.target.value);
-    setIsAutoCanonical(false);
+    setIsAutoCanonical(!e.target.value);
   }, []);
 
-  const handleOgTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setOgTitle(e.target.value);
-  }, []);
-
-  const handleOgDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setOgDescription(e.target.value);
-  }, []);
-
-  const handleTagInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setTagInput(e.target.value);
+  const handleImageAltChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setImageAlt(e.target.value.slice(0, 125));
   }, []);
 
   const handleSlugChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSlug(e.target.value);
+      const sanitizedSlug = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+      setSlug(sanitizedSlug);
+      setIsGeneratingSlugManually(true);
   }, []);
 
+
+  const AIGenerationButton = React.memo(({ label, action, generatingState, setGeneratingState, disabled }: { label: string, action: (content: string) => Promise<string | null | undefined>, generatingState: boolean, setGeneratingState: React.Dispatch<React.SetStateAction<boolean>>, disabled?: boolean }) => {
+      const handleClick = useCallback(async () => {
+        if (!content) {
+          toast.info("Vui lòng nhập nội dung trước khi tạo bằng AI.");
+          return;
+        }
+        setGeneratingState(true);
+        try {
+          const generated = await action(content);
+          if (generated) {
+             if (label === "Tiêu đề") setTitle(generated);
+             else if (label === "Mô tả ngắn") setDescription(generated);
+             else if (label === "Meta Mô tả") setMetaDescription(generated);
+             else if (label === "Từ khóa SEO") setTags(generated.split(/,\s*/).map(tag => tag.trim()));
+             else if (label === "OG Title") setOgTitle(generated);
+             else if (label === "OG Description") setOgDescription(generated);
+          } else {
+             toast.warn("AI không thể tạo nội dung. Vui lòng thử lại hoặc viết thủ công.");
+          }
+        } catch (error) {
+            console.error(`Error generating ${label}:`, error);
+            toast.error(`Lỗi khi tạo ${label} bằng AI.`);
+        } finally {
+          setGeneratingState(false);
+        }
+      }, [action, content, setGeneratingState, label]);
+
+      return (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="text-blue-600 hover:text-blue-700 h-auto px-2 py-1 text-xs"
+          onClick={handleClick}
+          disabled={generatingState || disabled}
+          aria-label={`Tạo ${label} bằng AI`}
+        >
+          {generatingState ? (
+            <span className="flex items-center gap-1">
+              <Spinner className="h-3 w-3" />
+              Đang tạo...
+            </span>
+          ) : (
+            "Tạo AI"
+          )}
+        </Button>
+      );
+  });
+  AIGenerationButton.displayName = 'AIGenerationButton'; 
+
+
+  const thumbnailPreviewUrl = useMemo(() => {
+      return thumbnail ? URL.createObjectURL(thumbnail) : null;
+  }, [thumbnail]);
+
+  useEffect(() => {
+      const url = thumbnailPreviewUrl;
+      return () => {
+          if (url) {
+              URL.revokeObjectURL(url);
+          }
+      };
+  }, [thumbnailPreviewUrl]);
+
+
   return (
-    <div className="bg-white min-h-screen p-1">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl flex items-center gap-2">
-            Tạo Bài Viết Mới
-            <TooltipProvider>
+    <TooltipProvider>
+      <div className="bg-white min-h-screen p-1 md:p-4"> 
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
+              Tạo Bài Viết Mới
               <Tooltip>
-                <TooltipTrigger>
-                  <HelpCircle className="w-4 h-4" />
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="w-5 h-5">
+                    <HelpCircle className="w-4 h-4" />
+                  </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Điền đầy đủ các trường thông tin bắt buộc (*) và tối ưu hóa metadata SEO để bài viết hiển thị tốt hơn trên các công cụ tìm kiếm.</p>
+                  <p>Điền đầy đủ các trường (*) và tối ưu SEO.</p>
                 </TooltipContent>
               </Tooltip>
-            </TooltipProvider>
-          </CardTitle>
-        </CardHeader>
+            </CardTitle>
+          </CardHeader>
 
-        <CardContent className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-3 space-y-6">
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="title" className="flex items-center gap-2">
+          <CardContent className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
+            <div className="lg:col-span-3 space-y-5">
+              <div className="space-y-1.5">
+                <Label htmlFor="title" className="flex items-center gap-2 text-base">
                   Tiêu đề *
-                  <span className="text-xs text-muted-foreground">(Tối ưu hóa SEO)</span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="text-blue-600 hover:text-blue-700"
-                    onClick={async () => {
-                      setIsGeneratingTitle(true);
-                      try {
-                        const generated = await generateTitleBlog(content);
-                        generated && setTitle(generated);
-                      } finally {
-                        setIsGeneratingTitle(false);
-                      }
-                    }}
-                    disabled={isGeneratingTitle}
-                  >
-                    {isGeneratingTitle ? (
-                      <div className="flex items-center gap-2">
-                        <Spinner className="h-4 w-4" />
-                        Đang tạo...
-                      </div>
-                    ) : (
-                      "Tạo bằng AI"
-                    )}
-                  </Button>
+                  <AIGenerationButton
+                    label="Tiêu đề"
+                    action={generateTitleBlog}
+                    generatingState={isGeneratingTitle}
+                    setGeneratingState={setIsGeneratingTitle}
+                  />
                 </Label>
                 <Input
                   id="title"
@@ -317,408 +371,337 @@ const NewPost = () => {
                   value={title}
                   onChange={handleTitleChange}
                   className="text-lg font-medium"
+                  maxLength={70} 
+                  required
+                  aria-required="true"
                 />
+                 <p className="text-xs text-muted-foreground">Còn lại {70 - title.length} ký tự (khuyến nghị SEO)</p>
               </div>
 
-
-              <div className="space-y-2">
-                <Label htmlFor="slug" className="flex items-center gap-2">
-                  Đường dẫn thân thiện (Slug) *
+              <div className="space-y-1.5">
+                <Label htmlFor="slug" className="flex items-center gap-2 text-base">
+                  Đường dẫn (Slug) *
                   <button
                     type="button"
-                    onClick={() => setIsGeneratingSlug(!isGeneratingSlug)}
-                    className="text-xs text-blue-600 hover:underline"
+                    onClick={() => setIsGeneratingSlugManually(!isGeneratingSlugManually)}
+                    className="text-xs text-blue-600 hover:underline focus:outline-none"
                   >
-                    {isGeneratingSlug ? 'Tắt tự động tạo' : 'Chỉnh sửa thủ công'}
+                    {isGeneratingSlugManually ? 'Tạo tự động' : 'Chỉnh sửa'}
                   </button>
                 </Label>
                 <Input
                   id="slug"
                   value={slug}
-                  onChange={handleSlugChange} 
-                  disabled={!isGeneratingSlug}
+                  onChange={handleSlugChange}
+                  disabled={!isGeneratingSlugManually}
+                  required
+                  aria-required="true"
+                  placeholder="duong-dan-bai-viet"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="description" className="flex items-center gap-2">
-                  Mô tả ngắn *
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="text-blue-600 hover:text-blue-700"
-                    onClick={async () => {
-                      setIsGeneratingExcerpt(true);
-                      try {
-                        const generated = await generateExcerpt(content);
-                        generated && setDescription(generated);
-                      } finally {
-                        setIsGeneratingExcerpt(false);
-                      }
-                    }}
-                    disabled={isGeneratingExcerpt}
-                  >
-                    {isGeneratingExcerpt ? (
-                      <div className="flex items-center gap-2">
-                        <Spinner className="h-4 w-4" />
-                        Đang tạo...
-                      </div>
-                    ) : (
-                      "Tạo bằng AI"
-                    )}
-                  </Button>
+              <div className="space-y-1.5">
+                 <Label htmlFor="description" className="flex items-center gap-2 text-base">
+                  Mô tả ngắn (Excerpt)
+                  <AIGenerationButton
+                    label="Mô tả ngắn"
+                    action={generateExcerpt}
+                    generatingState={isGeneratingExcerpt}
+                    setGeneratingState={setIsGeneratingExcerpt}
+                  />
                 </Label>
                 <Textarea
                   id="description"
-                  placeholder="Viết một đoạn mô tả ngắn gọn..."
+                  placeholder="Viết một đoạn mô tả ngắn gọn, hấp dẫn về bài viết..."
                   rows={3}
                   value={description}
-                  onChange={handleDescriptionChange} 
+                  onChange={handleInputChange(setDescription)}
+                  maxLength={300} 
                 />
+                 <p className="text-xs text-muted-foreground">Còn lại {300 - description.length} ký tự</p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="metaDescription" className="flex items-center gap-2">
+              <div className="space-y-1.5">
+                <Label htmlFor="metaDescription" className="flex items-center gap-2 text-base">
                   Meta Mô tả *
-                  <span className="text-xs text-muted-foreground">({metaDescription.length}/160 ký tự)</span>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="text-blue-600 hover:text-blue-700"
-                    onClick={async () => {
-                      setIsGeneratingMetaDescription(true);
-                      try {
-                        const generated = await generateMetaDescription(content);
-                        generated && setMetaDescription(generated);
-                      } finally {
-                        setIsGeneratingMetaDescription(false);
-                      }
-                    }}
-                    disabled={isGeneratingMetaDescription}
-                  >
-                    {isGeneratingMetaDescription ? (
-                      <div className="flex items-center gap-2">
-                        <Spinner className="h-4 w-4" />
-                        Đang tạo...
-                      </div>
-                    ) : (
-                      "Tạo bằng AI"
-                    )}
-                  </Button>
+                   <span className={`text-xs ${metaDescription.length >= 120 && metaDescription.length <= 160 ? 'text-green-600' : 'text-yellow-600'}`}>
+                    ({metaDescription.length}/160 ký tự)
+                  </span>
+                  <AIGenerationButton
+                    label="Meta Mô tả"
+                    action={generateMetaDescription}
+                    generatingState={isGeneratingMetaDescription}
+                    setGeneratingState={setIsGeneratingMetaDescription}
+                  />
                 </Label>
-
-                <textarea
+                <Textarea
                   id="metaDescription"
                   value={metaDescription}
-                  onChange={handleMetaDescriptionChange} 
+                  onChange={handleInputChange(setMetaDescription)}
                   className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   rows={3}
                   maxLength={160}
-                  placeholder="Nhập meta mô tả hoặc tạo bằng AI"
+                  placeholder="Tối ưu cho SEO, khoảng 120-160 ký tự."
+                  required
+                  aria-required="true"
                 />
-
-                <div className="space-y-2">
-                  <Label htmlFor="keywords" className="flex items-center gap-2">
-                    Từ khóa SEO
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="text-blue-600 hover:text-blue-700"
-                      onClick={async () => {
-                        setIsGeneratingKeywords(true);
-                        try {
-                          const generated = await generateSEOKeywords(content);
-                          generated && setTags(generated.split(',').map(tag => tag.trim()));
-                        } finally {
-                          setIsGeneratingKeywords(false);
-                        }
-                      }}
-                      disabled={isGeneratingKeywords}
-                    >
-                      {isGeneratingKeywords ? (
-                        <div className="flex items-center gap-2">
-                          <Spinner className="h-4 w-4" />
-                          Đang tạo...
-                        </div>
-                      ) : (
-                        "Tạo bằng AI"
-                      )}
-                    </Button>
-                  </Label>
-                  <Input
-                    id="keywords"
-                    placeholder="Nhập từ khóa, cách nhau bằng dấu phẩy"
-                    value={tags.join(', ')}
-                    onChange={handleKeywordsChange}
-                  />
-                  <p className="text-sm text-muted-foreground">
-                    {tags.length}/15 từ khóa (đề xuất)
-                  </p>
-                </div>
+                 {!isSEOValid && metaDescription.length > 0 && (metaDescription.length < 120 || metaDescription.length > 160) && (
+                   <p className="text-xs text-red-600">Độ dài Meta Description chưa tối ưu (cần 120-160 ký tự).</p>
+                 )}
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-start">
-                <div className="group relative h-full min-h-[200px]">
-                  <Dropzone
-                    onDrop={handleFileDrop} 
-                    accept="image/png, image/jpeg, image/webp, image/avif"
-                    maxFiles={1}
-                    maxSize={5 * 1024 * 1024}
-                  />
-                </div>
-                <div className="hidden lg:block mx-4">
-                  <div className="h-full w-px bg-border" />
-                </div>
-                {thumbnail ? (
-                  <div className="relative space-y-4 h-full">
-                    <div className="relative aspect-video rounded-lg overflow-hidden border-2 border-dashed border-muted">
-                      <img
-                        src={URL.createObjectURL(thumbnail)}
-                        alt="Xem trước ảnh thu nhỏ"
-                        className="object-cover w-full h-full"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        className="absolute top-2 right-2"
-                        onClick={() => setThumbnail(null)}
-                      >
-                        <TrashIcon className="w-4 h-4" />
-                      </Button>
-                    </div>
 
-                    <div className="space-y-2">
-                      <Label className="flex items-center gap-2">
-                        Alt Text (SEO)
-                        <span className="text-sm text-muted-foreground">
-                          {imageAlt.length}/125 ký tự
-                        </span>
-                      </Label>
-                      <Textarea
-                        placeholder="Mô tả hình ảnh cho SEO..."
-                        value={imageAlt}
-                        onChange={handleImageAltChange} 
-                        rows={2}
-                        className="resize-none"
-                      />
-                      <p className="text-sm text-muted-foreground">
-                        Ví dụ: "Ảnh chụp màn hình giao diện developer đang làm việc với React và TypeScript"
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="hidden lg:flex items-center justify-center h-full min-h-[200px] border-2 border-dashed rounded-lg text-muted-foreground">
-                    Xem trước ảnh thu nhỏ sẽ hiển thị ở đây
-                  </div>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="content" className="flex items-center gap-2">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                 <div className="space-y-1.5">
+                   <Label htmlFor="thumbnail-dropzone" className="text-base">Ảnh thu nhỏ *</Label>
+                   <Dropzone
+                      id="thumbnail-dropzone"
+                      onDrop={handleFileDrop}
+                      accept="image/png, image/jpeg, image/webp, image/avif"
+                      maxFiles={1}
+                      maxSize={5 * 1024 * 1024}
+                      aria-label="Tải lên ảnh thu nhỏ"
+                    />
+                   {!isSEOValid && !thumbnail && <p className="text-xs text-red-600 pt-1">Vui lòng chọn ảnh thu nhỏ.</p>}
+                 </div>
+
+                 <div className="space-y-4">
+                    {thumbnailPreviewUrl ? (
+                       <div className="relative space-y-2">
+                         <p className="text-sm font-medium text-muted-foreground">Xem trước:</p>
+                         <div className="relative aspect-video rounded-lg overflow-hidden border border-dashed border-muted">
+                           <img
+                             src={thumbnailPreviewUrl}
+                             alt="Xem trước ảnh thu nhỏ"
+                             className="object-cover w-full h-full"
+                           />
+                           <Button
+                             variant="destructive"
+                             size="icon"
+                             className="absolute top-1 right-1 h-6 w-6" 
+                             onClick={() => setThumbnail(null)}
+                             aria-label="Xóa ảnh thu nhỏ đã chọn"
+                           >
+                             <TrashIcon className="w-3.5 h-3.5" />
+                           </Button>
+                         </div>
+                          <div className="space-y-1.5 pt-2">
+                             <Label htmlFor="imageAlt" className="flex items-center gap-2 text-base">
+                                Alt Text (SEO)
+                               <span className="text-xs text-muted-foreground">
+                                 ({imageAlt.length}/125 ký tự)
+                               </span>
+                             </Label>
+                             <Textarea
+                               id="imageAlt"
+                               placeholder="Mô tả hình ảnh cho SEO..."
+                               value={imageAlt}
+                               onChange={handleImageAltChange}
+                               rows={2}
+                               className="resize-none text-sm"
+                               maxLength={125}
+                             />
+                             <p className="text-xs text-muted-foreground">
+                               Mô tả ngắn gọn nội dung ảnh.
+                             </p>
+                           </div>
+                       </div>
+                    ) : (
+                       <div className="flex items-center justify-center h-full min-h-[150px] border border-dashed rounded-lg text-muted-foreground text-sm bg-muted/40">
+                         Xem trước ảnh thu nhỏ
+                       </div>
+                    )}
+                 </div>
+               </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="content-editor" className="flex items-center gap-2 text-base">
                   Nội dung *
                   <span className="text-sm text-muted-foreground">
-                    Thời gian đọc ước tính: {readTime} phút
+                    (~{readTime} phút đọc)
                   </span>
                 </Label>
                 <ContextMenu>
                   <ContextMenuTrigger>
-                    <div data-color-mode="light">
-                      <Suspense fallback={<>Loading Editor...</>}> 
+                    <div data-color-mode="light" className='min-h-[400px]'>
+                      <Suspense fallback={<div className="flex items-center justify-center h-96 border rounded-md"><Spinner /> Loading Editor...</div>}>
                         <MDEditorComponent
                           value={content}
                           onChange={(val) => setContent(val || '')}
-                          height={500}
-                          previewOptions={{}}
+                          height={500} 
+                          preview="live" 
+                          aria-labelledby="content-editor"
                         />
                       </Suspense>
                     </div>
                   </ContextMenuTrigger>
                   <ContextMenuContent>
-                    <ContextMenuItem onClick={() => insertMarkdown('bold')}>
-                      Đậm
-                    </ContextMenuItem>
-                    <ContextMenuItem onClick={() => insertMarkdown('italic')}>
-                      Nghiêng
-                    </ContextMenuItem>
-                    <ContextMenuItem onClick={() => insertMarkdown('link')}>
-                      Liên kết
-                    </ContextMenuItem>
-                    <ContextMenuItem onClick={() => insertMarkdown('image')}>
-                      Hình ảnh
-                    </ContextMenuItem>
-                    <ContextMenuItem onClick={() => insertMarkdown('code')}>
-                      Mã
-                    </ContextMenuItem>
-                    <ContextMenuItem onClick={() => insertMarkdown('list')}>
-                      Danh sách
-                    </ContextMenuItem>
+                    <ContextMenuItem onSelect={() => insertMarkdown('bold')}>Đậm</ContextMenuItem>
+                    <ContextMenuItem onSelect={() => insertMarkdown('italic')}>Nghiêng</ContextMenuItem>
+                    <ContextMenuItem onSelect={() => insertMarkdown('link')}>Liên kết</ContextMenuItem>
+                    <ContextMenuItem onSelect={() => insertMarkdown('image')}>Hình ảnh</ContextMenuItem>
+                    <ContextMenuItem onSelect={() => insertMarkdown('code')}>Mã</ContextMenuItem>
+                    <ContextMenuItem onSelect={() => insertMarkdown('list')}>Danh sách</ContextMenuItem>
                   </ContextMenuContent>
                 </ContextMenu>
               </div>
             </div>
-          </div>
 
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <Label className="text-lg font-semibold">Xem trước SEO</Label>
-              <div className="p-4 bg-background rounded-lg border">
-                <p className="font-medium text-blue-600">{title || 'Tiêu đề của bạn'}</p>
-                <p className="text-sm text-muted-foreground">
-                  {slug || 'duong-dan-than-thien'} • {readTime} phút đọc
-                </p>
-                <p className="text-sm text-gray-600 mt-2">
-                  {metaDescription || 'Xem trước meta mô tả...'}
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <Label className="text-lg font-semibold">SEO Nâng cao</Label>
-              <div className="space-y-2">
-                <Label htmlFor="canonicalUrl" className="flex items-center gap-2">
-                  URL Canonical
-                  {!isAutoCanonical && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="text-blue-600 hover:text-blue-700"
-                      onClick={() => setIsAutoCanonical(true)}
-                    >
-                      Đặt về tự động
-                    </Button>
-                  )}
-                </Label>
-                <Input
-                  id="canonicalUrl"
-                  placeholder="https://bloai.blog/blog/[slug]"
-                  value={canonicalUrl}
-                  onChange={handleCanonicalUrlChange}
-                />
-                {isAutoCanonical && (
-                  <p className="text-sm text-muted-foreground">
-                    Tự động tạo từ đường dẫn thân thiện (slug)
+            <div className="space-y-6 lg:border-l lg:pl-6"> 
+              <div className="space-y-3">
+                <Label className="text-lg font-semibold">Xem trước SEO (Google)</Label>
+                <div className="p-4 bg-background rounded-lg border space-y-1 text-sm">
+                  <p className="font-medium text-blue-700 truncate">{title || 'Tiêu đề bài viết'}</p>
+                  <p className="text-xs text-green-700 truncate">
+                    {`${env.NEXT_PUBLIC_APP_URL}/blog/${slug || 'duong-dan-bai-viet'}`}
                   </p>
-                )}
+                  <p className="text-gray-600 line-clamp-2"> 
+                    {metaDescription || 'Meta mô tả của bài viết sẽ hiển thị ở đây. Tối ưu độ dài khoảng 120-160 ký tự.'}
+                  </p>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="ogTitle" className="flex items-center gap-2">
-                  Tiêu đề Open Graph (OG Title)
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="text-blue-600 hover:text-blue-700"
-                    onClick={async () => {
-                      setIsGeneratingOgTitle(true);
-                      try {
-                        const generated = await generateOpenGraphTitle(content);
-                        generated && setOgTitle(generated);
-                      } finally {
-                        setIsGeneratingOgTitle(false);
-                      }
-                    }}
-                    disabled={isGeneratingOgTitle}
-                  >
-                    {isGeneratingOgTitle ? (
-                      <div className="flex items-center gap-2">
-                        <Spinner className="h-4 w-4" />
-                        Đang tạo...
-                      </div>
-                    ) : (
-                      "Tạo bằng AI"
-                    )}
-                  </Button>
-                </Label>
-                <Input
-                  id="ogTitle"
-                  value={ogTitle}
-                  onChange={handleOgTitleChange} 
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="ogDescription" className="flex items-center gap-2">
-                  Mô tả Open Graph (OG Description)
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="text-blue-600 hover:text-blue-700"
-                    onClick={async () => {
-                      setIsGeneratingOgDescription(true);
-                      try {
-                        const generated = await generateOpenGraphDescription(content);
-                        generated && setOgDescription(generated);
-                      } finally {
-                        setIsGeneratingOgDescription(false);
-                      }
-                    }}
-                    disabled={isGeneratingOgDescription}
-                  >
-                    {isGeneratingOgDescription ? (
-                      <div className="flex items-center gap-2">
-                        <Spinner className="h-4 w-4" />
-                        Đang tạo...
-                      </div>
-                    ) : (
-                      "Tạo bằng AI"
-                    )}
-                  </Button>
-                </Label>
-                <Textarea
-                  id="ogDescription"
-                  value={ogDescription}
-                  onChange={handleOgDescriptionChange} 
-                  rows={2}
-                />
-              </div>
-            </div>
-            <div className="space-y-4">
-              <Label>Tags</Label>
-              <Input
-                value={tagInput}
-                onChange={handleTagInputChange} 
-                onKeyDown={handleTagKeyDown}
-                placeholder="Thêm tag (nhấn Enter để thêm)"
-              />
-              <div className="flex flex-wrap gap-2">
-                {tags.map((tag, index) => (
-                  <Badge
-                    key={index}
-                    variant="secondary"
-                    className="cursor-pointer hover:bg-primary/20 transition-colors"
-                    onClick={() => removeTag(index)} 
-                  >
-                    {tag} ×
-                  </Badge>
-                ))}
-              </div>
-            </div>
-            <Separator />
-          </div>
-        </CardContent>
 
-        <CardFooter className="flex justify-between items-center">
-          <div className="text-sm text-muted-foreground">
-            {validateSEO() ? ( 
-              <span className="text-green-600">✓ Đã Tối ưu SEO</span>
-            ) : (
-              <span className="text-yellow-600">⚠ Cần Chú ý SEO</span>
-            )}
-          </div>
-          <div className="flex gap-4">
-            <Button onClick={() => handleSubmit(false)} className='bg-black text-white' disabled={isLoading}>{isLoading ? 
-              (
-                <FiLoader className="animate-spin inline-block align-middle" size={20} />
+              <div className="space-y-4">
+                <Label className="text-lg font-semibold">SEO Nâng cao</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="canonicalUrl" className="flex items-center gap-2 text-sm">
+                    URL Canonical
+                    {!isAutoCanonical && (
+                      <Button
+                        type="button"
+                        variant="link" 
+                        size="sm"
+                        className="text-blue-600 hover:text-blue-700 h-auto p-0 text-xs"
+                        onClick={() => { setIsAutoCanonical(true); if(slug) setCanonicalUrl(`${env.NEXT_PUBLIC_APP_URL}/blog/${slug}`); }} // Reset to auto
+                      >
+                        Đặt lại tự động
+                      </Button>
+                    )}
+                  </Label>
+                  <Input
+                    id="canonicalUrl"
+                    placeholder="Để trống để tạo tự động"
+                    value={canonicalUrl}
+                    onChange={handleCanonicalUrlChange}
+                    className="text-sm"
+                  />
+                  {isAutoCanonical && (
+                    <p className="text-xs text-muted-foreground">
+                      Tự động tạo từ đường dẫn (slug).
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="ogTitle" className="flex items-center gap-2 text-sm">
+                    OG Title
+                     <AIGenerationButton
+                      label="OG Title"
+                      action={generateOpenGraphTitle}
+                      generatingState={isGeneratingOgTitle}
+                      setGeneratingState={setIsGeneratingOgTitle}
+                    />
+                  </Label>
+                  <Input
+                    id="ogTitle"
+                    value={ogTitle}
+                    onChange={handleInputChange(setOgTitle)}
+                    placeholder="Tiêu đề hiển thị khi chia sẻ mạng xã hội"
+                    className="text-sm"
+                    maxLength={60}
+                  />
+                   <p className="text-xs text-muted-foreground">Còn lại {60 - ogTitle.length} ký tự</p>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="ogDescription" className="flex items-center gap-2 text-sm">
+                    OG Description
+                    <AIGenerationButton
+                      label="OG Description"
+                      action={generateOpenGraphDescription}
+                      generatingState={isGeneratingOgDescription}
+                      setGeneratingState={setIsGeneratingOgDescription}
+                    />
+                  </Label>
+                  <Textarea
+                    id="ogDescription"
+                    value={ogDescription}
+                    onChange={handleInputChange(setOgDescription)}
+                    rows={2}
+                    placeholder="Mô tả hiển thị khi chia sẻ mạng xã hội"
+                    className="text-sm"
+                  />
+                   <p className="text-xs text-muted-foreground">Còn lại {155 - ogDescription.length} ký tự</p>
+                </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="keywords" className="flex items-center gap-2 text-sm">
+                      Từ khóa SEO (Tags)
+                       <AIGenerationButton
+                        label="Từ khóa SEO"
+                        action={generateSEOKeywords}
+                        generatingState={isGeneratingKeywords}
+                        setGeneratingState={setIsGeneratingKeywords}
+                      />
+                    </Label>
+                    <Input
+                      id="tagInput" 
+                      placeholder="Nhập tag và nhấn Enter/dấu phẩy"
+                      value={tagInput}
+                      onChange={handleInputChange(setTagInput)}
+                      onKeyDown={handleTagKeyDown}
+                      className="text-sm"
+                      aria-label="Thêm từ khóa SEO hoặc tag"
+                    />
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {tags.map((tag, index) => (
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="cursor-pointer hover:bg-destructive/20 hover:text-destructive transition-colors text-xs px-2 py-0.5" 
+                          onClick={() => removeTag(index)}
+                          title={`Xóa tag "${tag}"`}
+                        >
+                          {tag}
+                          <span aria-hidden="true" className="ml-1">×</span>
+                        </Badge>
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {tags.length}/15 tags (khuyến nghị)
+                    </p>
+                  </div>
+              </div>
+              <Separator />
+            </div>
+          </CardContent>
+
+          <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6">
+            <div className="text-sm text-muted-foreground">
+              {isSEOValid ? (
+                <span className="text-green-600 font-medium">✓ Tối ưu SEO cơ bản</span>
               ) : (
-                "Xuất bản Ngay"
-              )}</Button>
-          </div>
-        </CardFooter>
-      </Card>
-    </div>
+                <span className="text-yellow-600 font-medium">⚠ Kiểm tra lại SEO</span>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <Button
+                onClick={handleSubmit}
+                className='bg-black text-white hover:bg-gray-800'
+                disabled={isSubmitting || !isSEOValid} 
+                aria-disabled={isSubmitting || !isSEOValid}
+              >
+                {isSubmitting ? (
+                  <>
+                    <FiLoader className="animate-spin mr-2" size={18} />
+                    Đang xuất bản...
+                  </>
+                ) : (
+                  "Xuất bản Ngay"
+                )}
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+    </TooltipProvider>
   )
 }
 
