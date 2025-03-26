@@ -16,6 +16,7 @@ import { useOpenAppSidebar } from '@/hook/use-app-sidebar';
 import { AUTH_ROUTES } from '@/lib/route';
 import NewsMarquee from '@/section/NewsMarquee';
 import Footer from '@/components/Footer';
+import Image from 'next/image';
 
 interface MenuItem {
   name: string;
@@ -112,7 +113,7 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
                       </Button>
 
                       <div className='-rotate-90 whitespace-nowrap'>
-                        <span className='font-bold text-4xl'>BloAI</span>
+                        <Image src='/Bloai.svg' height={85} width={85} alt='logo-bloai' className='object-cover'/>
                       </div>
 
                       <div className='flex flex-col gap-5'>
@@ -128,7 +129,7 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
                       <div className='h-full flex flex-col p-4'>
                         <div className='flex justify-between items-center mb-6'>
                           <Link href="/" className='font-bold text-xl'>
-                            BloAI
+                            <Image src='/Bloai.svg' height={80} width={80} alt='logo-bloai'/>
                           </Link>
                           <Button
                             variant="ghost"
@@ -215,9 +216,9 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
               <div className='h-14'>
                 <Navbar />
               </div>
-              <div className='w-full overflow-y-hidden'>
+              {/* <div className='w-full overflow-y-hidden'>
                 <NewsMarquee />
-              </div>
+              </div> */}
               {children}
               <Footer />
             </main>

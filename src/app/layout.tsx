@@ -23,7 +23,13 @@ export const metadata: Metadata = {
     url: 'https://bloai.blog',
     siteName: 'BloAI Blog',
   },
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [
+    { rel: "icon", url: "/favicon.ico" },
+    { rel: "apple-touch-icon", sizes: "180x180", url: "/images/Logo/apple-touch-icon.png" },
+    { rel: "icon", type: "image/png", sizes: "32x32", url: "/images/Logo/favicon-32x32.png" },
+    { rel: "icon", type: "image/png", sizes: "16x16", url: "/images/Logo/favicon-16x16.png" },
+    { rel: "manifest", url: "/site.webmanifest" }
+  ],
   metadataBase: new URL('https://bloai.blog'),
 };
 

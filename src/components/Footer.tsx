@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { FaTwitter, FaGithub, FaLinkedinIn } from 'react-icons/fa';
 
@@ -24,7 +25,7 @@ const Footer = () => {
 
           <div className="space-y-2">
             <Link href="/" className="text-xl font-bold hover:text-gray-600">
-              Bloai
+              <Image src='/Bloai.svg' height={80} width={80} alt='logo-bloai'/>
             </Link>
             <p className="text-sm text-gray-600">
               Bài viết sâu sắc về công nghệ, thiết kế và phát triển.

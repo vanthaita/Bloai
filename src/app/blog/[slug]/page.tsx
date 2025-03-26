@@ -14,6 +14,7 @@ import { env } from '@/env';
 import Spinner from '@/components/Snipper';
 import { IconAlertCircle, IconUserOff } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from '@/hook/use-mobile';
 
 export default function BlogPostPage() {
   const pathname = usePathname();
@@ -22,7 +23,7 @@ export default function BlogPostPage() {
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(false); 
   const [views, setViews] = useState<number>(0);
-
+  const isMobile = useIsMobile();
   const handleShare = useCallback(() => {
     navigator.clipboard.writeText(window.location.href);
     alert('Đã sao chép liên kết vào clipboard!');
@@ -95,10 +96,10 @@ export default function BlogPostPage() {
   }, [blog, truncate]);
 
   const blogTagsMemo = useMemo(() => (
-    blog?.tags.slice(0, 5).map((tag, index) => (
+    blog?.tags.slice(0, (isMobile ? 3 : 5)).map((tag, index) => (
       <span
         key={index}
-        className="px-3 py-1 bg-gradient-to-r from-blue-50 to-purple-50 text-sm font-medium text-blue-600 rounded-full"
+        className="px-3 py-1 text-xs font-medium text-blue-600 rounded-full"
         style={{ wordBreak: 'break-word' }}
       >
         #{tag.name.toUpperCase()}
@@ -407,7 +408,7 @@ export default function BlogPostPage() {
       {isVisible && (
         <button
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 bg-blue-400 rounded-full p-3 shadow-md hover:bg-blue-500 transition-colors"
+            className="fixed bottom-20 right-4 md:bottom-8 md:right-8 bg-blue-400 rounded-full p-3 shadow-md hover:bg-blue-500 transition-colors"
             aria-label='go to top'
           >
            <FaArrowUp className="text-neutral-950"/>
