@@ -144,7 +144,7 @@ const Navbar = () => {
             href="/auth/signin"
             className="p-1.5 min-[375px]:p-2 text-gray-800 hover:text-blue-600 transition-colors border-2 border-black rounded-xl"
           >
-            <h1 className='font-medium'>Đăng Nhập</h1>
+            <span className='font-medium'>Đăng Nhập</span>
           </Link>
         )}
       </div>
