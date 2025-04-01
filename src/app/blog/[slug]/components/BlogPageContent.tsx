@@ -269,7 +269,9 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog }) => {
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
                 />
             )}
-
+            <meta name="description" content={blog.metaDescription} />
+            <meta property="og:description" content={blog.metaDescription} />
+            <meta name="twitter:description" content={blog.metaDescription} />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex gap-x-8 lg:gap-x-12">
 
