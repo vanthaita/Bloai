@@ -24,7 +24,7 @@ export async function generateMetadata(
 
     const blogPostSeo = {
         title: `${blog.title} | BloAI Technology Blog`,
-        description: blog.metaDescription || truncate(blog.content, 160),
+        description: blog.metaDescription,
         canonical: blog.canonicalUrl || `${process.env.NEXT_PUBLIC_APP_URL}/blog/${blog.slug}`,
         openGraph: {
             type: 'article' as const,
