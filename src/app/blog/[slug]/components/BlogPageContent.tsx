@@ -6,7 +6,7 @@ import { Share, Eye as EyeIcon } from 'lucide-react';
 import { FaArrowUp, FaFacebook, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { env } from '@/env';
-import { IconAlertCircle, IconUserOff } from '@tabler/icons-react';
+import { IconUserOff } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hook/use-mobile';
 import Link from 'next/link';

@@ -218,7 +218,7 @@ const NewPost = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [isSEOValid, uploadImageToCloudinary, thumbnail, title, slug, content, tags, metaDescription, imageAlt, description, canonicalUrl, ogTitle, ogDescription, readTime, createPost, router, refresh]); // Added readTime
+  }, [isSEOValid, uploadImageToCloudinary, thumbnail, title, slug, content, tags, metaDescription, imageAlt, description, canonicalUrl, ogTitle, ogDescription, readTime, createPost, router, refresh]); 
 
   const removeTag = useCallback((indexToRemove: number) => {
     setTags(prevTags => prevTags.filter((_, index) => index !== indexToRemove))
