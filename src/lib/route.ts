@@ -11,7 +11,8 @@ export const PUBLIC_ROUTES = [
   "/",
   "/blog",
   "/sitemap.xml",
-  "/robots.txt" 
+  "/robots.txt",
+  "/favicon.ico",
 ];
 
 // For protected routes configuration
