@@ -11,7 +11,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Inter } from 'next/font/google'
 import { ToastContainer } from 'react-toastify';
 import Spinner from "@/components/Snipper";
-
+import { GoogleAnalytics } from '@next/third-parties/google'
 export const metadata: Metadata = {
   title: "BloAI Blog - Kiến thức AI từ Cơ bản đến Nâng cao",
   description: "Khám phá cách sử dụng AI trong mọi lĩnh vực, hướng dẫn chi tiết về Trí tuệ Nhân tạo, và ứng dụng thực tế của AI vào công việc và cuộc sống.",
@@ -54,6 +54,7 @@ export default async function RootLayout({
                 <ToastContainer/>
                 <Analytics />
                 <SpeedInsights />
+                <GoogleAnalytics gaId="G-CL7D21ZY78" />
               </AppSidebarProvider>
             </main>
           </TRPCReactProvider>
