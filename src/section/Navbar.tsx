@@ -8,7 +8,6 @@ import { useIsMobile } from '@/hook/use-mobile';
 import { cn } from '@/lib/utils';
 import { useOpenAppSidebar } from '@/hook/use-app-sidebar';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
   const user = useCurrentUser();

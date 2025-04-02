@@ -17,6 +17,7 @@ import { AUTH_ROUTES } from '@/lib/route';
 import NewsMarquee from '@/section/NewsMarquee';
 import Footer from '@/components/Footer';
 import Image from 'next/image';
+import Logo from '@/components/logo';
 
 interface MenuItem {
   name: string;
@@ -113,9 +114,8 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
                       </Button>
 
                       <div className='-rotate-90 whitespace-nowrap'>
-                        <Image src='/Bloai.svg' height={85} width={85} alt='logo-bloai' className='object-cover'/>
+                        <Logo />
                       </div>
-
                       <div className='flex flex-col gap-5'>
                         <FaComments className='h-6 w-6 cursor-pointer' />
                         <FaFolderOpen className='h-6 w-6 cursor-pointer' />
@@ -129,7 +129,7 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
                       <div className='h-full flex flex-col p-4'>
                         <div className='flex justify-between items-center mb-6'>
                           <Link href="/" className='font-bold text-xl'>
-                            <Image src='/Bloai.svg' height={80} width={80} alt='logo-bloai'/>
+                            <Logo />
                           </Link>
                           <Button
                             variant="ghost"
