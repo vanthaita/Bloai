@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaTwitter, FaGithub, FaLinkedinIn } from 'react-icons/fa';
+import Logo from './logo';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -25,7 +26,7 @@ const Footer = () => {
 
           <div className="space-y-2">
             <Link href="/" className="text-xl font-bold hover:text-gray-600">
-              <Image src='/Bloai.svg' height={80} width={80} alt='logo-bloai'/>
+              <Logo />
             </Link>
             <p className="text-sm text-gray-600">
               Bài viết sâu sắc về công nghệ, thiết kế và phát triển.
