@@ -7,7 +7,7 @@ import "./src/env.js";
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ['picsum.photos', 'lh3.googleusercontent.com','res.cloudinary.com', 'media.discordapp.net'],
+    domains: ['picsum.photos', 'lh3.googleusercontent.com','res.cloudinary.com', 'media.discordapp.net', 'images.unsplash.com', 'imgur.com'],
     // imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   
