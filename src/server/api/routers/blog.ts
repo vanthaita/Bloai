@@ -1,8 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { db } from "@/server/db";
-
 export const blogRouter = createTRPCRouter({
     create: protectedProcedure
     .input(
@@ -76,7 +74,6 @@ export const blogRouter = createTRPCRouter({
         }, {
           timeout: 10000, 
         });
-
         return { success: true, result };
       } catch (err) {
         console.error(err);
@@ -118,8 +115,8 @@ export const blogRouter = createTRPCRouter({
 
     getAllBlog: publicProcedure
         .input(z.object({
-        page: z.number().int().positive().optional().default(1), 
-        limit: z.number().int().positive().optional().default(6)
+          page: z.number().int().positive().optional().default(1), 
+          limit: z.number().int().positive().optional().default(6)
         }))
         .query(async ({ ctx, input }) => {
         const skip = (input.page - 1) * input.limit;
@@ -135,5 +132,36 @@ export const blogRouter = createTRPCRouter({
         });
         
         return blogs;
+    }),
+    getAllTags: publicProcedure
+      .input(z.object({
+        page: z.number().int().positive().optional().default(1),
+        limit: z.number().int().positive().optional().default(10)
+      }))
+      .query(async ({ ctx, input }) => {
+        const skip = (input.page - 1) * input.limit;
+        const tags = await ctx.db.tag.findMany({
+          skip: skip,
+          take: input.limit,
+          include: {
+            _count: {
+              select: { blogs: true }
+            }
+          },
+          orderBy: {
+            blogs: {
+              _count: 'desc'
+            }
+          }
+        });
+        
+        const totalTags = await ctx.db.tag.count();
+        
+        return {
+          tags,
+          totalTags,
+          totalPages: Math.ceil(totalTags / input.limit),
+          currentPage: input.page
+        };
     }),
 });
