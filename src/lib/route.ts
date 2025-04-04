@@ -12,6 +12,7 @@ export const PUBLIC_ROUTES = [
   "/blog",
   "/about",
   "/landing",
+  "/categories",
   "/sitemap.xml",
   "/robots.txt",
   "/favicon.ico",

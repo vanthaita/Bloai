@@ -58,7 +58,7 @@ export function BlogGrid({ expanded = false }: BlogGridProps) {
     <BentoGrid expanded={expanded} className="max-w-8xl mx-auto px-4">
       {blogs.map((blog) => (
         <Link href={`/blog/${blog.slug}`} key={blog.id}>
-          <BentoGridItem className="group relative bg-white dark:bg-gray-900 rounded-xl overflow-hidden hover:shadow-2xl transition-all cursor-pointer border border-gray-100 dark:border-gray-800">
+          <div className="group relative bg-white dark:bg-gray-900 rounded-xl overflow-hidden hover:shadow-2xl transition-all cursor-pointer border border-gray-100 dark:border-gray-800">
             <div className="relative h-48 overflow-hidden">
               <CldImage
                 width={600}
@@ -118,20 +118,14 @@ export function BlogGrid({ expanded = false }: BlogGridProps) {
                     <span>0</span>
                   </div>
                 </div>
-                {blog.tags.some(tag => tag.name === 'Featured') && (
-                  <div className="px-3 py-1 bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-300 text-xs font-medium rounded-full">
-                    Featured
-                  </div>
-                )}
+              </div>
+              <div className='text-end'>
+                <span className="text-gray-400 dark:text-gray-500 text-xs">
+                    {new Date(blog.publishDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                </span>
               </div>
             </div>
-
-            {blog.tags.some(tag => tag.name === 'Trending') && (
-              <div className="absolute top-0 right-0 bg-orange-500 text-white px-3 py-1 text-xs font-bold rounded-bl-lg">
-                TRENDING
-              </div>
-            )}
-          </BentoGridItem>
+          </div>
         </Link>
       ))}
     </BentoGrid>
