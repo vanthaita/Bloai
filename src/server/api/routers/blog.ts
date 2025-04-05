@@ -113,26 +113,38 @@ export const blogRouter = createTRPCRouter({
             }
         }),
 
-    getAllBlog: publicProcedure
+        getAllBlog: publicProcedure
         .input(z.object({
           page: z.number().int().positive().optional().default(1), 
           limit: z.number().int().positive().optional().default(6)
         }))
         .query(async ({ ctx, input }) => {
-        const skip = (input.page - 1) * input.limit;
-        
-        const blogs = await ctx.db.blog.findMany({
-            skip: skip,
-            take: input.limit,
-            orderBy: { publishDate: 'desc' },
-            include: {
-            tags: true,
-            author: true,
-            },
-        });
-        
-        return blogs;
-    }),
+          // Get the blogs with pagination
+          const skip = (input.page - 1) * input.limit;
+          
+          const [blogs, totalBlogs] = await Promise.all([
+            ctx.db.blog.findMany({
+              skip,
+              take: input.limit,
+              orderBy: { publishDate: 'desc' },
+              include: {
+                tags: true,
+                author: true,
+              },
+            }),
+            ctx.db.blog.count() 
+          ]);
+      
+          const totalPages = Math.ceil(totalBlogs / input.limit);
+      
+          return {
+            blogs,
+            total: totalBlogs,
+            totalPages,
+            currentPage: input.page,
+            limit: input.limit
+          };
+        }),
     getAllTags: publicProcedure
       .input(z.object({
         page: z.number().int().positive().optional().default(1),
@@ -164,4 +176,106 @@ export const blogRouter = createTRPCRouter({
           currentPage: input.page
         };
     }),
+
+    getSuggestedBlogs: publicProcedure
+      .input(z.object({
+        slug: z.string(),
+        limit: z.number().int().positive().optional().default(3)
+      }))
+      .query(async ({ ctx, input }) => {
+        try {
+          const currentBlog = await ctx.db.blog.findUnique({
+            where: { slug: input.slug },
+            select: { tags: true }
+          });
+
+          if (!currentBlog) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
+          }
+          const suggestedBlogs = await ctx.db.blog.findMany({
+            where: {
+              NOT: { slug: input.slug }, 
+              tags: {
+                some: {
+                  id: {
+                    in: currentBlog.tags.map(tag => tag.id)
+                  }
+                }
+              }
+            },
+            take: input.limit,
+            orderBy: {
+              publishDate: 'desc'
+            },
+            select: { 
+              slug: true,
+              title: true,
+              imageUrl: true,
+              imageAlt: true,
+              publishDate: true,
+              readTime: true,
+              metaDescription: true,
+              author: {
+                select: {
+                  name: true,
+                  image: true
+                }
+              },
+              tags: {
+                select: {
+                  name: true
+                }
+              }
+            }
+          });
+
+          if (suggestedBlogs.length < input.limit) {
+            const additionalBlogs = await ctx.db.blog.findMany({
+              where: {
+                NOT: {
+                  slug: {
+                    in: [input.slug, ...suggestedBlogs.map(b => b.slug)]
+                  }
+                }
+              },
+              take: input.limit - suggestedBlogs.length,
+              orderBy: {
+                publishDate: 'desc'
+              },
+              select: {
+                slug: true,
+                title: true,
+                imageUrl: true,
+                imageAlt: true,
+                publishDate: true,
+                readTime: true,
+                metaDescription: true,
+                author: {
+                  select: {
+                    name: true,
+                    image: true
+                  }
+                },
+                tags: {
+                  select: {
+                    name: true
+                  }
+                }
+              }
+            });
+            suggestedBlogs.push(...additionalBlogs);
+          }
+
+          return suggestedBlogs;
+        } catch (error) {
+          if (error instanceof TRPCError) {
+            throw error;
+          }
+          console.error("Database error:", error);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to fetch suggested blogs",
+          });
+        }
+      }),
 });

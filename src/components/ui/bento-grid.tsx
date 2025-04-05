@@ -20,38 +20,3 @@ export const BentoGrid = ({
     </div>
   );
 };
-
-export const BentoGridItem = ({
-  className,
-  title,
-  description,
-  header,
-  children
-}: {
-  className?: string;
-  title?: React.ReactNode;
-  description?: React.ReactNode;
-  header?: React.ReactNode;
-  children?: React.ReactNode;
-}) => {
-  return (
-    <div
-      className={cn(
-        "row-span-1 rounded-xl transition duration-200 bg-white flex flex-col space-y-4",
-        className
-      )}
-    >
-      {header}
-     
-      <div className="flex-1">
-        <div className="font-sans text-2xl font-semibold text-neutral-800 mb-1 hover:underline cursor-pointer">
-          {title}
-        </div>
-        <div className="font-sans text-xs text-neutral-500">
-          {description}
-        </div>
-      </div>
-      {children}
-    </div>
-  );
-};

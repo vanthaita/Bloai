@@ -65,9 +65,12 @@ export async function generateMetadata(
 export default async function BlogPostPage({ params }: Props) {
     const { slug } = await params;
     const blog = await api.blog.getBlog({ slug });
+    const suggestedBlogs = await api.blog.getSuggestedBlogs({
+        slug,
+        limit: 4
+    })
     if (!blog) {
         return <div>Blog Post Not Found</div>;
     }
-
-    return <BlogPostPageContent blog={blog} />;
+    return <BlogPostPageContent blog={blog} suggestedBlogs={suggestedBlogs} />;
 }
