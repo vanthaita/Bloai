@@ -1,133 +1,230 @@
 'use client'
-import React from 'react';
-import { FaEye, FaHeart, FaComment, FaBookOpen } from 'react-icons/fa';
-import { BentoGrid, BentoGridItem } from "./ui/bento-grid";
+import React, { useMemo, useState } from 'react';
+import { FaEye, FaHeart, FaBookOpen } from 'react-icons/fa';
+import { BentoGrid } from "./ui/bento-grid";
 import Link from 'next/link';
 import { api } from '@/trpc/react';
 import { CldImage } from 'next-cloudinary';
 import Spinner from './Snipper';
+import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
+import Pagination from './Pagintion';
+
 type BlogGridProps = {
   expanded: boolean,
 }
 
-const tagColors: { [key: string]: string } = {
-  'JavaScript': 'bg-amber-500/80',
-  'AI': 'bg-purple-600/80',
-  'React': 'bg-cyan-600/80',
-  'Next.js': 'bg-black/80',
-  'Web Dev': 'bg-emerald-600/80',
-  'Featured': 'bg-rose-600/80',
-  'Trending': 'bg-orange-500/80',
-  'Technology': 'bg-blue-600/80'
-};
-
-const randomColors = [
-  'bg-red-500/80',
-  'bg-yellow-500/80',
-  'bg-green-500/80',
-  'bg-blue-500/80',
-  'bg-indigo-500/80',
-  'bg-pink-500/80',
-  'bg-purple-500/80',
-  'bg-teal-500/80',
-  'bg-orange-500/80',
-  'bg-gray-500/80'
+const CURATED_TAGS = [
+  'Career in Japan',
+  'Tech Interviews',
+  'Visa Guide',
+  'Japanese Culture',
+  'Startups',
+  'Web Development',
+  'AI',
+  'Remote Work',
+  'Language Tips',
+  'Industry Trends'
 ];
 
-const getRandomColor = () => {
-  return randomColors[Math.floor(Math.random() * randomColors.length)];
+const tagColors: { [key: string]: string } = {
+  'Career in Japan': 'bg-[#3A6B4C]',
+  'Tech Interviews': 'bg-[#2B463C]',
+  'Visa Guide': 'bg-[#4F7359]',
+  'Japanese Culture': 'bg-[#5A7C6C]',
+  'Startups': 'bg-[#6B8E7C]',
+  'Web Development': 'bg-[#3A6B4C]',
+  'AI': 'bg-[#2B463C]',
+  'Remote Work': 'bg-[#4F7359]',
+  'Language Tips': 'bg-[#5A7C6C]',
+  'Industry Trends': 'bg-[#6B8E7C]'
 };
 
-export function BlogGrid({ expanded = false }: BlogGridProps) {
-  const { data: blogs, isLoading, error } = api.blog.getAllBlog.useQuery({
-    page: 1,
-    limit: 15
-  });
+const LIMIT = 6;
 
+export function BlogGrid({ expanded = false }: BlogGridProps) {
+  const [currentPage, setCurrentPage] = useState(1); 
+  const { data: blogData, isLoading, error } = api.blog.getAllBlog.useQuery({
+    page: currentPage,
+    limit: LIMIT
+  });
+  const [activeFilter, setActiveFilter] = useState('');
+
+  const filterTags = useMemo(() => {
+    if (!blogData?.blogs || blogData.blogs.length === 0) {
+      return [];
+    }
+    const allTagNames = blogData.blogs.flatMap((blog) => blog.tags.map((tag) => tag.name));
+    const uniqueTagNames = Array.from(new Set(allTagNames));
+    return uniqueTagNames.map((tagName) => ({
+      label: tagName,
+      value: tagName.toLowerCase().replace(/ /g, '-'),
+    })).sort((a, b) => a.label.localeCompare(b.label));
+  }, [blogData?.blogs]);
+
+  const filteredBlogs = React.useMemo(() => {
+    if (!blogData?.blogs) return [];
+
+    if (!activeFilter) {
+      return blogData.blogs;
+    }
+
+    return blogData.blogs.filter(blog =>
+      blog.tags.some(tag =>
+        tag.name.toLowerCase().replace(/ /g, '-') === activeFilter
+      )
+    );
+  }, [blogData?.blogs, activeFilter]);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo(0, 0); 
+  };
 
   if (isLoading) return (
     <div className='h-[calc(100vh-80px)] w-full flex justify-center items-center flex-col gap-2'>
       <Spinner />
-      <h1 className='font-bold text-2xl'>BloAI</h1>
+      <h1 className='font-bold text-2xl text-[#2B463C]'>BloAI</h1>
     </div>
   );
 
-  if (error || !blogs) return <div>Error loading blogs</div>;
+  if (error || !blogData) return (
+      <div className='h-[calc(100vh-80px)] w-full flex justify-center items-center text-center px-4'>
+        <p className="text-red-600 text-lg">
+            {error ? `Error loading blogs: ${error.message}` : 'Could not load blog posts. Please try again later.'}
+        </p>
+      </div>
+    );
+
+  const totalPages = Math.ceil(blogData.total / LIMIT);
 
   return (
-    <BentoGrid expanded={expanded} className="max-w-8xl mx-auto px-4">
-      {blogs.map((blog) => (
-        <Link href={`/blog/${blog.slug}`} key={blog.id}>
-          <div className="group relative bg-white dark:bg-gray-900 rounded-xl overflow-hidden hover:shadow-2xl transition-all cursor-pointer border border-gray-100 dark:border-gray-800">
-            <div className="relative h-48 overflow-hidden">
-              <CldImage
-                width={600}
-                height={400}
-                src={blog.imageUrl || 'default-image-public-id'}
-                alt={blog.title || 'Blog post image'}
-                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
-                loading="lazy"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                crop="fill"
-                gravity="auto"
-                quality="auto:best"
-                format="auto"
-                placeholder="blur"
-                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkqAcAAIUAgUW0RjgAAAAASUVORK5CYII="
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 via-transparent to-transparent" />
+    <>
+      <div className="pt-4 px-4 text-center">
+        <div className="">
+          {filterTags.length > 0 && (
+             <div className="flex flex-wrap justify-center gap-3 mb-12">
+             {filterTags.slice(0, 12).map((tag) => (
+               <Button
+                 key={tag.value}
+                 variant={'outline'}
+                 size="sm"
+                 className={cn(
+                   "rounded-full h-auto py-1.5 px-4 font-medium transition-all border-[#D1D5DB] text-gray-900 hover:bg-gray-100",
+                   activeFilter === tag.value && 'bg-[#3A6B4C] text-white border-[#3A6B4C] hover:bg-[#3A6B4C]/90'
+                 )}
+                 onClick={() => setActiveFilter(prev => prev === tag.value ? '' : tag.value)}
+               >
+                 {tag.label}
+               </Button>
+             ))}
+             <Link href='/categories'>
+             <Button
+                 variant={'outline'}
+                 size="sm"
+                 className={cn(
+                   "rounded-full h-auto py-1.5 px-4 font-medium transition-all border-[#D1D5DB] text-gray-900 hover:bg-gray-100 underline",
+                 )}
+               >
+                 + More
+               </Button>
+             </Link>
+           </div>
+          )}
+        </div>
+      </div>
 
-              <div className="absolute top-3 left-3 flex gap-2">
-                {blog.tags.slice(0, 3).map((tag, index) => (
-                  <span
-                    key={`${tag.name}-${index}`}
-                    className={`px-3 py-1 ${tagColors[tag.name] || getRandomColor()} text-white text-xs font-semibold rounded-full backdrop-blur-sm`}
-                  >
-                    {tag.name}
-                  </span>
-                ))}
-              </div>
-            </div>
+      <BentoGrid expanded={expanded} className="px-4 pb-16">
+        {filteredBlogs.length > 0 ? (
+            filteredBlogs.map((blog) => (
+                <Link href={`/blog/${blog.slug}`} key={blog.id} legacyBehavior={false}>
+                <div className="group relative bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all cursor-pointer border border-gray-100 h-full flex flex-col">
+                    <div className="relative h-48 overflow-hidden">
+                    <CldImage
+                        width={600}
+                        height={400}
+                        src={blog.imageUrl || 'your-default-placeholder-public-id'}
+                        alt={blog.title || 'Blog post image'}
+                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                        crop="fill"
+                        gravity="auto"
+                        quality="auto:best"
+                        format="auto"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-transparent" />
 
-            <div className="p-6 space-y-4">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                {blog.title}
-              </h2>
+                    <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+                        {blog.tags.slice(0, 2).map((tag) => (
+                        <span
+                            key={tag.name}
+                            className={`px-3 py-1 ${tagColors[tag.name] || 'bg-gray-800/80'} text-white text-xs font-medium rounded-full backdrop-blur-sm`}
+                        >
+                            {tag.name}
+                        </span>
+                        ))}
+                    </div>
+                    </div>
 
-              <div className="flex items-center space-x-3 text-sm text-gray-500 dark:text-gray-400">
-                <span className="flex items-center space-x-1">
-                  <FaBookOpen className="w-4 h-4" />
-                  <span>{blog.readTime} min read</span>
-                </span>
-                <span className="text-gray-300 dark:text-gray-600">•</span>
-                {blog.author && <span className="font-medium text-gray-700 dark:text-gray-300">{blog.author.name}</span>}
-              </div>
+                    <div className="p-5 space-y-3 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900 group-hover:text-[#3A6B4C] transition-colors mb-2 line-clamp-2">
+                                {blog.title}
+                            </h2>
+                        </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center space-x-4 text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center space-x-1">
-                    <FaEye className="w-5 h-5 text-blue-500/80" />
-                    <span>{blog.views >= 1000 ? `${(blog.views / 1000).toFixed(1)}k` : blog.views}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <FaHeart className="w-5 h-5 text-rose-500/80" />
-                    <span>{blog.likes}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <FaComment className="w-5 h-5 text-emerald-500/80" />
-                    <span>0</span>
-                  </div>
+                        <div>
+                            <div className="flex items-center justify-between text-sm text-gray-500 mb-2">
+                            <div className="flex items-center gap-2 flex-wrap">
+                                <span className="flex items-center gap-1 whitespace-nowrap">
+                                <FaBookOpen className="w-4 h-4 text-[#3A6B4C]" />
+                                <span>{blog.readTime} min read</span>
+                                </span>
+                                <span className="hidden sm:inline">·</span>
+                                {blog.author && <span className="font-medium whitespace-nowrap">{blog.author.name}</span>}
+                            </div>
+
+                            <div className="flex items-center gap-3 flex-shrink-0">
+                                <div className="flex items-center gap-1" title="Views">
+                                <FaEye className="w-4 h-4 text-[#3A6B4C]" />
+                                <span>{blog.views >= 1000 ? `${(blog.views / 1000).toFixed(1)}k` : blog.views}</span>
+                                </div>
+                                <div className="flex items-center gap-1" title="Likes">
+                                <FaHeart className="w-4 h-4 text-[#3A6B4C]" />
+                                <span>{blog.likes}</span>
+                                </div>
+                            </div>
+                            </div>
+
+                            <div className="text-right text-xs text-gray-400">
+                            {new Date(blog.publishDate).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                            })}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div className='text-end'>
-                <span className="text-gray-400 dark:text-gray-500 text-xs">
-                    {new Date(blog.publishDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-                </span>
-              </div>
+                </Link>
+            ))
+        ) : (
+            <div className="col-span-full text-center py-10 text-gray-500">
+                No blog posts found{activeFilter ? ` for the tag "${activeFilter.replace(/-/g, ' ')}"` : ''}.
             </div>
-          </div>
-        </Link>
-      ))}
-    </BentoGrid>
+        )}
+      </BentoGrid>
+
+      {blogData && totalPages > 1 && (
+        <div className="max-w-7xl mx-auto my-4 flex justify-center">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      )}
+    </>
   );
 }

@@ -14,6 +14,7 @@ import dynamic from 'next/dynamic';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import Spinner from '@/components/Snipper';
+import { CldImage } from 'next-cloudinary';
 
 const DynamicReactMarkdown = dynamic(
     () => import('react-markdown').then(mod => {
@@ -25,8 +26,10 @@ const DynamicReactMarkdown = dynamic(
     }
 );
 
+
 interface BlogPageContentProps {
     blog: any | null | undefined;
+    suggestedBlogs?: any | null | undefined;
 }
 
 interface Author {
@@ -55,6 +58,21 @@ interface AuthorCardProps {
     imageSize?: number;
     showSocials?: boolean;
 }
+interface SuggestedBlog {
+    slug: string;
+    title: string;
+    imageUrl?: string;
+    imageAlt?: string;
+    publishDate: Date;
+    readTime: number;
+    metaDescription: string;
+    author: {
+      name?: string;
+      image?: string;
+    };
+    tags: { name: string }[];
+}
+  
 
 const AuthorCard: React.FC<AuthorCardProps> = ({
     author,
@@ -117,7 +135,7 @@ const AuthorCard: React.FC<AuthorCardProps> = ({
 };
 
 
-const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog }) => {
+const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBlogs = [] }) => {
     const router = useRouter();
     const [isVisible, setIsVisible] = useState(false);
     const [views, setViews] = useState<number>(0);
@@ -136,7 +154,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog }) => {
 
     const structuredData = useMemo(() => {
         if (!blog) return null;
-        return {
+        const mainEntity = {
             "@context": "https://schema.org",
             "@type": "Article",
             "headline": blog.title,
@@ -161,7 +179,23 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog }) => {
                 "@type": "WebPage",
                 "@id": blog.canonicalUrl
             }
-        };
+        }
+        const suggestedItems = suggestedBlogs?.map((post: { title: any; slug: any; imageUrl: any; publishDate: any; author: { name: any; }; metaDescription: any; }) => ({
+            "@type": "Article",
+            "headline": post.title,
+            "url": `${env.NEXT_PUBLIC_APP_URL}/blog/${post.slug}`,
+            "image": post.imageUrl ? [post.imageUrl] : [],
+            "datePublished": post.publishDate,
+            "author": post.author?.name ? {
+              "@type": "Person",
+              "name": post.author.name
+            } : undefined,
+            "description": post.metaDescription
+        }));
+        return {
+            ...mainEntity,
+            "isRelatedTo": suggestedItems?.length ? suggestedItems : undefined
+          };
     }, [blog]);
 
 
@@ -272,6 +306,16 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog }) => {
             <meta name="description" content={blog.metaDescription} />
             <meta property="og:description" content={blog.metaDescription} />
             <meta name="twitter:description" content={blog.metaDescription} />
+            {suggestedBlogs?.map((post: { slug: React.Key | null | undefined; title: any; metaDescription: any; }, index: any) => (
+                <React.Fragment key={post.slug}>
+                <link rel="prefetch" href={`/blog/${post.slug}`} as="document" />
+                <meta 
+                    name={`suggested:post_${index}`} 
+                    content={`${post.title}|${post.metaDescription}`} 
+                />
+                </React.Fragment>
+            ))}
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex gap-x-8 lg:gap-x-12">
 
@@ -337,9 +381,11 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog }) => {
                             <div className="flex flex-wrap gap-2 mb-4">
                                 {blogTagsMemo}
                                 {remainingTagsCount > 0 && (
-                                    <span className="text-xs text-gray-500 self-center">
-                                        + {remainingTagsCount} more
-                                    </span>
+                                    <Link href='/categories'>
+                                        <span className="text-xs text-gray-500 self-center underline">
+                                            + {remainingTagsCount} more
+                                        </span>
+                                    </Link>
                                 )}
                             </div>
 
@@ -367,21 +413,6 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog }) => {
                             <p className="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed border-l-4 border-gray-200 pl-4">
                                 {blog.metaDescription}
                             </p>
-
-                            {/* {blog.imageUrl && (
-                                <div className="mb-8 overflow-hidden rounded-lg shadow-md">
-                                    <Image
-                                        src={blog.imageUrl}
-                                        alt={`Featured image for ${blog.title}`}
-                                        width={1200}
-                                        height={630}
-                                        className="w-full h-auto object-cover"
-                                        priority
-                                        quality={85}
-                                    />
-                                </div>
-                            )} */}
-
                             <div className="prose prose-slate max-w-none lg:prose-lg prose-img:rounded-lg prose-img:shadow-sm prose-a:text-blue-600 hover:prose-a:text-blue-800 mb-12">
                                 <DynamicReactMarkdown
                                     rehypePlugins={[rehypeRaw]}
@@ -398,16 +429,68 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog }) => {
                         </article>
                     </main>
 
-                    <aside className="hidden xl:block w-72 shrink-0">
-                        <div className="sticky top-28">
-                            <div className='bg-gradient-to-br from-gray-800 to-black p-1 rounded-2xl shadow-lg relative'>
-                                <div className="p-4 bg-white rounded-xl">
-                                     <AuthorCard author={blog.author} imageSize={80} />
-                                </div>
-                                <div className='bg-black rounded-b-xl mt-0 py-2'>
-                                    <h2 className='text-white font-semibold text-lg text-center tracking-wide'>ABOUT THE AUTHOR</h2>
-                                </div>
+                    <aside className="md:block w-72 shrink-0 hidden">
+                        <div className="sticky top-28 space-y-8">
+                        <div className='bg-gradient-to-br from-gray-800 to-black p-1 rounded-2xl shadow-lg relative'>
+                            <div className="p-4 bg-white rounded-xl">
+                            <AuthorCard author={blog.author} imageSize={80} />
                             </div>
+                            <div className='bg-black rounded-b-xl mt-0 py-2'>
+                            <h2 className='text-white font-semibold text-lg text-center tracking-wide'>TÁC GIẢ</h2>
+                            </div>
+                        </div>
+
+                        {suggestedBlogs.length > 0 && (
+                            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                                <div className="bg-gradient-to-br from-gray-800 to-black px-4 py-3">
+                                    <h2 className="text-white font-semibold text-lg text-center tracking-wide">
+                                    BÀI VIẾT LIÊN QUAN
+                                    </h2>
+                                </div>
+                            <div className="p-4 space-y-4 border-4 border-black rounded-b-xl">
+                                {suggestedBlogs.map((post: any) => (
+                                <article key={post.slug} className="group">
+                                    <Link href={`/blog/${post.slug}`} className="block" prefetch={false}>
+                                    <div className="flex gap-3">
+                                        {post.imageUrl && (
+                                        <div className="flex-shrink-0 w-20 h-20 rounded-md overflow-hidden relative">
+                                            <CldImage
+                                                width={600}
+                                                height={400}
+                                                src={post.imageUrl || 'your-default-placeholder-public-id'}
+                                                alt={post.title || 'Blog post image'}
+                                                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                                                loading="lazy"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                                crop="fill"
+                                                gravity="auto"
+                                                quality="auto:best"
+                                                format="auto"
+                                            />
+                                        </div>
+                                        )}
+                                        <div className="flex-1 min-w-0">
+                                        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                            {post.title}
+                                        </h3>
+                                        <div className="flex items-center mt-1 text-xs text-gray-500">
+                                            <span>
+                                            {new Date(post.publishDate).toLocaleDateString('en-US', {
+                                                month: 'short',
+                                                day: 'numeric'
+                                            })}
+                                            </span>
+                                            <span className="mx-1">•</span>
+                                            <span>{post.readTime} min read</span>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    </Link>
+                                </article>
+                                ))}
+                            </div>
+                            </div>
+                        )}
                         </div>
                     </aside>
                 </div>
