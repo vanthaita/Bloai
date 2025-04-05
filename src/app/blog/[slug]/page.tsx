@@ -29,7 +29,7 @@ export async function generateMetadata(
         openGraph: {
             type: 'article' as const,
             title: blog.ogTitle || blog.title,
-            description: blog.ogDescription || blog.metaDescription || truncate(blog.content, 300),
+            description: blog.ogDescription || '',
             url: blog.canonicalUrl || `${process.env.NEXT_PUBLIC_APP_URL}/blog/${blog.slug}`,
             images: blog.ogImageUrl ? [{
                 url: blog.ogImageUrl,
