@@ -2,9 +2,7 @@ import type { Metadata, ResolvingMetadata } from 'next';
 import { api } from '@/trpc/server';
 import BlogPostPageContent from './components/BlogPageContent';
 
-const truncate = (text: string, length: number) => {
-    return text.length > length ? text.substring(0, length - 3) + '...' : text;
-};
+
 type Props = {
     params: Promise<{ slug: string }>
 }
@@ -67,7 +65,7 @@ export default async function BlogPostPage({ params }: Props) {
     const blog = await api.blog.getBlog({ slug });
     const suggestedBlogs = await api.blog.getSuggestedBlogs({
         slug,
-        limit: 4
+        limit: 8
     })
     if (!blog) {
         return <div>Blog Post Not Found</div>;

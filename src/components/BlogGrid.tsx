@@ -9,6 +9,7 @@ import Spinner from './Snipper';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
 import Pagination from './Pagintion';
+import Loading from './loading';
 
 type BlogGridProps = {
   expanded: boolean,
@@ -82,10 +83,7 @@ export function BlogGrid({ expanded = false }: BlogGridProps) {
   };
 
   if (isLoading) return (
-    <div className='h-[calc(100vh-80px)] w-full flex justify-center items-center flex-col gap-2'>
-      <Spinner />
-      <h1 className='font-bold text-2xl text-[#2B463C]'>BloAI</h1>
-    </div>
+    <Loading />
   );
 
   if (error || !blogData) return (

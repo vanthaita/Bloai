@@ -15,6 +15,7 @@ import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import Spinner from '@/components/Snipper';
 import { CldImage } from 'next-cloudinary';
+import Loading from '@/components/loading';
 
 const DynamicReactMarkdown = dynamic(
     () => import('react-markdown').then(mod => {
@@ -154,9 +155,21 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
 
     const structuredData = useMemo(() => {
         if (!blog) return null;
+
+        const publisherLogo = {
+            "@type": "ImageObject",
+            "url": `https://res.cloudinary.com/dq2z27agv/image/upload/v1742958723/aeaxx8zqeqvhosqew1ka.webp`,
+            "width": 600,
+            "height": 400
+        };
+
         const mainEntity = {
             "@context": "https://schema.org",
             "@type": "Article",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": blog.canonicalUrl
+            },
             "headline": blog.title,
             "image": blog.imageUrl ? [blog.imageUrl] : [],
             "datePublished": blog.publishDate,
@@ -164,39 +177,47 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
             "author": blog.author ? {
                 "@type": "Person",
                 "name": blog.author.name,
-                "url": blog.author.id ? `${env.NEXT_PUBLIC_APP_URL}/authors/${blog.author.id}` : undefined
+                ...(blog.author.social?.twitter && { "url": `https://twitter.com/${blog.author.social.twitter}` })
             } : undefined,
             "publisher": {
                 "@type": "Organization",
                 "name": "BloAI",
-                "logo": {
-                    "@type": "ImageObject",
-                    "url": `https://res.cloudinary.com/dq2z27agv/image/upload/v1742958723/aeaxx8zqeqvhosqew1ka.webp`
-                }
+                "logo": publisherLogo
             },
             "description": blog.metaDescription,
-            "mainEntityOfPage": {
-                "@type": "WebPage",
-                "@id": blog.canonicalUrl
+            "speakable": {
+                "@type": "SpeakableSpecification",
+                "xPath": [
+                    "/html/head/title",
+                    "/html/head/meta[@name='description']/@content"
+                ]
             }
-        }
-        const suggestedItems = suggestedBlogs?.map((post: { title: any; slug: any; imageUrl: any; publishDate: any; author: { name: any; }; metaDescription: any; }) => ({
+        };
+
+        const suggestedItems = suggestedBlogs.map((post: { title: any; slug: any; imageUrl: any; publishDate: any; author: { name: any; }; metaDescription: any; }) => ({
             "@type": "Article",
             "headline": post.title,
             "url": `${env.NEXT_PUBLIC_APP_URL}/blog/${post.slug}`,
             "image": post.imageUrl ? [post.imageUrl] : [],
             "datePublished": post.publishDate,
             "author": post.author?.name ? {
-              "@type": "Person",
-              "name": post.author.name
+                "@type": "Person",
+                "name": post.author.name
             } : undefined,
             "description": post.metaDescription
         }));
+
         return {
-            ...mainEntity,
-            "isRelatedTo": suggestedItems?.length ? suggestedItems : undefined
-          };
-    }, [blog]);
+            "@context": "https://schema.org",
+            "@graph": [
+                mainEntity,
+                ...suggestedItems.map((item: any) => ({
+                    ...item,
+                    "@context": "https://schema.org"
+                }))
+            ]
+        };
+    }, [blog, suggestedBlogs]);
 
 
     const blogTagsMemo = useMemo(() => {
@@ -266,11 +287,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
 
     if (!blog) {
         return (
-            <div className='h-[calc(100vh-80px)] w-full flex justify-center items-center flex-col gap-4 p-4 text-center'>
-                <Spinner />
-                <h1 className='font-bold text-2xl text-gray-700'>Loading Blog Post...</h1>
-                <p className="text-gray-500">Please wait a moment.</p>
-            </div>
+            <Loading />
         );
     }
 
@@ -303,8 +320,6 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
                 />
             )}
-            <meta name="description" content={blog.metaDescription} />
-            <meta property="og:description" content={blog.metaDescription} />
             <meta name="twitter:description" content={blog.metaDescription} />
             {suggestedBlogs?.map((post: { slug: React.Key | null | undefined; title: any; metaDescription: any; }, index: any) => (
                 <React.Fragment key={post.slug}>
@@ -318,7 +333,6 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex gap-x-8 lg:gap-x-12">
-
                     <aside className="sticky top-28 hidden lg:block w-16 shrink-0 -ml-20 mr-4 h-[calc(100vh-10rem)]">
                         <div className="flex flex-col items-center justify-start pt-4 gap-8 h-full">
                             <div className="flex flex-col items-center gap-6">
@@ -378,6 +392,16 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
 
                     <main className="flex-1 min-w-0">
                         <article className="max-w-3xl mx-auto">
+                            <div className="flex gap-4 mb-6">
+                                <Link href="/" passHref>
+                                    <Button 
+                                        variant="ghost" 
+                                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 underline"
+                                    >
+                                        🏠 Về trang chủ
+                                    </Button>
+                                </Link>
+                            </div>
                             <div className="flex flex-wrap gap-2 mb-4">
                                 {blogTagsMemo}
                                 {remainingTagsCount > 0 && (

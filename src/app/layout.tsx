@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     siteName: 'BloAI Blog',
   },
   icons: [
-    { rel: "icon", url: "/bloai.svg" },
+    { rel: "icon", url: "/images/Logo/Bloai.svg" },
     { rel: "apple-touch-icon", sizes: "180x180", url: "/images/Logo/apple-touch-icon.png" },
     { rel: "icon", type: "image/png", sizes: "32x32", url: "/images/Logo/favicon-32x32.png" },
     { rel: "icon", type: "image/png", sizes: "16x16", url: "/images/Logo/favicon-16x16.png" },

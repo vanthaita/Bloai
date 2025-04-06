@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import { Prisma } from "@prisma/client";
 export const blogRouter = createTRPCRouter({
     create: protectedProcedure
     .input(
@@ -119,9 +120,7 @@ export const blogRouter = createTRPCRouter({
           limit: z.number().int().positive().optional().default(6)
         }))
         .query(async ({ ctx, input }) => {
-          // Get the blogs with pagination
           const skip = (input.page - 1) * input.limit;
-          
           const [blogs, totalBlogs] = await Promise.all([
             ctx.db.blog.findMany({
               skip,
@@ -178,104 +177,83 @@ export const blogRouter = createTRPCRouter({
     }),
 
     getSuggestedBlogs: publicProcedure
-      .input(z.object({
-        slug: z.string(),
-        limit: z.number().int().positive().optional().default(3)
-      }))
-      .query(async ({ ctx, input }) => {
-        try {
-          const currentBlog = await ctx.db.blog.findUnique({
-            where: { slug: input.slug },
-            select: { tags: true }
-          });
+  .input(z.object({
+    slug: z.string(),
+    limit: z.number().int().positive().optional().default(3)
+  }))
+  .query(async ({ ctx, input }) => {
+    try {
+      const currentBlog = await ctx.db.blog.findUnique({
+        where: { slug: input.slug },
+        select: { tags: { select: { id: true } } }
+      });
 
-          if (!currentBlog) {
-            throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
-          }
-          const suggestedBlogs = await ctx.db.blog.findMany({
-            where: {
-              NOT: { slug: input.slug }, 
-              tags: {
-                some: {
-                  id: {
-                    in: currentBlog.tags.map(tag => tag.id)
-                  }
-                }
-              }
-            },
-            take: input.limit,
-            orderBy: {
-              publishDate: 'desc'
-            },
-            select: { 
-              slug: true,
-              title: true,
-              imageUrl: true,
-              imageAlt: true,
-              publishDate: true,
-              readTime: true,
-              metaDescription: true,
-              author: {
-                select: {
-                  name: true,
-                  image: true
-                }
-              },
-              tags: {
-                select: {
-                  name: true
-                }
-              }
-            }
-          });
+      if (!currentBlog) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
+      }
 
-          if (suggestedBlogs.length < input.limit) {
-            const additionalBlogs = await ctx.db.blog.findMany({
-              where: {
-                NOT: {
-                  slug: {
-                    in: [input.slug, ...suggestedBlogs.map(b => b.slug)]
-                  }
-                }
-              },
-              take: input.limit - suggestedBlogs.length,
-              orderBy: {
-                publishDate: 'desc'
-              },
-              select: {
-                slug: true,
-                title: true,
-                imageUrl: true,
-                imageAlt: true,
-                publishDate: true,
-                readTime: true,
-                metaDescription: true,
-                author: {
-                  select: {
-                    name: true,
-                    image: true
-                  }
-                },
-                tags: {
-                  select: {
-                    name: true
-                  }
-                }
-              }
-            });
-            suggestedBlogs.push(...additionalBlogs);
-          }
+      const currentTagIds = currentBlog.tags.map(tag => tag.id);
+      let suggestedBlogs;
 
-          return suggestedBlogs;
-        } catch (error) {
-          if (error instanceof TRPCError) {
-            throw error;
+      if (currentTagIds.length === 0) {
+        suggestedBlogs = await ctx.db.blog.findMany({
+          where: { slug: { not: input.slug } },
+          take: input.limit,
+          orderBy: { publishDate: 'desc' },
+          select: { 
+            slug: true,
+            title: true,
+            imageUrl: true,
+            imageAlt: true,
+            publishDate: true,
+            readTime: true,
+            metaDescription: true,
+            author: { select: { name: true, image: true } },
+            tags: { select: { name: true } }
           }
-          console.error("Database error:", error);
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Failed to fetch suggested blogs",
-          });
-        }
-      }),
+        });
+      } else {
+        suggestedBlogs = await ctx.db.$queryRaw`
+        SELECT 
+          b."slug",
+          b."title",
+          b."imageUrl",
+          b."imageAlt",
+          b."publishDate",
+          b."readTime",
+          b."metaDescription",
+          json_build_object('name', a."name", 'image', a."image") as author,
+          COALESCE(
+            json_agg(json_build_object('name', t."name")) 
+            FILTER (WHERE t."id" IS NOT NULL), 
+            '[]'::json
+          ) as tags
+        FROM "Blog" b
+        INNER JOIN "User" a ON b."authorId" = a."id" 
+        LEFT JOIN "_BlogToTag" bt ON b."id" = bt."A"  
+        LEFT JOIN "Tag" t ON bt."B" = t."id"         
+        LEFT JOIN "_BlogToTag" bt_overlap 
+          ON b."id" = bt_overlap."A" 
+          AND bt_overlap."B" IN (${Prisma.join(currentTagIds)})  
+        WHERE b."slug" != ${input.slug}
+        GROUP BY b."id", a."id"
+        ORDER BY 
+          COUNT(bt_overlap."B") DESC, 
+          b."publishDate" DESC
+        LIMIT ${input.limit};
+      `;
+      }
+
+      return suggestedBlogs;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      }
+      console.error("Database error:", error);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to fetch suggested blogs",
+      });
+    }
+  }),
 });
