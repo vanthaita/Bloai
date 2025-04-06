@@ -1,5 +1,4 @@
 import { BlogGrid } from "@/components/BlogGrid";
-import Pagination from "@/components/Pagintion"; 
 
 export default async function Home() {
 

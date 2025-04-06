@@ -13,7 +13,6 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
-import Spinner from '@/components/Snipper';
 import { CldImage } from 'next-cloudinary';
 import Loading from '@/components/loading';
 
@@ -223,15 +222,16 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
     const blogTagsMemo = useMemo(() => {
         const tagsToShow = isMobile ? 3 : 5;
         return blog?.tags?.slice(0, tagsToShow).map((tag: any, index: number) => (
-            <span
+            <Link
+                href={`/categories/${encodeURIComponent(tag.name)}`}
                 key={index}
-                className="px-3 py-1 text-xs font-medium text-blue-600 rounded-full bg-blue-50 hover:bg-blue-100"
+                className="px-3 py-1 text-xs font-medium text-blue-600 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors"
                 style={{ wordBreak: 'break-word' }}
             >
                 #{tag.name.toUpperCase()}
-            </span>
+            </Link>
         )) || [];
-     }, [blog?.tags, isMobile]);
+    }, [blog?.tags, isMobile]);
 
      const remainingTagsCount = useMemo(() => {
         const tagsToShow = isMobile ? 3 : 5;
@@ -405,10 +405,11 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
                             <div className="flex flex-wrap gap-2 mb-4">
                                 {blogTagsMemo}
                                 {remainingTagsCount > 0 && (
-                                    <Link href='/categories'>
-                                        <span className="text-xs text-gray-500 self-center underline">
-                                            + {remainingTagsCount} more
-                                        </span>
+                                    <Link 
+                                        href="/categories" 
+                                        className="text-xs text-gray-500 self-center underline hover:text-gray-700"
+                                    >
+                                        + {remainingTagsCount} more
                                     </Link>
                                 )}
                             </div>
@@ -464,57 +465,66 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
                             </div>
                         </div>
 
-                        {suggestedBlogs.length > 0 && (
-                            <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                                <div className="bg-gradient-to-br from-gray-800 to-black px-4 py-3">
-                                    <h2 className="text-white font-semibold text-lg text-center tracking-wide">
-                                    BÀI VIẾT LIÊN QUAN
-                                    </h2>
-                                </div>
-                            <div className="p-4 space-y-4 border-4 border-black rounded-b-xl">
-                                {suggestedBlogs.map((post: any) => (
-                                <article key={post.slug} className="group">
-                                    <Link href={`/blog/${post.slug}`} className="block" prefetch={false}>
-                                    <div className="flex gap-3">
-                                        {post.imageUrl && (
-                                        <div className="flex-shrink-0 w-20 h-20 rounded-md overflow-hidden relative">
-                                            <CldImage
-                                                width={600}
-                                                height={400}
-                                                src={post.imageUrl || 'your-default-placeholder-public-id'}
-                                                alt={post.title || 'Blog post image'}
-                                                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
-                                                loading="lazy"
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                                                crop="fill"
-                                                gravity="auto"
-                                                quality="auto:best"
-                                                format="auto"
-                                            />
+                        <div className='overflow-y-auto max-h-[calc(100vh-260px)] p-4 space-y-6 scroll-custom'>
+                            {suggestedBlogs.map((post: SuggestedBlog) => (
+                                <article key={post.slug} className="group mb-4 last:mb-0">
+                                <div className="flex gap-3">
+                                    <Link 
+                                    href={`/blog/${post.slug}`}
+                                    className="flex gap-3 flex-1"
+                                    prefetch={false}
+                                    aria-label={`Đọc bài viết: ${post.title}`}
+                                    >
+                                    {post.imageUrl && (
+                                        <div className="flex-shrink-0 w-20 h-20 rounded-md overflow-hidden relative 
+                                        transition-transform duration-300 group-hover:scale-105">
+                                        <CldImage
+                                            width={600}
+                                            height={400}
+                                            src={post.imageUrl}
+                                            alt={post.imageAlt || post.title}
+                                            className="w-full h-full object-cover"
+                                            loading="lazy"
+                                            sizes="(max-width: 768px) 100vw, 50vw"
+                                        />
                                         </div>
-                                        )}
-                                        <div className="flex-1 min-w-0">
-                                        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                                            {post.title}
+                                    )}
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 
+                                        group-hover:text-blue-600 transition-colors
+                                        underline-offset-4 hover:underline">
+                                        {post.title}
                                         </h3>
                                         <div className="flex items-center mt-1 text-xs text-gray-500">
-                                            <span>
-                                            {new Date(post.publishDate).toLocaleDateString('en-US', {
-                                                month: 'short',
-                                                day: 'numeric'
+                                        <time dateTime={post.publishDate.toISOString()}>
+                                            {new Date(post.publishDate).toLocaleDateString('vi-VN', {
+                                            day: 'numeric',
+                                            month: 'short',
+                                            year: 'numeric'
                                             })}
-                                            </span>
-                                            <span className="mx-1">•</span>
-                                            <span>{post.readTime} min read</span>
-                                        </div>
+                                        </time>
+                                        <span className="mx-1">•</span>
+                                        <span>{post.readTime} phút đọc</span>
                                         </div>
                                     </div>
                                     </Link>
+                                </div>
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {post.tags.slice(0, 2).map((tag, index) => (
+                                    <Link
+                                        key={index}
+                                        href={`/categories/${encodeURIComponent(tag.name)}`}
+                                        className="px-2 py-0.5 text-xs font-medium text-blue-600 
+                                        bg-blue-50 rounded-full hover:bg-blue-100 transition-colors"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        #{tag.name}
+                                    </Link>
+                                    ))}
+                                </div>
                                 </article>
-                                ))}
+                            ))}
                             </div>
-                            </div>
-                        )}
                         </div>
                     </aside>
                 </div>

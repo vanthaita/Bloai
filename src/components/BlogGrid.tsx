@@ -15,19 +15,6 @@ type BlogGridProps = {
   expanded: boolean,
 }
 
-const CURATED_TAGS = [
-  'Career in Japan',
-  'Tech Interviews',
-  'Visa Guide',
-  'Japanese Culture',
-  'Startups',
-  'Web Development',
-  'AI',
-  'Remote Work',
-  'Language Tips',
-  'Industry Trends'
-];
-
 const tagColors: { [key: string]: string } = {
   'Career in Japan': 'bg-[#3A6B4C]',
   'Tech Interviews': 'bg-[#2B463C]',

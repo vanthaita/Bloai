@@ -14,8 +14,8 @@ const Footer = () => {
   ];
 
   const socials = [
-    { name: 'Twitter', href: '#', icon: <FaTwitter /> },
-    { name: 'GitHub', href: '#', icon: <FaGithub /> },
+    { name: 'Twitter', href: 'https://x.com/Bloai_Team', icon: <FaTwitter /> },
+    { name: 'GitHub', href: 'https://github.com/TDevUIT/Bloai', icon: <FaGithub /> },
     { name: 'LinkedIn', href: '#', icon: <FaLinkedinIn /> },
   ];
 
