@@ -14,9 +14,7 @@ import Navbar from '@/section/Navbar';
 import { useIsMobile } from '@/hook/use-mobile';
 import { useOpenAppSidebar } from '@/hook/use-app-sidebar';
 import { AUTH_ROUTES } from '@/lib/route';
-import NewsMarquee from '@/section/NewsMarquee';
 import Footer from '@/components/Footer';
-import Image from 'next/image';
 import Logo from '@/components/logo';
 
 interface MenuItem {
