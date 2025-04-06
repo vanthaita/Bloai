@@ -34,7 +34,7 @@ const Navbar = () => {
       {isMobile && (
         <div className="flex items-center">
           <Link href="/" className='font-bold text-xl'>
-            BloAI
+            Bloai
           </Link>
         </div>
       )}
