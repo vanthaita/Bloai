@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         throw new Error("Missing NEXT_PUBLIC_SITE_URL environment variable for sitemap generation.");
     }
 
-    const [blogs, tags, authors] = await Promise.all([
+    const [blogs ] = await Promise.all([
         db.blog.findMany({
             select: {
                 slug: true,
@@ -22,19 +22,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             return [];
         }),
         
-        db.tag.findMany({
-            select: { name: true }, 
-        }).catch(error => {
-            console.error("Tag fetch error:", error);
-            return [];
-        }),
+        // db.tag.findMany({
+        //     select: { name: true }, 
+        // }).catch(error => {
+        //     console.error("Tag fetch error:", error);
+        //     return [];
+        // }),
 
-        db.user.findMany({
-            select: { id: true }, 
-        }).catch(error => {
-            console.error("Authors fetch error:", error);
-            return [];
-        }),
+        // db.user.findMany({
+        //     select: { id: true }, 
+        // }).catch(error => {
+        //     console.error("Authors fetch error:", error);
+        //     return [];
+        // }),
     ]);
 
     const blogEntries = blogs.map(blog => ({
@@ -43,30 +43,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
         changeFrequency: 'weekly' as const,
     }));
-    const tagEntries = tags.map(tag => ({
-        url: `${baseUrl}/tags/${encodeURIComponent(tag.name)}`,
-        lastModified: new Date(),
-        priority: 0.8,
-        changeFrequency: 'weekly' as const,
-    }));
-
-    const generateEntries = (
-        items: Array<{ 
-            slug?: string
-            name?: string 
-            id?: string 
-            updatedAt?: Date 
-        }>,
-        path: string,
-        priority: number,
-        changeFrequency: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never' = 'weekly'
-    ) => items.map(item => ({
-        url: `${baseUrl}/${path}/${item.slug || item.name || item.id}`,
-        lastModified: item.updatedAt || new Date(),
-        priority,
-        changeFrequency,
-    }));
-
     const staticUrls: MetadataRoute.Sitemap = [
         {
             url: baseUrl,
