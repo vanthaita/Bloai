@@ -86,8 +86,8 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="bg-gray-50 py-20">
-        <div className="container mx-auto px-4">
+      <section className="bg-white-50 py-20">
+        <div className="container mx-auto px-8">
           <h2 className="text-3xl font-bold text-center mb-12">Chúng tôi mang đến điều gì</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
@@ -102,7 +102,7 @@ const LandingPage = () => {
       </section>
 
       {/* Why Us Section */}
-      <section id="why-us" className="w-full py-16 md:py-24 px-6">
+      <section id="why-us" className="w-full py-16 md:py-10px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
             💡 Tại sao bạn nên theo dõi blog này?
@@ -140,7 +140,7 @@ const LandingPage = () => {
         </div>
       </section>
       {/* Team Section */}
-      <section className="bg-gray-50 py-12">
+      <section className=" py-12">
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="flex items-center gap-3 mb-8">
             <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />

@@ -11,7 +11,8 @@ const Footer = () => {
     { name: 'Danh mục', href: '/categories' },
     { name: 'Về chúng tôi', href: '/about' },
     { name: 'Liên hệ', href: '/contact' },
-    
+    { name: 'FAQs', href: '/faqs' },
+    { name: 'Điều khoản & Chính sách bảo mật', href: '/privacy' },
   ];
 
   const socials = [
