@@ -5,10 +5,6 @@ import Link from 'next/link';
 import { api } from '@/trpc/react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tag, FolderOpen, BookOpenText, AlertTriangle } from 'lucide-react';
-import { env } from '@/env';
-
-const BASE_URL = env.NEXT_PUBLIC_APP_URL;
-const CATEGORIES_PAGE_PATH = '/tags';
 
 const CategoriesPage = () => {
   const { data, isLoading, error } = api.blog.getAllTags.useQuery({
@@ -16,47 +12,6 @@ const CategoriesPage = () => {
     limit: 100, 
   });
 
-  const generateStructuredData = () => {
-    if (!data || !data.tags || data.tags.length === 0) {
-      return null;
-    }
-    const currentPageUrl = `${BASE_URL}${CATEGORIES_PAGE_PATH}`;
-    const itemListElement = data.tags.map((tag, index) => {
-      const tagUrl = `${BASE_URL}/tags/${tag.name}`; 
-      return {
-        '@type': 'ListItem',
-        position: index + 1,
-        item: {
-          '@type': 'Thing', 
-          url: tagUrl,
-          name: tag.name,
-          description: tag.description || `Các bài viết thuộc chuyên mục ${tag.name}`,
-        },
-      };
-    });
-    const structuredData = {
-      '@context': 'https://schema.org',
-      '@type': 'ItemList',
-      name: 'Danh sách Chuyên mục Bài viết - Bloai Blog',
-      description: 'Khám phá các chuyên mục và chủ đề bài viết đa dạng trên Bloai Blog.',
-      url: currentPageUrl,
-      mainEntityOfPage: {
-        '@type': 'WebPage',
-        '@id': currentPageUrl,
-      },
-      itemListElement: itemListElement,
-      breadcrumb: {
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: BASE_URL + '/' },
-          { '@type': 'ListItem', position: 2, name: 'Danh mục', item: currentPageUrl },
-        ],
-      },
-    };
-    return JSON.stringify(structuredData);
-  };
-
-  const structuredDataJson = generateStructuredData();
 
   if (isLoading) return <CategoriesLoadingSkeleton />;
 
@@ -79,13 +34,6 @@ const CategoriesPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 p-4 sm:p-6 lg:p-8">
-      {structuredDataJson && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: structuredDataJson }}
-        />
-      )}
-
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 border-b border-gray-200 pb-6 text-center md:mb-12">
           <h1 className="mb-3 flex items-center justify-center gap-2 text-3xl font-bold text-gray-900 font-serif sm:mb-4 sm:gap-3 sm:text-4xl lg:text-5xl">
@@ -102,9 +50,8 @@ const CategoriesPage = () => {
             {data.tags.map((tag) => {
               const tagSlug = tag.name; 
               return (
-                <Link
+                <div
                   key={tag.id}
-                  href={`/tags/${tagSlug}`}
                   className="group transform transition-all duration-300 ease-in-out hover:-translate-y-1"
                 >
                   <div className="flex h-full flex-col rounded-lg border border-gray-200/80 bg-white p-4 shadow-md transition-shadow hover:shadow-lg hover:border-indigo-300 sm:p-5">
@@ -142,7 +89,7 @@ const CategoriesPage = () => {
                       </div>
                     </div>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>
