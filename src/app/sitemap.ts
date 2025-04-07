@@ -43,7 +43,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
         changeFrequency: 'weekly' as const,
     }));
-    console.log(blogEntries);
     const tagEntries = tags.map(tag => ({
         url: `${baseUrl}/tags/${encodeURIComponent(tag.name)}`,
         lastModified: new Date(),
@@ -104,7 +103,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
         ...staticUrls,
         ...blogEntries,
-        ...tagEntries,
-        ...generateEntries(authors, 'author', 0.6, 'monthly'),
     ];
 }
