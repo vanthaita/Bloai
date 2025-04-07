@@ -13,7 +13,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import Loading from "@/components/loading";
 
 export const metadata: Metadata = {
-  title: "BloAI Blog - Kiến thức AI từ Cơ bản đến Nâng cao",
+  title: "Bloai Blog - Kiến thức AI từ Cơ bản đến Nâng cao",
   description: "Khám phá cách sử dụng AI trong mọi lĩnh vực, hướng dẫn chi tiết về Trí tuệ Nhân tạo, và ứng dụng thực tế của AI vào công việc và cuộc sống.",
   keywords: [
     "AI",
@@ -57,18 +57,18 @@ export const metadata: Metadata = {
     "AI Framework",
     "AI Model"
   ],
-  authors: [{ name: "BloAI Team" }],
+  authors: [{ name: "Bloai Team" }],
   openGraph: {
     type: 'website',
     locale: 'vi_VN',
     url: 'https://bloai.blog',
-    siteName: 'BloAI Blog',
+    siteName: 'Bloai Blog',
     images: [
       {
         url: 'https://bloai.blog/images/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'BloAI Blog',
+        alt: 'Bloai Blog',
       },
     ],
   },
@@ -96,7 +96,7 @@ const inter = Inter({
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "BloAI Blog",
+  "name": "Bloai Blog",
   "url": "https://bloai.blog",
   "logo": "https://bloai.blog/images/Logo/Bloai.svg",
   "description": "Trang tin tức và hướng dẫn về Trí tuệ Nhân tạo hàng đầu Việt Nam",

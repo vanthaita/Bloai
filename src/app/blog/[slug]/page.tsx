@@ -70,5 +70,5 @@ export default async function BlogPostPage({ params }: Props) {
     if (!blog) {
         return <div>Blog Post Not Found</div>;
     }
-    return <BlogPostPageContent blog={blog} suggestedBlogs={suggestedBlogs} />;
+    return <BlogPostPageContent blog={blog} suggestedBlogs={suggestedBlogs as []} />;
 }
