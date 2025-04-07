@@ -10,6 +10,7 @@ export const AUTH_ROUTES = [
 export const PUBLIC_ROUTES = [
   "/",
   "/blog",
+  "/tags",
   "/about",
   "/landing",
   "/categories",
