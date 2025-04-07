@@ -1,6 +1,5 @@
 'use client'
 import { usePathname, useRouter } from 'next/navigation'
-import Head from 'next/head'
 import Image from 'next/image'
 import { api } from '@/trpc/react'
 import Loading from '@/components/loading'
@@ -71,32 +70,15 @@ const TagDetailsPage = () => {
                 "name": "Your Blog Name"
             },
             "image": blog.imageUrl,
-            "url": `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${blog.slug}`
+            "url": `${process.env.NEXT_PUBLIC_APP_URL}/blog/${blog.slug}`
         }))
     }
 
     return (
         <>
-            <Head>
-                <title>{`${tag.name} Tag - Bloai`}</title>
-                <meta name="description" content={metaDescription} />
-                <meta property="og:title" content={`${tag.name} Tag - Bloai`} />
-                <meta property="og:description" content={metaDescription} />
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content={`${process.env.NEXT_PUBLIC_APP_URL}${pathname}`} />
-                <meta property="og:image" content={tag.blogs[0]?.imageUrl || '/default-og-image.jpg'} />
-                
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content={`${tag.name} Tag - Bloai`} />
-                <meta name="twitter:description" content={metaDescription} />
-                <meta name="twitter:image" content={tag.blogs[0]?.imageUrl || '/default-twitter-image.jpg'} />
-
-                <link rel="canonical" href={`${process.env.NEXT_PUBLIC_APP_URL}${pathname}`} />
-                <script type="application/ld+json">
-                    {JSON.stringify(structuredData)}
-                </script>
-            </Head>
-
+            <script type="application/ld+json">
+                {JSON.stringify(structuredData)}
+            </script>
             <div className="min-h-screen bg-gray-50">
                 <header className="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-16">
                     <div className="container mx-auto px-4 text-center">
@@ -189,6 +171,9 @@ const TagDetailsPage = () => {
                             </svg>
                             <h3 className="text-xl text-gray-600 mb-2">No articles found</h3>
                             <p className="text-gray-500">We couldn't find any articles tagged with {tag.name}.</p>
+                            <Link className='underline' href='/'>
+                                <p className='text-2xl font-medium'>Home</p>
+                            </Link>
                         </div>
                     )}
                 </main>

@@ -359,7 +359,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
         const tagsToShow = isMobile ? 3 : 5;
         return blog.tags.slice(0, tagsToShow).map((tag: { name: string }, index: number) => (
             <Link
-                href={`/categories/${encodeURIComponent(tag.name)}`}
+                href={`/tags/${encodeURIComponent(tag.name)}`}
                 key={`${tag.name}-${index}`}
                 className="px-3 py-1 text-xs font-medium text-blue-600 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors"
             >

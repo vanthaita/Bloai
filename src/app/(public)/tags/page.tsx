@@ -8,7 +8,7 @@ import { Tag, FolderOpen, BookOpenText, AlertTriangle } from 'lucide-react';
 import { env } from '@/env';
 
 const BASE_URL = env.NEXT_PUBLIC_APP_URL;
-const CATEGORIES_PAGE_PATH = '/categories';
+const CATEGORIES_PAGE_PATH = '/tags';
 
 const CategoriesPage = () => {
   const { data, isLoading, error } = api.blog.getAllTags.useQuery({
@@ -22,7 +22,7 @@ const CategoriesPage = () => {
     }
     const currentPageUrl = `${BASE_URL}${CATEGORIES_PAGE_PATH}`;
     const itemListElement = data.tags.map((tag, index) => {
-      const tagUrl = `${BASE_URL}/blog/tag/${tag.name}`; 
+      const tagUrl = `${BASE_URL}/tags/${tag.name}`; 
       return {
         '@type': 'ListItem',
         position: index + 1,
