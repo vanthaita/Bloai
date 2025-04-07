@@ -28,7 +28,7 @@ const tagColors: { [key: string]: string } = {
   'Industry Trends': 'bg-[#6B8E7C]'
 };
 
-const LIMIT = 6;
+const LIMIT = 9;
 
 export function BlogGrid({ expanded = false }: BlogGridProps) {
   const [currentPage, setCurrentPage] = useState(1); 
@@ -103,7 +103,7 @@ export function BlogGrid({ expanded = false }: BlogGridProps) {
                  {tag.label}
                </Button>
              ))}
-             <Link href='/categories'>
+             <Link href='/tags'>
              <Button
                  variant={'outline'}
                  size="sm"

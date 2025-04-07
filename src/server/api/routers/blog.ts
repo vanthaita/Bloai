@@ -92,8 +92,8 @@ export const blogRouter = createTRPCRouter({
             const blog = await ctx.db.blog.findUnique({
                 where: { slug: input.slug },
                 include: {
-                tags: true,
-                author: true,
+                  tags: true,
+                  author: true,
                 },
             });
 
@@ -256,4 +256,38 @@ export const blogRouter = createTRPCRouter({
       });
     }
   }),
+  getBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const decodedSlug = decodeURIComponent(input.slug)
+      const tag = await ctx.db.tag.findFirst({
+        where: { name: decodedSlug },
+        include: {
+          blogs: {
+            select: {
+              id: true,
+              title: true,
+              slug: true,
+              metaDescription: true,
+              imageUrl: true,
+              imageAlt: true,
+              publishDate: true,
+              readTime: true,
+              author: true,
+              tags: true,
+            },
+            orderBy: { publishDate: 'desc' },
+          },
+        },
+      })
+
+      if (!tag) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Tag not found',
+        })
+      }
+
+      return tag
+    }),
 });
