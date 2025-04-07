@@ -37,15 +37,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }),
     ]);
 
-    const validBlogs = blogs.filter(blog => {
-        const blogUrl = `${baseUrl}/blog/${blog.slug}`;
-        return !blog.canonicalUrl || blog.canonicalUrl === blogUrl;
-    });
-
-    const blogEntries = validBlogs.map(blog => ({
-        url: `${baseUrl}/blog/${blog.slug}`,
+    const blogEntries = blogs.map(blog => ({
+        url: `${blog.canonicalUrl}`,
         lastModified: blog.updatedAt || new Date(),
-        priority: blog.featured ? 0.85 : 0.8,
+        priority: 0.8,
+        changeFrequency: 'weekly' as const,
+    }));
+    console.log(blogEntries);
+    const tagEntries = tags.map(tag => ({
+        url: `${baseUrl}/tags/${encodeURIComponent(tag.name)}`,
+        lastModified: new Date(),
+        priority: 0.8,
         changeFrequency: 'weekly' as const,
     }));
 
@@ -102,7 +104,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
         ...staticUrls,
         ...blogEntries,
-        ...generateEntries(tags, 'tags', 0.7),
+        ...tagEntries,
         ...generateEntries(authors, 'author', 0.6, 'monthly'),
     ];
 }
