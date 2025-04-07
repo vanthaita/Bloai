@@ -290,8 +290,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
             <Loading />
         );
     }
-
-     if (!blog.author) {
+    if (!blog.author) {
          return (
              <div className="flex flex-col items-center justify-center min-h-[300px] gap-4 text-center p-4">
                  <div className="inline-flex items-center gap-2 text-amber-600">
@@ -406,7 +405,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
                                 {blogTagsMemo}
                                 {remainingTagsCount > 0 && (
                                     <Link 
-                                        href="/categories" 
+                                        href="/tags" 
                                         className="text-xs text-gray-500 self-center underline hover:text-gray-700"
                                     >
                                         + {remainingTagsCount} more
@@ -513,7 +512,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({ blog, suggestedBl
                                     {post.tags.slice(0, 2).map((tag, index) => (
                                     <Link
                                         key={index}
-                                        href={`/categories/${encodeURIComponent(tag.name)}`}
+                                        href={`/tags/${encodeURIComponent(tag.name)}`}
                                         className="px-2 py-0.5 text-xs font-medium text-blue-600 
                                         bg-blue-50 rounded-full hover:bg-blue-100 transition-colors"
                                         onClick={(e) => e.stopPropagation()}

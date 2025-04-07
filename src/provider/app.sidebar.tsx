@@ -53,16 +53,16 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
       title: "Menu",
       items: [
         { name: "Trang chủ", icon: <FaHome />, href: "/" },
-        { name: "Đang theo dõi", icon: <FaUsers />, href: "/following" },
+        // { name: "Đang theo dõi", icon: <FaUsers />, href: "/following" },
         { name: "Tags", icon: <FaTag />, href: "/tags" },
       ]
     },
     {
-      title: "Đánh dấu",
+      title: "",
       items: [
-        { name: "Lưu nhanh", icon: <FaBookmark />, href: "/saved" },
-        { name: "Đọc sau", icon: <FaRegClock />, href: "/read-later" }, 
-        { name: "Đã thích", icon: <FaHeart />, href: "/liked" }, 
+        // { name: "Lưu nhanh", icon: <FaBookmark />, href: "/saved" },
+        // { name: "Đọc sau", icon: <FaRegClock />, href: "/read-later" }, 
+        // { name: "Đã thích", icon: <FaHeart />, href: "/liked" }, 
       ]
     }
   ];
@@ -214,9 +214,6 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
               <div className='h-14'>
                 <Navbar />
               </div>
-              {/* <div className='w-full overflow-y-hidden'>
-                <NewsMarquee />
-              </div> */}
               {children}
               <Footer />
             </main>

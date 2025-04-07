@@ -104,7 +104,7 @@ const CategoriesPage = () => {
               return (
                 <Link
                   key={tag.id}
-                  href={`/blog/tag/${tagSlug}`}
+                  href={`/tags/${tagSlug}`}
                   className="group transform transition-all duration-300 ease-in-out hover:-translate-y-1"
                 >
                   <div className="flex h-full flex-col rounded-lg border border-gray-200/80 bg-white p-4 shadow-md transition-shadow hover:shadow-lg hover:border-indigo-300 sm:p-5">

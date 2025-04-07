@@ -117,7 +117,7 @@ const Navbar = () => {
                   <p className="text-xs text-gray-500 truncate" role="none">{user.email}</p>
                 </div>
                 <div className="py-1" role="none">
-                  <Link
+                  {/* <Link
                     href="/profile"
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                     role="menuitem"
@@ -132,7 +132,7 @@ const Navbar = () => {
                   >
                     <FaCog className="w-4 h-4 mr-3 text-gray-400" />
                     Settings
-                  </Link>
+                  </Link> */}
                 </div>
                 <div className="py-1" role="none">
                   <button

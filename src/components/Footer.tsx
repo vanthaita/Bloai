@@ -8,7 +8,7 @@ const Footer = () => {
 
   const links = [
     { name: 'Trang chủ', href: '/' },
-    { name: 'Danh mục', href: '/categories' },
+    { name: 'Danh mục', href: '/tags' },
     { name: 'Về chúng tôi', href: '/about' },
     { name: 'Liên hệ', href: '/contact' },
   ];
