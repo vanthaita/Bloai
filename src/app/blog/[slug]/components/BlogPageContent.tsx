@@ -540,7 +540,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                 {blog.metaDescription}
                             </p>
 
-                            <div className="mb-10 p-2 border-2">
+                            <div className="mb-10 p-2 border-2 md:block hidden">
                                 <Label className="text-xl font-bold mb-4 text-orange-700 flex items-center gap-2 pb-2 border-b-2 border-orange-100">
                                     <span className="p-2 bg-orange-100 rounded-full">📦</span>
                                     Mục lục
@@ -578,7 +578,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                         ))}
                                     </ul>
                                 </nav>
-                                </div>
+                            </div>
 
 
                             <div className="prose prose-slate max-w-none lg:prose-lg prose-headings:scroll-mt-24 prose-img:rounded-lg prose-img:shadow-md prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-a:transition-colors prose-a:duration-150 prose-code:before:content-none prose-code:after:content-none mb-12">
@@ -667,7 +667,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
             {isVisible && (
                 <button
                     onClick={scrollToTop}
-                    className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-white transition-all duration-300 ease-in-out transform hover:scale-110"
+                    className="fixed bottom-20 right-2 md:bottom-8 md:right-8 z-50 bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-white transition-all duration-300 ease-in-out transform hover:scale-110"
                     aria-label='Scroll to top'
                     title="Scroll back to top"
                 >
