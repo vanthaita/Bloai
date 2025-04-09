@@ -570,7 +570,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                                         <span className="absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-orange-300 rounded-full" />
                                                     )}
                                                     
-                                                    <DynamicReactMarkdown className="truncate">
+                                                    <DynamicReactMarkdown>
                                                         {heading.level === 3 ? `↳ ${heading.text}` : heading.text}
                                                     </DynamicReactMarkdown>
                                                 </Link>

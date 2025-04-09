@@ -21,20 +21,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             console.error("Blog fetch error:", error);
             return [];
         }),
-        
-        // db.tag.findMany({
-        //     select: { name: true }, 
-        // }).catch(error => {
-        //     console.error("Tag fetch error:", error);
-        //     return [];
-        // }),
-
-        // db.user.findMany({
-        //     select: { id: true }, 
-        // }).catch(error => {
-        //     console.error("Authors fetch error:", error);
-        //     return [];
-        // }),
     ]);
 
     const blogEntries = blogs.map(blog => ({
