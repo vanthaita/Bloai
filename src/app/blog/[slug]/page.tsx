@@ -5,12 +5,11 @@ import BlogPostClientWrapper from './components/BlogPostClientWrapper';
 import { Blog, SuggestedBlog } from '@/types/helper.type';
 
 type Props = {
-    params: { slug: string };
-};
+    params: Promise<{ slug: string }>
+}
 
 export async function generateMetadata(
     { params }: Props,
-    parent: ResolvingMetadata 
 ): Promise<Metadata> {
     const { slug } = await params;
 
