@@ -9,12 +9,7 @@ import { Mail,LockKeyhole  } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
-import { auth } from '@/server/auth';
-import { env } from '@/env';
-import { AUTH_ROUTES, DEFAULT_SIGNIN_REDIRECT } from '@/lib/route';
 const SignInPage = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const callbackUrl = '/'
   const [password, setPassword] = useState('');
