@@ -306,8 +306,11 @@ const AboutPage = () => {
             "@type": "Organization",
             name: "BloAI",
             description: "Blog về trí tuệ nhân tạo (AI) với nội dung dễ hiểu và thực tế cho người mới bắt đầu.",
-            url: "https://bloai.vercel.app",
-            logo: "/images/Logo/web-app-manifest-512x512.png",
+            url: "https://www.bloai.blog/about",
+            logo:  {
+              "@type": "ImageObject",
+              "url": "https://www.bloai.blog/images/Logo/favicon-32x32.png"
+            },
             sameAs: ["https://github.com/TDevUIT/Bloai"],
             member: {
               "@type": "OrganizationRole",
