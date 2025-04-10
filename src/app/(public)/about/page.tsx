@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { ArrowRight, Bot, Brain, Code, TrendingUp, Rocket, Users, BookOpen, Mail, Linkedin, Github } from "lucide-react"
 
-const LandingPage = () => {
+const AboutPage = () => {
   const [heroImage] = useState(
     "https://images.unsplash.com/photo-1507146426996-ef05306b995a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
   )
@@ -16,7 +16,8 @@ const LandingPage = () => {
       bio: "Nhóm sinh viên nhiệt huyết với AI",
       avatar: "/images/Logo/web-app-manifest-512x512.png",
     },
-  ]
+  ];
+  
 
   const features = [
     {
@@ -296,8 +297,41 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
+       {/* Schema.org markup for Organization */}
+       <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "BloAI",
+            description: "Blog về trí tuệ nhân tạo (AI) với nội dung dễ hiểu và thực tế cho người mới bắt đầu.",
+            url: "https://bloai.vercel.app",
+            logo: "/images/Logo/web-app-manifest-512x512.png",
+            sameAs: ["https://github.com/TDevUIT/Bloai"],
+            member: {
+              "@type": "OrganizationRole",
+              member: {
+                "@type": "Person",
+                name: "Nhóm BloAI",
+              },
+              roleName: "Nhà phát triển & Content Creator",
+            },
+            knowsAbout: ["Trí tuệ nhân tạo", "Machine Learning", "AI cho người mới bắt đầu", "Ứng dụng AI"],
+            offers: {
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Service",
+                name: "Kiến thức AI từ cơ bản đến nâng cao",
+                description:
+                  "Các bài viết dễ hiểu về học AI cho người mới bắt đầu, giúp bạn tiếp cận công nghệ này mà không cần kiến thức chuyên sâu.",
+              },
+            },
+          }),
+        }}
+      />
     </div>
   )
 }
 
-export default LandingPage
+export default AboutPage
