@@ -10,8 +10,10 @@ export const AUTH_ROUTES = [
 export const PUBLIC_ROUTES = [
   "/",
   "/blog",
+  "/tags",
   "/about",
   "/landing",
+  "/contact",
   "/sitemap.xml",
   "/robots.txt",
   "/favicon.ico",

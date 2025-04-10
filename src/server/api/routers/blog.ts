@@ -1,8 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { db } from "@/server/db";
-
+import { Prisma } from "@prisma/client";
 export const blogRouter = createTRPCRouter({
     create: protectedProcedure
     .input(
@@ -76,7 +75,6 @@ export const blogRouter = createTRPCRouter({
         }, {
           timeout: 10000, 
         });
-
         return { success: true, result };
       } catch (err) {
         console.error(err);
@@ -94,8 +92,8 @@ export const blogRouter = createTRPCRouter({
             const blog = await ctx.db.blog.findUnique({
                 where: { slug: input.slug },
                 include: {
-                tags: true,
-                author: true,
+                  tags: true,
+                  author: true,
                 },
             });
 
@@ -116,24 +114,180 @@ export const blogRouter = createTRPCRouter({
             }
         }),
 
-    getAllBlog: publicProcedure
+        getAllBlog: publicProcedure
         .input(z.object({
-        page: z.number().int().positive().optional().default(1), 
-        limit: z.number().int().positive().optional().default(6)
+          page: z.number().int().positive().optional().default(1), 
+          limit: z.number().int().positive().optional().default(6)
         }))
         .query(async ({ ctx, input }) => {
+          const skip = (input.page - 1) * input.limit;
+          const [blogs, totalBlogs] = await Promise.all([
+            ctx.db.blog.findMany({
+              skip,
+              take: input.limit,
+              orderBy: { publishDate: 'desc' },
+              include: {
+                tags: true,
+                author: true,
+              },
+            }),
+            ctx.db.blog.count() 
+          ]);
+      
+          const totalPages = Math.ceil(totalBlogs / input.limit);
+      
+          return {
+            blogs,
+            total: totalBlogs,
+            totalPages,
+            currentPage: input.page,
+            limit: input.limit
+          };
+        }),
+    getAllTags: publicProcedure
+      .input(z.object({
+        page: z.number().int().positive().optional().default(1),
+        limit: z.number().int().positive().optional().default(10)
+      }))
+      .query(async ({ ctx, input }) => {
         const skip = (input.page - 1) * input.limit;
-        
-        const blogs = await ctx.db.blog.findMany({
-            skip: skip,
-            take: input.limit,
-            orderBy: { publishDate: 'desc' },
-            include: {
-            tags: true,
-            author: true,
-            },
+        const tags = await ctx.db.tag.findMany({
+          skip: skip,
+          take: input.limit,
+          include: {
+            _count: {
+              select: { blogs: true }
+            }
+          },
+          orderBy: {
+            blogs: {
+              _count: 'desc'
+            }
+          }
         });
         
-        return blogs;
+        const totalTags = await ctx.db.tag.count();
+        
+        return {
+          tags,
+          totalTags,
+          totalPages: Math.ceil(totalTags / input.limit),
+          currentPage: input.page
+        };
+    }),
+
+    getSuggestedBlogs: publicProcedure
+  .input(z.object({
+    slug: z.string(),
+    limit: z.number().int().positive().optional().default(3)
+  }))
+  .query(async ({ ctx, input }) => {
+    try {
+      const currentBlog = await ctx.db.blog.findUnique({
+        where: { slug: input.slug },
+        select: { tags: { select: { id: true } } }
+      });
+
+      if (!currentBlog) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
+      }
+
+      const currentTagIds = currentBlog.tags.map(tag => tag.id);
+      let suggestedBlogs;
+
+      if (currentTagIds.length === 0) {
+        suggestedBlogs = await ctx.db.blog.findMany({
+          where: { slug: { not: input.slug } },
+          take: input.limit,
+          orderBy: { publishDate: 'desc' },
+          select: { 
+            slug: true,
+            title: true,
+            imageUrl: true,
+            imageAlt: true,
+            publishDate: true,
+            readTime: true,
+            metaDescription: true,
+            author: { select: { name: true, image: true } },
+            tags: { select: { name: true } }
+          }
+        });
+      } else {
+        suggestedBlogs = await ctx.db.$queryRaw`
+        SELECT 
+          b."slug",
+          b."title",
+          b."imageUrl",
+          b."imageAlt",
+          b."publishDate",
+          b."readTime",
+          b."metaDescription",
+          json_build_object('name', a."name", 'image', a."image") as author,
+          COALESCE(
+            json_agg(json_build_object('name', t."name")) 
+            FILTER (WHERE t."id" IS NOT NULL), 
+            '[]'::json
+          ) as tags
+        FROM "Blog" b
+        INNER JOIN "User" a ON b."authorId" = a."id" 
+        LEFT JOIN "_BlogToTag" bt ON b."id" = bt."A"  
+        LEFT JOIN "Tag" t ON bt."B" = t."id"         
+        LEFT JOIN "_BlogToTag" bt_overlap 
+          ON b."id" = bt_overlap."A" 
+          AND bt_overlap."B" IN (${Prisma.join(currentTagIds)})  
+        WHERE b."slug" != ${input.slug}
+        GROUP BY b."id", a."id"
+        ORDER BY 
+          COUNT(bt_overlap."B") DESC, 
+          b."publishDate" DESC
+        LIMIT ${input.limit};
+      `;
+      }
+
+      return suggestedBlogs;
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      }
+      console.error("Database error:", error);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to fetch suggested blogs",
+      });
+    }
+  }),
+  getBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const decodedSlug = decodeURIComponent(input.slug)
+      const tag = await ctx.db.tag.findFirst({
+        where: { name: decodedSlug },
+        include: {
+          blogs: {
+            select: {
+              id: true,
+              title: true,
+              slug: true,
+              metaDescription: true,
+              imageUrl: true,
+              imageAlt: true,
+              publishDate: true,
+              readTime: true,
+              author: true,
+              tags: true,
+            },
+            orderBy: { publishDate: 'desc' },
+          },
+        },
+      })
+
+      if (!tag) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Tag not found',
+        })
+      }
+
+      return tag
     }),
 });

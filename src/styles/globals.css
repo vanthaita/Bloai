@@ -127,3 +127,16 @@ html {
 .animate-bloom {
   animation: bloom 1.5s ease-in-out infinite;
 }
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  scroll-margin-top: 100px;
+  transition: all 0.3s ease;
+}
+
+.prose h1:hover,
+.prose h2:hover,
+.prose h3:hover {
+  color: #2563eb;
+}
