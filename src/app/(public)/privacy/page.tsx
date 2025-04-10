@@ -7,8 +7,6 @@ import { FaArrowLeft, FaBook, FaLock, FaShieldAlt } from "react-icons/fa"
 export default function TermsAndPrivacy() {
   return (
     <main className="bg-gray-50 min-h-screen">
-      {/* Header */}
-      {/* Main Content */}
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="text-center mb-12">
           <div className="flex items-center gap-4 mb-6 justify-center">
@@ -25,7 +23,6 @@ export default function TermsAndPrivacy() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {/* Terms of Use */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -68,7 +65,6 @@ export default function TermsAndPrivacy() {
             </div>
           </motion.div>
 
-          {/* Privacy Policy */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -116,34 +112,6 @@ export default function TermsAndPrivacy() {
             </div>
           </motion.div>
         </div>
-
-        {/* Read More Section */}
-        <div className="mt-12 text-center">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
-              <FaLock className="text-lg" />
-            </div>
-            <div className="text-left">
-              <p className="text-gray-700">
-                <span className="font-medium text-blue-600">📌 Đọc chi tiết tại đây:</span>{" "}
-                <Link href="/" className="text-blue-600 underline hover:text-blue-700">
-                  Xem Chính sách
-                </Link>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <footer className="mt-20 text-center text-gray-500 text-sm">
-          <p>© 2025 BloAI. Bản quyền thuộc về nhóm sinh viên UIT.</p>
-          <p className="mt-2">
-            Liên hệ:{" "}
-            <a href="mailto:ie204seo@gmail.com" className="text-blue-600">
-              ie204seo@gmail.com
-            </a>
-          </p>
-        </footer>
       </div>
     </main>
   )

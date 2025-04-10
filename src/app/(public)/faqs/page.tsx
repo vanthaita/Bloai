@@ -4,8 +4,11 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { FaQuestionCircle, FaArrowRight, FaEnvelope, FaChevronDown } from "react-icons/fa"
 
-// Simple Accordion Item Component
-const AccordionItem = ({ question , answer }) => {
+interface AccordionItemProps {
+  question: string
+  answer: string
+}
+const AccordionItem = ({ question, answer }: AccordionItemProps) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -44,9 +47,32 @@ export default function FAQsPage() {
     },
   ]
 
+  interface ResourceItem {
+    title: string
+    description: string
+    link: string
+  }
+
+  const resources: ResourceItem[] = [
+    {
+      title: "Bài viết cho người mới",
+      description: "Các bài viết cơ bản giúp bạn bắt đầu với AI một cách dễ dàng.",
+      link: "/",
+    },
+    {
+      title: "Hướng dẫn thực hành",
+      description: "Các hướng dẫn từng bước để áp dụng AI vào các dự án thực tế.",
+      link: "/",
+    },
+    {
+      title: "Cộng đồng hỏi đáp",
+      description: "Tham gia cộng đồng để đặt câu hỏi và chia sẻ kiến thức.",
+      link: "/",
+    },
+  ]
+
   return (
     <div className="min-h-screen bg-white text-gray-800">
-      {/* Header Section */}
       <section className="bg-gradient-to-r from-blue-50 to-indigo-50 py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-5xl mx-auto text-center">
@@ -64,7 +90,6 @@ export default function FAQsPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
       <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-5xl mx-auto">
@@ -87,7 +112,7 @@ export default function FAQsPage() {
                 chúng tôi.
               </p>
               <Link
-                href="/"
+                href="/contact"
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl text-white font-medium transition-colors"
               >
                 <FaEnvelope />
@@ -98,7 +123,6 @@ export default function FAQsPage() {
         </div>
       </section>
 
-      {/* Related Resources Section */}
       <section className="bg-gray-50 py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-5xl mx-auto">
@@ -110,23 +134,7 @@ export default function FAQsPage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  title: "Bài viết cho người mới",
-                  description: "Các bài viết cơ bản giúp bạn bắt đầu với AI một cách dễ dàng.",
-                  link: "/",
-                },
-                {
-                  title: "Hướng dẫn thực hành",
-                  description: "Các hướng dẫn từng bước để áp dụng AI vào các dự án thực tế.",
-                  link: "/",
-                },
-                {
-                  title: "Cộng đồng hỏi đáp",
-                  description: "Tham gia cộng đồng để đặt câu hỏi và chia sẻ kiến thức.",
-                  link: "/",
-                },
-              ].map((resource, index) => (
+              {resources.map((resource, index) => (
                 <motion.div
                   key={index}
                   whileHover={{ y: -5 }}
@@ -148,7 +156,6 @@ export default function FAQsPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="mb-24 mt-12">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
@@ -184,4 +191,3 @@ export default function FAQsPage() {
     </div>
   )
 }
-

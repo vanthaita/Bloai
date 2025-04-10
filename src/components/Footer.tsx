@@ -68,10 +68,18 @@ const Footer = () => {
       "@type": "ListItem",
       "position": index + 1,
       "item": {
-        "@type": "Product",
+        "@type": "WebApplication",
         "name": tool.name,
         "url": tool.href,
-        "description": tool.description
+        "description": tool.description,
+        "applicationCategory": "AI Writing Tool",
+        "operatingSystem": "Web",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/OnlineOnly"
+        }
       }
     }))
   };

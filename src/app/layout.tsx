@@ -17,17 +17,16 @@ export const metadata: Metadata = {
     default: "Bloai Blog",
     template: "%s | Bloai Blog"
   },
-  description: "Trang tin tức và hướng dẫn về AI Việt Nam",
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/images/Logo/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/images/Logo/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/images/Logo/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-  },
+  description: "Bloai Blog - Trang tin tức, hướng dẫn và chia sẻ kiến thức chuyên sâu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam. Cập nhật xu hướng công nghệ mới nhất, ứng dụng AI trong đời sống, kinh doanh, giáo dục và các lĩnh vực đột phá. Khám phá bài viết chi tiết về ChatGPT, Midjourney, AI Generative cùng hướng dẫn thực tế, phù hợp cho cả người mới bắt đầu và chuyên gia. Đồng hành cùng cộng đồng AI Việt Nam!",
+  // icons: {
+  //   // icon: [
+  //   //   { url: '/images/Logo/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+  //   //   { url: '/images/Logo/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+  //   // ],
+  //   apple: [
+  //     { url: '/images/Logo/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+  //   ],
+  // },
   metadataBase: new URL('https://www.bloai.blog'),
 };
 

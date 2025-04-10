@@ -2,14 +2,26 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Bot, Brain, Code, TrendingUp, Rocket, Users, BookOpen, Mail, Linkedin, Github } from "lucide-react"
+import { ArrowRight, Bot, Brain, Code, TrendingUp, Users, BookOpen, Mail } from "lucide-react"
+import { FaGithub, FaLinkedin } from "react-icons/fa"
+interface TeamMember {
+  name: string
+  role: string
+  bio: string
+  avatar: string
+}
 
+interface Feature {
+  icon: JSX.Element
+  title: string
+  desc: string
+}
 const AboutPage = () => {
   const [heroImage] = useState(
     "https://images.unsplash.com/photo-1507146426996-ef05306b995a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
   )
 
-  const teamMembers = [
+  const teamMembers: TeamMember[] = [
     {
       name: "Nhóm BloAI",
       role: "Nhà phát triển & Content Creator",
@@ -19,7 +31,7 @@ const AboutPage = () => {
   ];
   
 
-  const features = [
+  const features:Feature[] = [
     {
       icon: <Bot className="text-blue-600 h-6 w-6" />,
       title: "Kiến thức AI từ cơ bản đến nâng cao",
@@ -41,10 +53,47 @@ const AboutPage = () => {
       desc: "Chúng tôi giới thiệu các nền tảng AI miễn phí, khóa học AI online, cùng với mẹo tối ưu hóa AI cho công việc và học tập.",
     },
   ]
+  const schemaMarkup = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "BloAI",
+    url: "https://www.bloai.blog/",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: "https://www.bloai.blog/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "BloAI",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://www.bloai.blog/images/Logo/web-app-manifest-512x512.png",
+        width: 512,
+        height: 512
+      },
+      foundingDate: "2023",
+      founders: [
+        {
+          "@type": "Person",
+          name: "Nhóm BloAI"
+        }
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "ie204seo@gmail.com",
+        contactType: "customer service"
+      },
+      sameAs: ["https://github.com/TDevUIT/Bloai"]
+    },
+    mainEntityOfPage: {
+      "@type": "AboutPage",
+      "@id": "https://www.bloai.blog/about"
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white text-gray-800">
-      {/* Hero Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           <div className="lg:w-1/2 mb-12 lg:mb-0">
@@ -86,7 +135,6 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="bg-white-50 py-20">
         <div className="container mx-auto px-8">
           <h2 className="text-3xl font-bold text-center mb-12">Chúng tôi mang đến điều gì</h2>
@@ -102,7 +150,6 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Why Us Section */}
       <section id="why-us" className="w-full py-16 md:py-10px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
@@ -140,7 +187,6 @@ const AboutPage = () => {
           </div>
         </div>
       </section>
-      {/* Team Section */}
       <section className=" py-12">
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="flex items-center gap-3 mb-8">
@@ -178,20 +224,20 @@ const AboutPage = () => {
               <div className="flex items-center gap-4">
                 <div className="relative w-20 h-20 flex-shrink-0">
                   <Image
-                    src={teamMembers[0].avatar || "/placeholder.svg"}
-                    alt={teamMembers[0].name}
+                    src={teamMembers[0]?.avatar || "/placeholder.svg"}
+                    alt={teamMembers[0]?.name || ''}
                     width={80}
                     height={80}
                     className="rounded-xl object-contain"
                   />
                 </div>
                 <div className="space-y-2">
-                  <h4 className="text-xl font-bold text-gray-900">{teamMembers[0].name}</h4>
-                  <p className="text-gray-600 text-sm">{teamMembers[0].role}</p>
+                  <h4 className="text-xl font-bold text-gray-900">{teamMembers[0]?.name}</h4>
+                  <p className="text-gray-600 text-sm">{teamMembers[0]?.role}</p>
                   <div className="flex gap-3">
                     {[
-                      { icon: <Linkedin className="h-4 w-4" />, color: "text-[#0A66C2]" },
-                      { icon: <Github className="h-4 w-4" />, color: "text-gray-700" },
+                      { icon: <FaLinkedin className="h-4 w-4" />, color: "text-[#0A66C2]" },
+                      { icon: <FaGithub className="h-4 w-4" />, color: "text-gray-700" },
                     ].map((item, index) => (
                       <a
                         key={index}
@@ -208,7 +254,6 @@ const AboutPage = () => {
           </div>
         </div>
       </section>
-      {/* Contact Section */}
       <section className="container mx-auto px-4 py-12 mb-8 max-w-5xl">
         <div className="flex items-center gap-3 mb-8">
           <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
@@ -255,8 +300,8 @@ const AboutPage = () => {
               <p className="font-medium text-gray-600 text-sm">Theo dõi chúng tôi</p>
               <div className="flex gap-4">
                 {[
-                  { icon: <Linkedin className="h-4 w-4" />, color: "bg-[#0A66C2]/10", text: "text-[#0A66C2]" },
-                  { icon: <Github className="h-4 w-4" />, color: "bg-gray-700/10", text: "text-gray-700" },
+                  { icon: <FaLinkedin className="h-4 w-4" />, color: "bg-[#0A66C2]/10", text: "text-[#0A66C2]" },
+                  { icon: <FaGithub className="h-4 w-4" />, color: "bg-gray-700/10", text: "text-gray-700" },
                 ].map((item, index) => (
                   <a
                     key={index}
@@ -271,7 +316,6 @@ const AboutPage = () => {
           </div>
         </div>
       </section>
-      {/* CTA Section */}
       <section id="get-started" className="w-full py-16 md:py-24 bg-blue-50 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">📢 Bắt đầu ngay!</h2>
@@ -288,50 +332,12 @@ const AboutPage = () => {
             >
               Khám Phá Blog
             </Link>
-            <Link
-              href="/subscribe"
-              className="bg-white text-blue-600 px-8 py-4 rounded-md font-medium min-w-[200px] text-center text-lg hover:bg-gray-50 transition-colors border border-blue-200"
-            >
-              Đăng Ký Nhận Tin
-            </Link>
           </div>
         </div>
       </section>
-       {/* Schema.org markup for Organization */}
-       <script
+      <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            name: "BloAI",
-            description: "Blog về trí tuệ nhân tạo (AI) với nội dung dễ hiểu và thực tế cho người mới bắt đầu.",
-            url: "https://www.bloai.blog/about",
-            logo:  {
-              "@type": "ImageObject",
-              "url": "https://www.bloai.blog/images/Logo/favicon-32x32.png"
-            },
-            sameAs: ["https://github.com/TDevUIT/Bloai"],
-            member: {
-              "@type": "OrganizationRole",
-              member: {
-                "@type": "Person",
-                name: "Nhóm BloAI",
-              },
-              roleName: "Nhà phát triển & Content Creator",
-            },
-            knowsAbout: ["Trí tuệ nhân tạo", "Machine Learning", "AI cho người mới bắt đầu", "Ứng dụng AI"],
-            offers: {
-              "@type": "Offer",
-              itemOffered: {
-                "@type": "Service",
-                name: "Kiến thức AI từ cơ bản đến nâng cao",
-                description:
-                  "Các bài viết dễ hiểu về học AI cho người mới bắt đầu, giúp bạn tiếp cận công nghệ này mà không cần kiến thức chuyên sâu.",
-              },
-            },
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
       />
     </div>
   )
