@@ -1,0 +1,19 @@
+{
+    "name": "Bloai",
+    "short_name": "Bloai Blog - Trang tin tức, hướng dẫn và chia sẻ kiến thức chuyên sâu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam. Cập nhật xu hướng công nghệ mới nhất, ứng dụng AI trong đời sống, kinh doanh, giáo dục và các lĩnh vực đột phá. Khám phá bài viết chi tiết về ChatGPT, Midjourney, AI Generative cùng hướng dẫn thực tế, phù hợp cho cả người mới bắt đầu và chuyên gia. Đồng hành cùng cộng đồng AI Việt Nam!",
+    "icons": [
+      {
+        "src": "/android-chrome-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/android-chrome-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "theme_color": "#ffffff",
+    "background_color": "#ffffff",
+    "display": "standalone"
+  }

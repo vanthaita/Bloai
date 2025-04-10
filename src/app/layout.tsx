@@ -105,6 +105,7 @@ export default async function RootLayout({
     <SessionProvider session={session}>
       <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
         <head>
+          <link ref="icon" href="/images/icon.ico" sizes="any"/>
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
