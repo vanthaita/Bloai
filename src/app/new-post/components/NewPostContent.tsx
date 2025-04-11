@@ -243,15 +243,14 @@ const NewPostContent = () => {
     return (
         <TooltipProvider>
             <div className="bg-white min-h-screen p-1 md:p-4">
+                <div onClick={() => router.back()} className='max-w-10'>
+                    <Button variant='outline' className='flex justify-start items-center gap-x-2'>
+                        <ArrowLeft />
+                        <span>Trở lại</span>
+                    </Button>
+                </div>
                 <Card>
-                    <div onClick={() => router.back()}>
-                        <Button variant='outline' className='flex justify-start items-center gap-x-2'>
-                            <ArrowLeft />
-                            <span>Trở lại</span>
-                        </Button>
-                    </div>
                     <CardHeader>
-                        
                         <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
                             Tạo Bài Viết Mới
                             <Tooltip>

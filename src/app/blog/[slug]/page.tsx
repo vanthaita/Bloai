@@ -74,22 +74,23 @@ export async function generateMetadata(
 export default async function BlogPostPage({ params }: Props) {
     const { slug } = await params; 
 
-    const [blog, suggestedBlogsResult] = await Promise.all([
-        api.blog.getBlog({ slug }),
-        api.blog.getSuggestedBlogs({ slug, limit: 6 }) 
-    ]);
+    // const [blog, suggestedBlogsResult] = await Promise.all([
+    //     api.blog.getBlog({ slug }),
+    //     api.blog.getSuggestedBlogs({ slug, limit: 6 }) 
+    // ]);
 
-    if (!blog) {
-        notFound();
-    }
+    // if (!blog) {
+    //     notFound();
+    // }
 
-    const suggestedBlogs = suggestedBlogsResult ?? []; 
+    // const suggestedBlogs = suggestedBlogsResult ?? []; 
 
   
     return (
-        <BlogPostClientWrapper
-            blogData={blog as Blog} 
-            suggestedBlogsData={suggestedBlogs as SuggestedBlog[]} 
-        />
+        <h1>hello</h1>
+        // <BlogPostClientWrapper
+        //     blogData={[blog as Blog]} 
+        //     suggestedBlogsData={suggestedBlogs as SuggestedBlog[]} 
+        // />
     );
 }

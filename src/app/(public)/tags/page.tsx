@@ -32,7 +32,6 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   }
 }
-
 const TagPage = () => {
   return (
     <TagsContent />
