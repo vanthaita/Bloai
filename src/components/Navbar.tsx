@@ -87,7 +87,7 @@ const Navbar = () => {
           <div className="relative flex gap-x-4" ref={dropdownRef}>
             <Link href='/new-post'>
               <Button className='bg-neutral-950 text-white hover:bg-gray-800'>
-                New Post
+                Tạo Blog
               </Button>
             </Link>
             <button

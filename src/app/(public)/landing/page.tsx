@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaArrowRight, FaRobot, FaBrain, FaCode, FaChartLine, FaTwitter, FaLinkedin, FaGithub } from 'react-icons/fa';
+import { homePageSchemaLd, safeJsonLdStringify } from '@/config/seo';
 
 const LandingPage = () => {
   const [heroImage] = useState('https://images.unsplash.com/photo-1507146426996-ef05306b995a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
@@ -19,22 +20,11 @@ const LandingPage = () => {
     { id: 2, title: "Fine-tuning Stable Diffusion", category: "Computer Vision", excerpt: "Tối ưu model gen ảnh theo phong cách riêng" },
     { id: 3, title: "Deploy AI Model", category: "MLOps", excerpt: "Triển khai model với Docker và Kubernetes" }
   ];
-  const homeSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Bloai Blog - Trang chủ",
-    "url": "https://www.bloai.blog/landing",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://www.bloai.blog/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  };
   return (
     <>
      <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(homePageSchemaLd) }}
       />
         <div className="min-h-screen bg-white text-gray-800">
         <section className="container mx-auto px-4 py-16">

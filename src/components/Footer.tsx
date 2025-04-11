@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FaTwitter, FaGithub, FaLinkedinIn } from 'react-icons/fa';
+import { FaTwitter, FaGithub, FaLinkedinIn, FaFacebook } from 'react-icons/fa';
 import Logo from './logo'; 
 
 const Footer = () => {
@@ -17,10 +17,8 @@ const Footer = () => {
   const socials = [
     { name: 'Twitter', href: 'https://x.com/Bloai_Team', icon: <FaTwitter /> },
     { name: 'GitHub', href: 'https://github.com/TDevUIT/Bloai', icon: <FaGithub /> },
-    { name: 'LinkedIn', href: '#', icon: <FaLinkedinIn /> }, 
+    { name: 'Facebook', href: 'https://www.youtube.com/channel/UCi396lyYi5FURzdp-W93lHg', icon: <FaFacebook /> }, 
   ];
-  
-  
   const recommendedTools = [
     {
       name: 'CopyAI',
@@ -44,56 +42,8 @@ const Footer = () => {
     },
   ];
 
-  const schemaMarkup = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Bloai Team",
-    "url": "https://www.bloai.blog/",
-    "logo": "https://yourdomain.com/images/logo.png",
-    "description": "Bài viết sâu sắc về công nghệ, thiết kế và phát triển. Khám phá tương lai AI cùng Bloai.",
-    "sameAs": socials
-      .filter(social => social.href !== '#')
-      .map(social => social.href),
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "email": "contact@yourdomain.com",
-      "contactType": "customer service"
-    }
-  };
-
-  const toolSchemaMarkup = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": recommendedTools.map((tool, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "item": {
-        "@type": "WebApplication",
-        "name": tool.name,
-        "url": tool.href,
-        "description": tool.description,
-        "applicationCategory": "AI Writing Tool",
-        "operatingSystem": "Web",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD",
-          "availability": "https://schema.org/OnlineOnly"
-        }
-      }
-    }))
-  };
-
   return (
     <>
-     <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(toolSchemaMarkup) }}
-      />
       <footer className="">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12 mb-10 md:mb-12">

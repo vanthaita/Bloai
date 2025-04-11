@@ -3,27 +3,14 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { contactPageSchemaLd, safeJsonLdStringify } from "@/config/seo"
 
 const ContactPage = () => {
-  const contactSchema = {
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    "name": "Liên hệ Bloai Blog",
-    "url": "https://www.bloai.blog/contact",
-    "description": "Trang liên hệ và hỗ trợ từ Bloai Blog",
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+84-123-456-789",
-      "contactType": "customer service",
-      "email": "ie204seo@gmail.com",
-      "areaServed": "VN"
-    }
-  }
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(contactPageSchemaLd)}}
       />
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-16">

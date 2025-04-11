@@ -5,8 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { generateOpenGraphTitle, generateOpenGraphDescription } from '@/lib/action';
-import { toast } from 'react-toastify';
-import Spinner from '@/components/Snipper'; 
+import { AIGenerationButton } from './AIGenerationButton';
 
 interface AdvancedSEOFormFieldsProps {
     canonicalUrl: string;
@@ -50,48 +49,26 @@ export const AdvancedSEOFormFields: React.FC<AdvancedSEOFormFieldsProps> = ({
      
     };
 
-    const handleGenerateOgTitle = async () => {
-       if (!contentForAI) {
-            toast.info("Vui lòng nhập nội dung chính trước khi tạo bằng AI.");
-            return;
+    const handleGenerateOgTitle = async (content: string) => {
+        try {
+            const generated = await generateOpenGraphTitle(content);
+            if (generated) setOgTitle(generated);
+            return generated;
+        } catch (error) {
+            console.error(error);
+            return null;
         }
-       setIsGeneratingOgTitle(true);
-       try {
-           const generated = await generateOpenGraphTitle(contentForAI);
-           if (generated) {
-               setOgTitle(generated);
-               toast.success(`OG Title đã được tạo bằng AI.`);
-           } else {
-               toast.warn(`AI không thể tạo OG Title.`);
-           }
-       } catch (error) {
-            console.error(`Error generating OG Title:`, error);
-            toast.error(`Lỗi khi tạo OG Title bằng AI.`);
-       } finally {
-           setIsGeneratingOgTitle(false);
-       }
     };
 
-    const handleGenerateOgDesc = async () => {
-        if (!contentForAI) {
-            toast.info("Vui lòng nhập nội dung chính trước khi tạo bằng AI.");
-            return;
+    const handleGenerateOgDesc = async (content: string) => {
+        try {
+            const generated = await generateOpenGraphDescription(content);
+            if (generated) setOgDescription(generated);
+            return generated;
+        } catch (error) {
+            console.error(error);
+            return null;
         }
-       setIsGeneratingOgDescription(true);
-       try {
-           const generated = await generateOpenGraphDescription(contentForAI);
-           if (generated) {
-               setOgDescription(generated);
-               toast.success(`OG Description đã được tạo bằng AI.`);
-           } else {
-               toast.warn(`AI không thể tạo OG Description.`);
-           }
-       } catch (error) {
-            console.error(`Error generating OG Description:`, error);
-            toast.error(`Lỗi khi tạo OG Description bằng AI.`);
-       } finally {
-           setIsGeneratingOgDescription(false);
-       }
     };
 
     return (
@@ -118,16 +95,14 @@ export const AdvancedSEOFormFields: React.FC<AdvancedSEOFormFieldsProps> = ({
             <div className="space-y-1.5">
                 <Label htmlFor="ogTitle" className="flex items-center gap-2 text-sm">
                     OG Title
-                     <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="text-blue-600 hover:text-blue-700 h-auto px-2 py-1 text-xs"
-                        onClick={handleGenerateOgTitle}
-                        disabled={isGeneratingOgTitle}
-                    >
-                        {isGeneratingOgTitle ? <><Spinner className="h-3 w-3 mr-1" /> Đang tạo...</> : "Tạo AI"}
-                    </Button>
+                    <AIGenerationButton
+                        label="OG Title"
+                        action={handleGenerateOgTitle}
+                        isGenerating={isGeneratingOgTitle}
+                        setIsGenerating={setIsGeneratingOgTitle}
+                        contentForAI={contentForAI}
+                        requiresContent={true}
+                    /> 
                 </Label>
                 <Input
                     id="ogTitle"
@@ -142,16 +117,14 @@ export const AdvancedSEOFormFields: React.FC<AdvancedSEOFormFieldsProps> = ({
             <div className="space-y-1.5">
                 <Label htmlFor="ogDescription" className="flex items-center gap-2 text-sm">
                     OG Description
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="text-blue-600 hover:text-blue-700 h-auto px-2 py-1 text-xs"
-                        onClick={handleGenerateOgDesc}
-                        disabled={isGeneratingOgDescription}
-                    >
-                        {isGeneratingOgDescription ? <><Spinner className="h-3 w-3 mr-1" /> Đang tạo...</> : "Tạo AI"}
-                    </Button>
+                    <AIGenerationButton
+                        label="OG Description"
+                        action={handleGenerateOgDesc}
+                        isGenerating={isGeneratingOgDescription}
+                        setIsGenerating={setIsGeneratingOgDescription}
+                        contentForAI={contentForAI}
+                        requiresContent={true}
+                    />
                 </Label>
                 <Textarea
                     id="ogDescription"

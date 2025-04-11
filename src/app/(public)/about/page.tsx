@@ -4,6 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { ArrowRight, Bot, Brain, Code, TrendingUp, Users, BookOpen, Mail } from "lucide-react"
 import { FaGithub, FaLinkedin } from "react-icons/fa"
+import { aboutPageSchemaLd, safeJsonLdStringify } from "@/config/seo"
 interface TeamMember {
   name: string
   role: string
@@ -53,45 +54,6 @@ const AboutPage = () => {
       desc: "Chúng tôi giới thiệu các nền tảng AI miễn phí, khóa học AI online, cùng với mẹo tối ưu hóa AI cho công việc và học tập.",
     },
   ]
-  const schemaMarkup = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "BloAI",
-    url: "https://www.bloai.blog/",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: "https://www.bloai.blog/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "BloAI",
-      logo: {
-        "@type": "ImageObject",
-        url: "https://www.bloai.blog/images/Logo/web-app-manifest-512x512.png",
-        width: 512,
-        height: 512
-      },
-      foundingDate: "2023",
-      founders: [
-        {
-          "@type": "Person",
-          name: "Nhóm BloAI"
-        }
-      ],
-      contactPoint: {
-        "@type": "ContactPoint",
-        email: "ie204seo@gmail.com",
-        contactType: "customer service"
-      },
-      sameAs: ["https://github.com/TDevUIT/Bloai"]
-    },
-    mainEntityOfPage: {
-      "@type": "AboutPage",
-      "@id": "https://www.bloai.blog/about"
-    }
-  }
-
   return (
     <div className="min-h-screen bg-white text-gray-800">
       <section className="container mx-auto px-4 py-16">
@@ -337,7 +299,7 @@ const AboutPage = () => {
       </section>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(aboutPageSchemaLd)}}
       />
     </div>
   )

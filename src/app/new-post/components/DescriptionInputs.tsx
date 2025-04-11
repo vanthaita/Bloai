@@ -3,9 +3,7 @@ import React, { ChangeEvent } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { generateExcerpt, generateMetaDescription } from '@/lib/action'; 
-import { toast } from 'react-toastify'; 
-import Spinner from '@/components/Snipper';
-import { Button } from '@/components/ui/button';
+import { AIGenerationButton } from './AIGenerationButton';
 
 
 interface DescriptionInputsProps {
@@ -39,47 +37,30 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
 }) => {
 
     const handleGenerateExcerpt = async () => {
-       if (!contentForAI) {
-            toast.info("Vui lòng nhập nội dung chính trước khi tạo bằng AI.");
-            return;
-        }
-       setIsGeneratingExcerpt(true);
-       try {
-           const generated = await generateExcerpt(contentForAI);
-           if (generated) {
-               setDescription(generated);
-               toast.success(`Mô tả ngắn đã được tạo bằng AI.`);
-           } else {
-               toast.warn(`AI không thể tạo Mô tả ngắn.`);
-           }
-       } catch (error) {
+      
+        try {
+            const generated = await generateExcerpt(contentForAI);
+            if (generated) {
+                setDescription(generated);
+            } 
+            return generated;
+        } catch (error) {
             console.error(`Error generating Mô tả ngắn:`, error);
-            toast.error(`Lỗi khi tạo Mô tả ngắn bằng AI.`);
-       } finally {
-           setIsGeneratingExcerpt(false);
-       }
+            return null;
+        }
     };
 
      const handleGenerateMetaDesc = async () => {
-       if (!contentForAI) {
-            toast.info("Vui lòng nhập nội dung chính trước khi tạo bằng AI.");
-            return;
-        }
-       setIsGeneratingMetaDesc(true);
-       try {
-           const generated = await generateMetaDescription(contentForAI);
-           if (generated) {
-               setMetaDescription(generated);
-               toast.success(`Meta Mô tả đã được tạo bằng AI.`);
-           } else {
-               toast.warn(`AI không thể tạo Meta Mô tả.`);
-           }
-       } catch (error) {
+        try {
+            const generated = await generateMetaDescription(contentForAI);
+            if (generated) {
+                setMetaDescription(generated);
+            }
+            return generated;
+        } catch (error) {
             console.error(`Error generating Meta Mô tả:`, error);
-            toast.error(`Lỗi khi tạo Meta Mô tả bằng AI.`);
-       } finally {
-           setIsGeneratingMetaDesc(false);
-       }
+            return null;
+        }
     };
 
 
@@ -88,16 +69,14 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
             <div className="space-y-1.5">
                 <Label htmlFor="description" className="flex items-center gap-2 text-base">
                     Mô tả ngắn (Excerpt)
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="text-blue-600 hover:text-blue-700 h-auto px-2 py-1 text-xs"
-                        onClick={handleGenerateExcerpt}
-                        disabled={isGeneratingExcerpt}
-                    >
-                        {isGeneratingExcerpt ? <><Spinner className="h-3 w-3 mr-1" /> Đang tạo...</> : "Tạo AI"}
-                    </Button>
+                    <AIGenerationButton
+                        label="Mô tả ngắn"
+                        action={handleGenerateExcerpt}
+                        isGenerating={isGeneratingExcerpt}
+                        setIsGenerating={setIsGeneratingExcerpt}
+                        contentForAI={contentForAI}
+                        requiresContent={true}
+                    />
                 </Label>
                 <Textarea
                     id="description"
@@ -113,19 +92,17 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
             <div className="space-y-1.5">
                 <Label htmlFor="metaDescription" className="flex items-center gap-2 text-base">
                     Meta Mô tả *
-                    <span className={`text-xs ${metaDescription.length >= 120 && metaDescription.length <= 160 ? 'text-green-600' : 'text-yellow-600'}`}>
-                        ({metaDescription.length}/160 ký tự)
+                    <span className={`text-xs ${metaDescription.length >= 120 && metaDescription.length <= 165 ? 'text-green-600' : 'text-yellow-600'}`}>
+                        ({metaDescription.length}/165 ký tự)
                     </span>
-                     <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="text-blue-600 hover:text-blue-700 h-auto px-2 py-1 text-xs"
-                        onClick={handleGenerateMetaDesc}
-                        disabled={isGeneratingMetaDesc}
-                    >
-                        {isGeneratingMetaDesc ? <><Spinner className="h-3 w-3 mr-1" /> Đang tạo...</> : "Tạo AI"}
-                    </Button>
+                    <AIGenerationButton
+                        label="Meta Mô tả"
+                        action={handleGenerateMetaDesc}
+                        isGenerating={isGeneratingMetaDesc}
+                        setIsGenerating={setIsGeneratingMetaDesc}
+                        contentForAI={contentForAI}
+                        requiresContent={true}
+                    />
                 </Label>
                 <Textarea
                     id="metaDescription"
