@@ -12,11 +12,11 @@ const ContactPage = () => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(contactPageSchemaLd)}}
       />
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-linear-to-b from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-16">
         <div className="text-center space-y-6">
           <div className="relative inline-block">
-            <h1 className="text-5xl font-bold text-gray-900 bg-clip-text bg-gradient-to-r from-primary to-blue-600">
+            <h1 className="text-5xl font-bold text-gray-900 bg-clip-text bg-linear-to-r from-primary to-blue-600">
               Liên Hệ Với Chúng Tôi
             </h1>
             <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 h-1 w-24 bg-primary rounded-full" />

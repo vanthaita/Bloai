@@ -33,7 +33,7 @@ const BlogShareSidebar: React.FC<BlogShareSidebarProps> = ({ blog, views }) => {
                 <div className="flex flex-col items-center gap-6">
                     <button
                         onClick={handleShare}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors group focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                        className="p-2 hover:bg-gray-100 rounded-full transition-colors group focus:outline-hidden focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
                         aria-label="Copy link to share this article"
                         title="Copy Link"
                     >
@@ -47,7 +47,7 @@ const BlogShareSidebar: React.FC<BlogShareSidebarProps> = ({ blog, views }) => {
                         </span>
                     </div>
 
-                    <div className="h-px w-6 bg-gradient-to-r from-transparent via-gray-300 to-transparent my-2" />
+                    <div className="h-px w-6 bg-linear-to-r from-transparent via-gray-300 to-transparent my-2" />
 
                     <div className="flex flex-col gap-3">
                         <a

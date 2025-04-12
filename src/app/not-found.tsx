@@ -49,12 +49,12 @@ const NotFound = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Nhập từ khóa bài viết..."
-                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out"
+                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-l-md focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out"
                 aria-label="Tìm kiếm bài viết"
               />
               <button
                 type="submit"
-                className="bg-blue-600 px-5 py-2.5 rounded-r-md flex items-center justify-center text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition duration-200 ease-in-out disabled:opacity-50"
+                className="bg-blue-600 px-5 py-2.5 rounded-r-md flex items-center justify-center text-white hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition duration-200 ease-in-out disabled:opacity-50"
                 disabled={!searchQuery.trim()}
                 aria-label="Thực hiện tìm kiếm"
               >
@@ -68,7 +68,7 @@ const NotFound = () => {
             {/* Nút Trang chủ */}
             <Link
               href="/"
-              className="px-6 py-2.5 flex items-center justify-center gap-2 bg-blue-600 rounded-md font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition duration-200 ease-in-out"
+              className="px-6 py-2.5 flex items-center justify-center gap-2 bg-blue-600 rounded-md font-medium text-white hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition duration-200 ease-in-out"
             >
               <FaHome /> Về Trang Chủ Bloai
             </Link>
@@ -76,7 +76,7 @@ const NotFound = () => {
             {/* Nút Quay lại */}
             <button
               onClick={() => window.history.back()}
-              className="px-6 py-2.5 flex items-center justify-center gap-2 bg-gray-200 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-1 transition duration-200 ease-in-out"
+              className="px-6 py-2.5 flex items-center justify-center gap-2 bg-gray-200 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-300 focus:outline-hidden focus:ring-2 focus:ring-gray-400 focus:ring-offset-1 transition duration-200 ease-in-out"
             >
               <FaArrowLeft /> Quay lại trang trước
             </button>

@@ -12,7 +12,7 @@ const MDEditor = dynamic(
   {
     ssr: false, 
     loading: () => (
-      <div className="h-[500px] w-full animate-pulse bg-gray-100 rounded-md border" />
+      <div className="h-[500px] w-full animate-pulse rounded-md border" />
     )
   }
 )

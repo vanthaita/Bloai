@@ -9,11 +9,11 @@ export default function TermsAndPrivacy() {
       <div className="max-w-4xl mx-auto px-6 py-12">
         <div className="text-center mb-12">
           <div className="flex items-center gap-4 mb-6 justify-center">
-            <div className="h-1 w-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
-            <h1 className="text-3xl font-bold text-gray-900 bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+            <div className="h-1 w-16 bg-linear-to-r from-blue-500 to-indigo-500 rounded-full" />
+            <h1 className="text-3xl font-bold text-gray-900 bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600">
               Điều khoản sử dụng & Chính sách bảo mật
             </h1>
-            <div className="h-1 w-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
+            <div className="h-1 w-16 bg-linear-to-r from-blue-500 to-indigo-500 rounded-full" />
           </div>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Chúng tôi cam kết bảo vệ quyền riêng tư và thông tin cá nhân của bạn. Vui lòng đọc kỹ các điều khoản dưới
@@ -37,7 +37,7 @@ export default function TermsAndPrivacy() {
 
             <div className="space-y-6">
               <div className="flex gap-3">
-                <div className="text-blue-600 flex-shrink-0">🔹</div>
+                <div className="text-blue-600 shrink-0">🔹</div>
                 <p className="text-gray-700">
                   Khi truy cập và sử dụng blog, bạn đồng ý với các điều khoản về nội dung, quyền riêng tư và bản quyền.
                 </p>
@@ -79,12 +79,12 @@ export default function TermsAndPrivacy() {
 
             <div className="space-y-6">
               <div className="flex gap-3">
-                <div className="text-purple-600 flex-shrink-0">🔹</div>
+                <div className="text-purple-600 shrink-0">🔹</div>
                 <p className="text-gray-700">Chúng tôi cam kết bảo vệ thông tin cá nhân của bạn.</p>
               </div>
 
               <div className="flex gap-3">
-                <div className="text-purple-600 flex-shrink-0">🔹</div>
+                <div className="text-purple-600 shrink-0">🔹</div>
                 <p className="text-gray-700">
                   Mọi thông tin đăng ký chỉ được sử dụng cho mục đích cung cấp nội dung tốt hơn.
                 </p>
