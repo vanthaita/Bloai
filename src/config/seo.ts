@@ -30,18 +30,18 @@ export const websiteSchemaLd = {
 };
 export const breadcrumbSchemaLd = {
   "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
+  "@type": "ItemList",
   "itemListElement": [
     {
       "@type": "ListItem",
       "position": 1,
-      "name": "Trang chủ",
+      "name": "Trang Chủ",
       "item": "https://www.bloai.blog/landing"
     },
     {
       "@type": "ListItem",
       "position": 2,
-      "name": "Bài viết",
+      "name": "Bài Viết",
       "item": "https://www.bloai.blog/"
     },
     {
@@ -49,6 +49,18 @@ export const breadcrumbSchemaLd = {
       "position": 3,
       "name": "Về chúng tôi",
       "item": "https://www.bloai.blog/about"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Danh Mục",
+      "item": "https://www.bloai.blog/tags"
+    },
+    {
+      "@type": "ListItem",
+      "position": 5,
+      "name": "Liên hệ",
+      "item": "https://www.bloai.blog/contact"
     }
   ]
 };
@@ -230,5 +242,4 @@ export const homePageSchemaLd = {
 export const safeJsonLdStringify = (data: object): string => {
   return JSON.stringify(data, null, 2)
     .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e');
 };
