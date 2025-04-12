@@ -74,7 +74,7 @@ export const TitleSlugInput: React.FC<TitleSlugInputProps> = ({
                     <button
                         type="button"
                         onClick={onToggleManualSlug}
-                        className="text-xs text-blue-600 hover:underline focus:outline-none"
+                        className="text-xs text-blue-600 hover:underline focus:outline-hidden"
                     >
                         {isGeneratingSlugManually ? 'Tạo tự động' : 'Chỉnh sửa'}
                     </button>

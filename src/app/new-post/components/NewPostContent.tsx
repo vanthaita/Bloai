@@ -242,8 +242,8 @@ const NewPostContent = () => {
 
     return (
         <TooltipProvider>
-            <div className="bg-white min-h-screen p-1 md:p-4">
-                <div onClick={() => router.back()} className='max-w-10'>
+            <div className="min-h-screen p-1 md:p-2">
+                <div onClick={() => router.back()} className='max-w-10 mb-2'>
                     <Button variant='outline' className='flex justify-start items-center gap-x-2'>
                         <ArrowLeft />
                         <span>Trở lại</span>

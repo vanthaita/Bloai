@@ -54,7 +54,7 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            <div className="space-y-1.5">
+            <div className="gap-y-1.5">
                 <Label htmlFor="thumbnail-dropzone" className="text-base">Ảnh thu nhỏ *</Label>
                 <Dropzone
                     id="thumbnail-dropzone"
@@ -64,9 +64,9 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
                     maxSize={5 * 1024 * 1024} 
                     aria-label="Tải lên ảnh thu nhỏ"
                 />
-                {!isSEOValid && !thumbnail && <p className="text-xs text-red-600 pt-1">Vui lòng chọn ảnh thu nhỏ.</p>}
+                {!isSEOValid && !thumbnail && <p className="text-xs text-red-600 pt-1 ">Vui lòng chọn ảnh thu nhỏ.</p>}
             </div>
-            <div className="space-y-4">
+            <div className="gap-y-4">
                 {previewUrl ? (
                     <div className="relative space-y-2">
                         <p className="text-sm font-medium text-muted-foreground">Xem trước:</p>
@@ -93,7 +93,7 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
                         </div>
                     </div>
                 ) : (
-                    <div className="flex items-center justify-center h-full min-h-[150px] border border-dashed rounded-lg text-muted-foreground text-sm bg-muted/40">Xem trước ảnh thu nhỏ</div>
+                    <div className="flex items-center justify-center h-full border border-dashed rounded-lg text-muted-foreground text-sm bg-muted/40  min-h-[150px] md:min-h-[200px]">Xem trước ảnh thu nhỏ</div>
                 )}
             </div>
         </div>

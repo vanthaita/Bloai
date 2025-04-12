@@ -8,21 +8,24 @@ import Navbar from '@/components/Navbar';
 const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
+  const newPost = pathname.split('/')[1] as string;
+
+  if (isAuthRoute) {
+    return <div>{children}</div>;
+  }
 
   return (
     <>
-      {isAuthRoute ? (
-        <div>{children}</div>
+      {newPost === 'new-post' ? (
+        <div className="px-6">
+          {children}
+        </div>
       ) : (
-        <section className='flex flex-1'>
-          <main className='flex-1'>
-            <div className='h-14'>
-              <Navbar />
-            </div>
-            {children}
-            <Footer />
-          </main>
-        </section>
+        <div className="container mx-auto max-w-7xl">
+          <Navbar />
+          {children}
+          <Footer />
+        </div>
       )}
     </>
   );

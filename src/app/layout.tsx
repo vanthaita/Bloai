@@ -6,10 +6,11 @@ import { auth } from "@/server/auth";
 import { SessionProvider } from "next-auth/react";
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Inter } from 'next/font/google'
 import { ToastContainer } from 'react-toastify';
 import { GoogleAnalytics } from '@next/third-parties/google'
 import Loading from "@/components/loading";
+import { Nunito } from "next/font/google";
+import { PT_Sans } from "next/font/google";
 import {
   rootLayoutMetadata,
   websiteSchemaLd,
@@ -20,11 +21,16 @@ import {
 
 export const metadata = rootLayoutMetadata;
 
-const inter = Inter({
-  subsets: ['vietnamese'],
-  variable: '--font-inter',
-})
-
+const nunito = Nunito({
+  variable: "--font-nunito",
+  subsets: ["latin"],
+  });
+  
+  const ptSans = PT_Sans({
+  variable: "--font-pt-sans",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  });
 
 
 export default async function RootLayout({
@@ -33,7 +39,7 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <SessionProvider session={session}>
-      <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
+      <html lang="vi" className={`${nunito.variable} ${ptSans.variable} antialiased scroll-custom`} suppressHydrationWarning>
         <head>
             <script
               type="application/ld+json"
@@ -48,11 +54,11 @@ export default async function RootLayout({
               dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(breadcrumbSchemaLd) }}
             />
           </head>
-        <body className="bg-gray-50" suppressHydrationWarning>
+        <body className="" suppressHydrationWarning>
           <TRPCReactProvider>
-            <main>
               <AppSidebarProvider>
                 <Suspense fallback={<Loading />}>
+                  <div className="texture" />
                     {children}
                 </Suspense>
                 <ToastContainer/>
@@ -60,7 +66,6 @@ export default async function RootLayout({
                 <SpeedInsights />
                 <GoogleAnalytics gaId="G-CL7D21ZY78" />
               </AppSidebarProvider>
-            </main>
           </TRPCReactProvider>
         </body>
       </html>

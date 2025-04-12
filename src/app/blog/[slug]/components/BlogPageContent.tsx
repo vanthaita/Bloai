@@ -379,7 +379,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
 
     if (!blog.author) {
          return (
-             <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 text-center p-6 bg-gray-50 rounded-lg shadow-sm border border-dashed border-amber-400 max-w-2xl mx-auto my-12">
+             <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 text-center p-6 bg-gray-50 rounded-lg shadow-xs border border-dashed border-amber-400 max-w-2xl mx-auto my-12">
                  <div className="inline-flex items-center gap-2 text-amber-600">
                      <IconUserOff stroke={1.5} className="w-10 h-10" />
                      <span className="text-2xl font-semibold">Author Information Unavailable</span>
@@ -420,7 +420,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                             <div className="flex flex-col items-center gap-6">
                                 <button
                                     onClick={handleShare}
-                                    className="p-2 hover:bg-gray-100 rounded-full transition-colors group focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                                    className="p-2 hover:bg-gray-100 rounded-full transition-colors group focus:outline-hidden focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
                                     aria-label="Copy link to share this article"
                                     title="Copy Link"
                                 >
@@ -434,7 +434,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                     </span>
                                 </div>
 
-                                <div className="h-px w-6 bg-gradient-to-r from-transparent via-gray-300 to-transparent my-2" />
+                                <div className="h-px w-6 bg-linear-to-r from-transparent via-gray-300 to-transparent my-2" />
 
                                 <div className="flex flex-col gap-3">
                                      <a
@@ -557,7 +557,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                                     className={`
                                                         flex items-center text-gray-700 hover:text-orange-600 
                                                         transition-all duration-200 px-3 py-2 rounded-xl
-                                                        focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2
+                                                        focus:outline-hidden focus:ring-2 focus:ring-orange-400 focus:ring-offset-2
                                                         ${heading.level === 1 ? 
                                                             'font-bold text-base bg-orange-100/50 hover:bg-orange-100' : 
                                                             'hover:bg-orange-50'
@@ -581,7 +581,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                             </div>
 
 
-                            <div className="prose prose-slate max-w-none lg:prose-lg prose-headings:scroll-mt-24 prose-img:rounded-lg prose-img:shadow-md prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-a:transition-colors prose-a:duration-150 prose-code:before:content-none prose-code:after:content-none mb-12">
+                            <div className="prose prose-slate max-w-none lg:prose-lg prose-headings:scroll-mt-24 prose-img:rounded-lg prose-img:shadow-md prose-a:text-blue-600 prose-a:hover:text-blue-800 prose-a:transition-colors prose-a:duration-150 prose-code:before:content-none prose-code:after:content-none mb-12">
                                 <DynamicReactMarkdown
                                     rehypePlugins={[rehypeRaw]}
                                     remarkPlugins={[remarkGfm]}
@@ -605,7 +605,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
 
                     <aside className="md:block w-72 shrink-0 hidden self-start">
                         <div className="sticky top-28 space-y-8">
-                            <div className='bg-gradient-to-br from-gray-800 to-black p-1 rounded-2xl shadow-lg relative'>
+                            <div className='bg-linear-to-br from-gray-800 to-black p-1 rounded-2xl shadow-lg relative'>
                                 <div className="p-4 bg-white rounded-xl">
                                     <AuthorCard author={blog.author} imageSize={80} showSocials={false}/>
                                 </div>
@@ -615,7 +615,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                             </div>
 
                             {(suggestedBlogs && suggestedBlogs.length > 0) && (
-                                <div className='bg-white p-4 rounded-lg shadow-sm border border-gray-100'>
+                                <div className='bg-white p-4 rounded-lg shadow-xs border border-gray-100'>
                                     <h2 className="text-lg font-semibold mb-4 text-gray-800">Bài viết liên quan</h2>
                                     <div className='overflow-y-auto max-h-[calc(100vh-400px)] space-y-5 scroll-custom pr-2 -mr-2'>
                                         {suggestedBlogs.map((post) => (
@@ -626,7 +626,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                                     aria-label={`Đọc bài viết: ${post.title}`}
                                                 >
                                                     {post.imageUrl && (
-                                                        <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-md overflow-hidden relative border border-gray-100">
+                                                        <div className="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-md overflow-hidden relative border border-gray-100">
                                                             <CldImage
                                                                 width={200}
                                                                 height={150}
@@ -667,7 +667,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
             {isVisible && (
                 <button
                     onClick={scrollToTop}
-                    className="fixed bottom-20 right-2 md:bottom-8 md:right-8 z-50 bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-white transition-all duration-300 ease-in-out transform hover:scale-110"
+                    className="fixed bottom-20 right-2 md:bottom-8 md:right-8 z-50 bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-white transition-all duration-300 ease-in-out transform hover:scale-110"
                     aria-label='Scroll to top'
                     title="Scroll back to top"
                 >
