@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useIsMobile } from '@/hook/use-mobile';
 import { BlogCore } from '@/types/helper.type';
+import { Card } from '@/components/ui/card';
 
 interface BlogHeaderProps {
     blog: BlogCore | null;
@@ -17,12 +18,12 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
         if (!blog?.tags) return [];
         const tagsToShow = isMobile ? 3 : 5;
         return blog.tags.slice(0, tagsToShow).map((tag: { name: string }, index: number) => (
-            <div
+            <Card
                 key={`${tag.name}-${index}`}
-                className="px-3 py-1 text-xs font-medium text-blue-600 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors"
+                className="px-2 py-1 text-xs font-medium text-[#3A6B4C] rounded-full transition-colors"
             >
                 #{tag.name.toUpperCase()}
-            </div>
+            </Card>
         ));
     }, [blog?.tags, isMobile]);
 
@@ -38,7 +39,7 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
         <>
             <div className="mb-6">
                 <Link href="/" passHref legacyBehavior>
-                    <a className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+                    <a className="inline-flex items-center text-sm text-[#3A6B4C] hover:underline transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>

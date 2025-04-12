@@ -73,12 +73,12 @@ export default function FAQsPage() {
 
   return (
     <div className="min-h-screen bg-white text-gray-800">
-      <section className="bg-gradient-to-r from-blue-50 to-indigo-50 py-20">
+      <section className="bg-linear-to-r from-blue-50 to-indigo-50 py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-5xl mx-auto text-center">
             <div className="flex items-center gap-4 mb-6 justify-center">
-              <div className="h-1 w-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+              <div className="h-1 w-16 bg-linear-to-r from-blue-500 to-indigo-500 rounded-full" />
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600">
                 Câu Hỏi Thường Gặp
               </h1>
             </div>
@@ -127,8 +127,8 @@ export default function FAQsPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center gap-4 mb-10 justify-center">
-              <div className="h-1 w-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
-              <h2 className="text-3xl font-bold text-gray-900 bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+              <div className="h-1 w-16 bg-linear-to-r from-blue-500 to-indigo-500 rounded-full" />
+              <h2 className="text-3xl font-bold text-gray-900 bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600">
                 Tài nguyên liên quan
               </h2>
             </div>
@@ -162,7 +162,7 @@ export default function FAQsPage() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="max-w-5xl mx-auto bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl p-10 shadow-2xl relative overflow-hidden"
+            className="max-w-5xl mx-auto bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-2xl p-10 shadow-2xl relative overflow-hidden"
           >
             <div className="absolute inset-0 opacity-10" />
             <div className="relative text-center space-y-6">

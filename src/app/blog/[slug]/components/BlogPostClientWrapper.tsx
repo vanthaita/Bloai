@@ -123,7 +123,7 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
 
     if (!author) {
          return (
-             <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 text-center p-6 bg-gray-50 rounded-lg shadow-sm border border-dashed border-amber-400 max-w-2xl mx-auto my-12">
+             <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 text-center p-6 rounded-lg shadow-xs border border-dashed border-amber-400 max-w-2xl mx-auto my-12">
                  <div className="inline-flex items-center gap-2 text-amber-600">
                      <IconUserOff stroke={1.5} className="w-10 h-10" />
                      <span className="text-2xl font-semibold">Author Information Unavailable</span>
@@ -146,7 +146,6 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
     return (
         <>
             <BlogMetadata blog={blog} suggestedBlogs={suggestedBlogs} />
-
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex flex-col lg:flex-row gap-x-8 lg:gap-x-12">
                     <BlogShareSidebar blog={blog} views={views} />
@@ -155,7 +154,7 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
                             <BlogHeader blog={blog} />
                             <BlogTableOfContents headings={headings} />
                             <BlogContentRenderer content={blog.content} headings={headings} />
-                            <hr className="my-12 border-gray-200" />
+                            <hr className="my-12" />
                             <BlogAuthorBioSection author={author} />
                         </article>
                     </main>

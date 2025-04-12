@@ -52,7 +52,7 @@ const BlogContentRenderer: React.FC<BlogContentRendererProps> = ({ content, head
     );
 
     return (
-        <div className="prose prose-slate max-w-none lg:prose-lg prose-headings:scroll-mt-24 prose-img:rounded-lg prose-img:shadow-md prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-a:transition-colors prose-a:duration-150 prose-code:before:content-none prose-code:after:content-none mb-12">
+        <div className="prose prose-slate max-w-none lg:prose-lg prose-headings:scroll-mt-24 prose-img:rounded-lg prose-img:shadow-md prose-a:text-blue-600 prose-a:hover:text-blue-800 prose-a:transition-colors prose-a:duration-150 prose-code:before:content-none prose-code:after:content-none mb-12">
             <DynamicReactMarkdown
                 rehypePlugins={[rehypeRaw]}
                 remarkPlugins={[remarkGfm]}

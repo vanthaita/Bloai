@@ -24,7 +24,7 @@ export const SubmissionArea: React.FC<SubmissionAreaProps> = ({
                 )}
             </div>
             <div className="flex gap-3">
-                <Button onClick={onSubmit} className='bg-black text-white hover:bg-gray-800' disabled={isSubmitting || !isSEOValid} aria-disabled={isSubmitting || !isSEOValid}>
+                <Button onClick={onSubmit} className='bg-transparent cursor-pointer text-[#3A6B4C] hover:bg-gray-800' disabled={isSubmitting || !isSEOValid} aria-disabled={isSubmitting || !isSEOValid}>
                     {isSubmitting ? (
                         <><FiLoader className="animate-spin mr-2" size={18} /> Đang xuất bản...</>
                     ) : ( "Xuất bản Ngay" )}

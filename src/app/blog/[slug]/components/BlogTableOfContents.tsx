@@ -22,8 +22,8 @@ const BlogTableOfContents: React.FC<BlogTableOfContentsProps> = ({ headings }) =
 
     return (
         <div className="mb-10 p-2 border-2 md:block hidden">
-            <Label className="text-xl font-bold mb-4 text-orange-700 flex items-center gap-2 pb-2 border-b-2 border-orange-100">
-                <span className="p-2 bg-orange-100 rounded-full">📦</span>
+            <Label className="text-xl font-bold mb-4 text-orange-700 flex items-center gap-2 pb-2 border-b-2 ">
+                <span className="p-2 rounded-full">📦</span>
                 Mục lục
             </Label>
             <nav aria-label="Table of contents ">
@@ -38,7 +38,7 @@ const BlogTableOfContents: React.FC<BlogTableOfContentsProps> = ({ headings }) =
                                 className={`
                                     flex items-center text-gray-700 hover:text-orange-600
                                     transition-all duration-200 px-3 py-2 rounded-xl
-                                    focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2
+                                    focus:outline-hidden focus:ring-2 focus:ring-orange-400 focus:ring-offset-2
                                     ${heading.level === 1 ?
                                         'font-bold text-base bg-orange-100/50 hover:bg-orange-100' :
                                         'hover:bg-orange-50'
