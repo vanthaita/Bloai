@@ -1,118 +1,84 @@
+'use client'
+import React from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Mail, ArrowRight} from 'lucide-react'; 
 import Link from 'next/link';
-import { FaTwitter, FaGithub, FaLinkedinIn } from 'react-icons/fa';
-import Logo from './logo'; 
+import Logo from './logo';
+import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
-  const links = [
-    { name: 'Trang chủ', href: '/landing' },
-    { name: 'Danh mục', href: '/tags' },
-    { name: 'Về chúng tôi', href: '/about' },
-    { name: 'Liên hệ', href: '/contact' },
-    { name: 'FAQs', href: '/faqs' },
-    { name: 'Điều khoản & Chính sách bảo mật', href: '/privacy' },
-  ];
-
-  const socials = [
-    { name: 'Twitter', href: 'https://x.com/Bloai_Team', icon: <FaTwitter /> },
-    { name: 'GitHub', href: 'https://github.com/TDevUIT/Bloai', icon: <FaGithub /> },
-    { name: 'LinkedIn', href: '#', icon: <FaLinkedinIn /> }, 
-  ];
-  
-  
-  const recommendedTools = [
-    {
-      name: 'CopyAI',
-      href: 'https://www.copy.ai/',
-      description: 'Công cụ viết content AI cho marketing'
-    },
-    {
-      name: 'Jasper',
-      href: 'https://www.jasper.ai/',
-      description: 'Trợ lý viết bài AI đa năng'
-    },
-    {
-      name: 'Synthesia',
-      href: 'https://www.synthesia.io/',
-      description: 'Tạo video AI từ văn bản'
-    },
-    {
-      name: 'Descript',
-      href: 'https://www.descript.com/',
-      description: 'Chỉnh sửa video/podcast bằng AI'
-    },
-  ];
-
-  const schemaMarkup = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Bloai Team",
-    "url": "https://www.bloai.blog/",
-    "logo": "https://yourdomain.com/images/logo.png",
-    "description": "Bài viết sâu sắc về công nghệ, thiết kế và phát triển. Khám phá tương lai AI cùng Bloai.",
-    "sameAs": socials
-      .filter(social => social.href !== '#')
-      .map(social => social.href),
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "email": "contact@yourdomain.com",
-      "contactType": "customer service"
-    }
+  const footerContent = {
+    tagline: 'Bài viết sâu sắc về công nghệ, thiết kế và phát triển. Khám phá tương lai AI cùng Bloai.',
+    links1_title: 'Liên kết', 
+    links1: [ 
+      { name: 'Trang chủ', href: '/landing' },
+      { name: 'Danh mục', href: '/tags' },
+      { name: 'Về chúng tôi', href: '/about' },
+    ],
+    links2_title: '\u00A0', 
+    links2: [ 
+      { name: 'Liên hệ', href: '/contact' },
+      { name: 'FAQs', href: '/faqs' },
+      { name: 'Điều khoản & Bảo mật', href: '/privacy' },
+    ],
+    socials_title: 'Kết nối',
+    socials: [
+      { name: 'Twitter', href: 'https://x.com/Bloai_Team', icon: 'FaTwitter' }, 
+      { name: 'GitHub', href: 'https://github.com/TDevUIT/Bloai', icon: 'FaGithub' },
+      { name: 'Facebook', href: 'https://www.youtube.com/channel/UCi396lyYi5FURzdp-W93lHg', icon: 'FaFacebook' },
+    ],
+    copyright: 'Bloai Team. Đã đăng ký bản quyền.', 
   };
 
-  const toolSchemaMarkup = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": recommendedTools.map((tool, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "item": {
-        "@type": "WebApplication",
-        "name": tool.name,
-        "url": tool.href,
-        "description": tool.description,
-        "applicationCategory": "AI Writing Tool",
-        "operatingSystem": "Web",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD",
-          "availability": "https://schema.org/OnlineOnly"
-        }
-      }
-    }))
-  };
+  const joinProfessionalsText = "Nhận thông tin cập nhật mới nhất."; 
+  const privacyPolicyText = "Chính sách Bảo mật"; 
+  const termsOfServiceText = "Điều khoản Dịch vụ"; 
 
   return (
-    <>
-     <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(toolSchemaMarkup) }}
-      />
-      <footer className="">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12 mb-10 md:mb-12">
+    <footer className="">
+      <div className="py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col items-center mb-12">
+            <div className="flex items-center gap-2 mb-4">
+              <Logo />
+            </div>
+            <p className="text-center text-[#554640]/90 max-w-md">
+              {footerContent.tagline}
+            </p>
+          </div>
 
-            <div className="space-y-4 col-span-2 lg:col-span-2">
-              <Link href="/" className="inline-block hover:opacity-80 transition-opacity">
-                <Logo />
-              </Link>
-              <p className="text-base ">
-                Bài viết sâu sắc về công nghệ, thiết kế và phát triển. Khám phá tương lai AI cùng Bloai.
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div className="md:col-span-2">
+              <form className="flex gap-3">
+                <div className="relative flex-grow">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#554640]" />
+                  <Input
+                    type="email"
+                    placeholder='Email'
+                    className="pl-10 focus:ring-2 focus:ring-[#3A6B4C] rounded-lg"
+                    aria-label="Email for newsletter" 
+                  />
+                </div>
+                <Button type="submit" className="bg-[#3A6B4C] border-[#3A6B4C] hover:bg-[#2E5540] text-white">
+                  Đăng ký 
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </form>
+              <p className="text-sm text-[#554640]/80 mt-3">
+                {joinProfessionalsText}
               </p>
             </div>
 
-            <div className="md:pl-4 lg:pl-0">
-              <h3 className="text-lg font-semibold mb-4">Liên kết</h3>
-              <ul className="space-y-3">
-                {links.map((link) => (
+            <div>
+              <h4 className="text-[#2B463C] font-medium mb-4">{footerContent.links1_title}</h4>
+              <ul className="space-y-2">
+                {footerContent.links1.map((link) => (
                   <li key={link.name}>
-                    <Link href={link.href} className="  hover:underline text-base transition-colors">
+                    <Link
+                      href={link.href}
+                      className="text-[#554640]/90 hover:text-[#3A6B4C] transition-colors"
+                      legacyBehavior>
                       {link.name}
                     </Link>
                   </li>
@@ -121,53 +87,74 @@ const Footer = () => {
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold  mb-4">Công cụ AI</h3>
-              <ul className="space-y-4"> 
-                {recommendedTools.map((tool) => (
-                  <li key={tool.name}>
-                    <Link 
-                      href={tool.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block group" 
-                    >
-                      <span className="text-base  group- group-hover:underline transition-colors">
-                        {tool.name}
-                      </span>
-                      <span className="block text-sm text-gray-400 mt-1 group-hover: transition-colors">
-                        {tool.description}
-                      </span>
+              <h4 className="text-[#2B463C] font-medium mb-4">{footerContent.links2_title}</h4>
+              <ul className="space-y-2">
+                {footerContent.links2.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
+                      className="text-[#554640]/90 hover:text-[#3A6B4C] transition-colors"
+                      legacyBehavior>
+                     {link.name}
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
+          </div>
 
-            <div className="col-span-2 md:col-span-1">
-              <h3 className="text-lg font-semibold  mb-4">Kết nối</h3>
-              <div className="flex gap-x-5"> 
-                {socials.map((social) => (
-                  <Link
-                    key={social.name}
-                    href={social.href}
-                    className="  text-2xl transition-colors"
-                    aria-label={social.name}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {social.icon}
-                  </Link>
-                ))}
+          <div className="border-t border-[#3A6B4C] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex space-x-4">
+              <Link
+                href={footerContent.socials.find(s => s.name === 'Twitter')?.href || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#554640]/80 hover:text-[#3A6B4C]"
+                aria-label="Twitter"
+                legacyBehavior>
+                <FaTwitter className="h-5 w-5" />
+              </Link>
+              <Link
+                href="#"
+                className="text-[#554640]/80 hover:text-[#3A6B4C]"
+                aria-label="LinkedIn"
+                legacyBehavior>
+                <FaLinkedin className="h-5 w-5" />
+              </Link>
+              <Link
+                href={footerContent.socials.find(s => s.name === 'GitHub')?.href || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#554640]/80 hover:text-[#3A6B4C]"
+                aria-label="GitHub"
+                legacyBehavior>
+                <FaGithub className="h-5 w-5" />
+              </Link>
+            </div>
+
+            <div className="text-center md:text-right">
+              <p className="text-sm text-[#554640]/80">
+                © {new Date().getFullYear()} {footerContent.copyright}
+              </p>
+              <div className="mt-1 space-x-4">
+                <Link
+                  href="/privacy"
+                  className="text-sm text-[#554640]/80 hover:text-[#3A6B4C]"
+                  legacyBehavior>
+                  {privacyPolicyText}
+                </Link>
+                <Link
+                  href="/terms"
+                  className="text-sm text-[#554640]/80 hover:text-[#3A6B4C]"
+                  legacyBehavior>
+                  {termsOfServiceText}
+                </Link>
               </div>
             </div>
           </div>
-
-          <div className="pt-8 border-t border-white/20 text-center text-base text-gray-400">
-            © {currentYear} Bloai Team. All rights reserved.
-          </div>
         </div>
-      </footer>
-    </>
+      </div>
+    </footer>
   );
 };
 

@@ -46,14 +46,14 @@ const AuthorCard: React.FC<AuthorCardProps> = ({
                     <div className="flex gap-2">
                         {socialLinks.map(({ platform, url, Icon, label }) => (
                              <Link
-                                key={platform}
-                                href={url!}
-                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                                target="_blank"
-                                rel="noopener noreferrer nofollow"
-                                aria-label={label}
-                                title={label}
-                            >
+                                 key={platform}
+                                 href={url!}
+                                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                 target="_blank"
+                                 rel="noopener noreferrer nofollow"
+                                 aria-label={label}
+                                 title={label}
+                                 legacyBehavior>
                                 <Icon className="w-5 h-5" />
                             </Link>
                         ))}

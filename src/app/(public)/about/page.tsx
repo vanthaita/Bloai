@@ -110,7 +110,7 @@ const AboutPage = () => {
               <Link
                 href="/auth/signin"
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg text-white font-medium transition-colors"
-              >
+                legacyBehavior>
                 Bắt đầu ngay
                 <ArrowRight className="h-4 w-4" />
               </Link>
@@ -134,7 +134,6 @@ const AboutPage = () => {
           </div>
         </div>
       </section>
-
       <section className="bg-white-50 py-20">
         <div className="container mx-auto px-8">
           <h2 className="text-3xl font-bold text-center mb-12">Chúng tôi mang đến điều gì</h2>
@@ -149,7 +148,6 @@ const AboutPage = () => {
           </div>
         </div>
       </section>
-
       <section id="why-us" className="w-full py-16 md:py-10px-6">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
@@ -340,7 +338,7 @@ const AboutPage = () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
       />
     </div>
-  )
+  );
 }
 
 export default AboutPage

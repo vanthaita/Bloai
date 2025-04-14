@@ -141,14 +141,14 @@ const AuthorCard: React.FC<AuthorCardProps> = ({
                     <div className="flex gap-2">
                         {socialLinks.map(({ platform, url, Icon, label }) => (
                              <Link
-                                key={platform}
-                                href={url!}
-                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                                target="_blank"
-                                rel="noopener noreferrer nofollow"
-                                aria-label={label}
-                                title={label}
-                            >
+                                 key={platform}
+                                 href={url!}
+                                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                 target="_blank"
+                                 rel="noopener noreferrer nofollow"
+                                 aria-label={label}
+                                 title={label}
+                                 legacyBehavior>
                                 <Icon className="w-5 h-5" />
                             </Link>
                         ))}
@@ -406,12 +406,10 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
                 />
             )}
-
             <link rel="preconnect" href="https://res.cloudinary.com" />
             {suggestedBlogs?.map(post => (
                 <link key={`prefetch-${post.slug}`} rel="prefetch" href={`/blog/${post.slug}`} as="document" />
             ))}
-
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex flex-col lg:flex-row gap-x-8 lg:gap-x-12">
 
@@ -492,7 +490,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                         href="/tags"
                                         className="text-xs text-gray-500 self-center underline hover:text-gray-700"
                                         title="View all tags"
-                                    >
+                                        legacyBehavior>
                                         + {remainingTagsCount} more
                                     </Link>
                                 )}
@@ -565,7 +563,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                                         ${heading.level === 2 ? 'pl-6 text-sm border-l-4 border-orange-200' : ''}
                                                         ${heading.level === 3 ? 'pl-10 text-sm text-gray-600' : ''}
                                                     `}
-                                                >
+                                                    legacyBehavior>
                                                     {heading.level > 1 && (
                                                         <span className="absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-orange-300 rounded-full" />
                                                     )}
@@ -624,7 +622,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                                     href={`/blog/${post.slug}`}
                                                     className="flex gap-3 items-start group"
                                                     aria-label={`Đọc bài viết: ${post.title}`}
-                                                >
+                                                    legacyBehavior>
                                                     {post.imageUrl && (
                                                         <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-md overflow-hidden relative border border-gray-100">
                                                             <CldImage
@@ -663,7 +661,6 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                     </aside>
                 </div>
             </div>
-
             {isVisible && (
                 <button
                     onClick={scrollToTop}

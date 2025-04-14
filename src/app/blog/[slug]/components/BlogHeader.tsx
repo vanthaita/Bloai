@@ -46,7 +46,6 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
                     </a>
                 </Link>
             </div>
-
             <div className="flex flex-wrap gap-2 mb-4">
                 {blogTagsMemo}
                 {remainingTagsCount > 0 && (
@@ -54,16 +53,14 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
                         href="/tags"
                         className="text-xs text-gray-500 self-center underline hover:text-gray-700"
                         title="View all tags"
-                    >
+                        legacyBehavior>
                         + {remainingTagsCount} more
                     </Link>
                 )}
             </div>
-
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight blog-title">
                 {blog.title}
             </h1>
-
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-500 mb-8 text-sm md:text-base">
                 {blog.author?.name && (
                     <div className="flex items-center gap-2">
@@ -97,7 +94,6 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
                     </>
                 )}
             </div>
-
             <p className="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed border-l-4 border-gray-200 pl-4 italic blog-meta-description">
                 {blog.metaDescription}
             </p>

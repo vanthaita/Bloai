@@ -39,13 +39,12 @@ const Navbar = () => {
       <div className="flex items-center flex-shrink-0">
         <Link
           href="/"
-          className='hover:opacity-80 transition-opacity' 
+          className='hover:opacity-80 transition-opacity'
           aria-label="Bloai Home Page"
-        >
+          legacyBehavior>
           <Logo />
         </Link>
       </div>
-
       {!isMobile && (
         <div className="flex-1 max-w-2xl mx-4">
           <div className="relative w-full">
@@ -74,7 +73,6 @@ const Navbar = () => {
           </div>
         </div>
       )}
-
       <div className="flex items-center justify-end gap-2 min-[375px]:gap-4 flex-shrink-0">
         <button
           className="hidden sm:flex p-1.5 min-[375px]:p-2 text-gray-600 hover:text-blue-600 transition-colors"
@@ -85,9 +83,9 @@ const Navbar = () => {
 
         {user ? (
           <div className="relative flex gap-x-4" ref={dropdownRef}>
-            <Link href='/new-post'>
+            <Link href='/new-post' legacyBehavior>
               <Button className='bg-neutral-950 text-white hover:bg-gray-800'>
-                New Post
+                Tạo Blog
               </Button>
             </Link>
             <button
@@ -137,10 +135,10 @@ const Navbar = () => {
           </div>
         ) : (
           <Link
-            href="/auth/signin" 
+            href="/auth/signin"
             className="px-3 py-1.5 min-[375px]:px-4 min-[375px]:py-2 text-sm min-[375px]:text-base text-gray-800 hover:text-blue-600 hover:bg-blue-50 transition-colors border-2 border-black rounded-xl"
             aria-label="Sign in"
-          >
+            legacyBehavior>
             <span className='font-medium'>Đăng Nhập</span>
           </Link>
         )}

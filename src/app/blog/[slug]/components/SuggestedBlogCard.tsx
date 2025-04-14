@@ -15,7 +15,7 @@ const SuggestedBlogCard: React.FC<SuggestedBlogCardProps> = ({ post }) => {
                 href={`/blog/${post.slug}`}
                 className="flex gap-3 items-start group"
                 aria-label={`Đọc bài viết: ${post.title}`}
-            >
+                legacyBehavior>
                 {post.imageUrl && (
                     <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-md overflow-hidden relative border border-gray-100">
                         <CldImage

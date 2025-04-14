@@ -89,7 +89,6 @@ export default function FAQsPage() {
           </div>
         </div>
       </section>
-
       <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-5xl mx-auto">
@@ -114,7 +113,7 @@ export default function FAQsPage() {
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl text-white font-medium transition-colors"
-              >
+                legacyBehavior>
                 <FaEnvelope />
                 Liên hệ ngay
               </Link>
@@ -122,7 +121,6 @@ export default function FAQsPage() {
           </div>
         </div>
       </section>
-
       <section className="bg-gray-50 py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-5xl mx-auto">
@@ -145,7 +143,7 @@ export default function FAQsPage() {
                   <Link
                     href={resource.link}
                     className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
-                  >
+                    legacyBehavior>
                     Xem thêm
                     <FaArrowRight className="ml-2 text-sm" />
                   </Link>
@@ -155,7 +153,6 @@ export default function FAQsPage() {
           </div>
         </div>
       </section>
-
       <section className="mb-24 mt-12">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
@@ -189,5 +186,5 @@ export default function FAQsPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

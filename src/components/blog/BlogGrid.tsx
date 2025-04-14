@@ -76,11 +76,9 @@ export function BlogGrid() {
              moreTagsLink="/tags" 
           />
       </div>
-
       {isFetching && !isLoading && (
         <div className="text-center py-4 text-gray-500">Updating posts...</div>
       )}
-
       <BentoGrid className="px-4 pb-16">
         {filteredBlogs.length > 0 ? (
           filteredBlogs.map((blog) => (
@@ -100,7 +98,6 @@ export function BlogGrid() {
           </div>
         )}
       </BentoGrid>
-
       {totalPages > 1 && (
         <div className="max-w-7xl mx-auto my-4 flex justify-center">
           <Pagination

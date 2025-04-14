@@ -135,10 +135,10 @@ export default async function Home() {
   
   return (
     <>
-     <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema).replace(/</g, '\\u003c') }}
-      />
+      <script
+         type="application/ld+json"
+         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema).replace(/</g, '\\u003c') }}
+       />
       <main>
         <div className="px-4 min-[375px]:px-6 md:px-8 lg:px-10 xl:px-12 py-6 min-[375px]:py-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200 text-center underline decoration-[#3A6B4C] decoration-4 underline-offset-4">
@@ -151,6 +151,5 @@ export default async function Home() {
         </div>
       </main>
     </>
-
   );
 }

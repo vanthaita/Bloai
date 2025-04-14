@@ -4,9 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { generateSEOKeywords } from '@/lib/action';
-import { toast } from 'react-toastify'; 
-import Spinner from '@/components/Snipper';
-import { Button } from '@/components/ui/button';
+import { AIGenerationButton } from './AIGenerationButton';
 
 interface TagsManagementInputProps {
     tags: string[];
@@ -45,30 +43,21 @@ export const TagsManagementInput: React.FC<TagsManagementInputProps> = ({
     }, []);
 
     const handleGenerateKeywords = async () => {
-       if (!contentForAI) {
-            toast.info("Vui lòng nhập nội dung chính trước khi tạo bằng AI.");
-            return;
-        }
-       setIsGeneratingKeywords(true);
-       try {
-           const generatedString = await generateSEOKeywords(contentForAI);
-           if (generatedString) {
-               const generatedTags = generatedString.split(/,\s*/).map(tag => tag.trim()).filter(Boolean);
-               setTags(prevTags => {
-                   const combined = [...prevTags, ...generatedTags];
-                   const unique = Array.from(new Set(combined));
-                   return unique.slice(0, 15);
-               });
-               toast.success(`Từ khóa SEO đã được tạo bằng AI.`);
-           } else {
-               toast.warn(`AI không thể tạo Từ khóa SEO.`);
-           }
-       } catch (error) {
+        try {
+            const generatedString = await generateSEOKeywords(contentForAI);
+            if (generatedString) {
+                const generatedTags = generatedString.split(/,\s*/).map(tag => tag.trim()).filter(Boolean);
+                setTags(prevTags => {
+                    const combined = [...prevTags, ...generatedTags];
+                    const unique = Array.from(new Set(combined));
+                    return unique.slice(0, 15);
+                });
+            } 
+            return generatedString;
+        } catch (error) {
             console.error(`Error generating Từ khóa SEO:`, error);
-            toast.error(`Lỗi khi tạo Từ khóa SEO bằng AI.`);
-       } finally {
-           setIsGeneratingKeywords(false);
-       }
+            return null;
+        }
     };
 
 
@@ -76,16 +65,14 @@ export const TagsManagementInput: React.FC<TagsManagementInputProps> = ({
         <div className="space-y-1.5">
             <Label htmlFor="tagInput" className="flex items-center gap-2 text-sm">
                 Từ khóa SEO (Tags)
-                 <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="text-blue-600 hover:text-blue-700 h-auto px-2 py-1 text-xs"
-                    onClick={handleGenerateKeywords}
-                    disabled={isGeneratingKeywords}
-                >
-                    {isGeneratingKeywords ? <><Spinner className="h-3 w-3 mr-1" /> Đang tạo...</> : "Tạo AI"}
-                </Button>
+                <AIGenerationButton
+                    label="Từ khóa SEO"
+                    action={handleGenerateKeywords}
+                    isGenerating={isGeneratingKeywords}
+                    setIsGenerating={setIsGeneratingKeywords}
+                    contentForAI={contentForAI}
+                    requiresContent={true}
+                /> 
             </Label>
             <Input
                 id="tagInput"

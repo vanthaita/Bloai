@@ -69,7 +69,7 @@ const NotFound = () => {
             <Link
               href="/"
               className="px-6 py-2.5 flex items-center justify-center gap-2 bg-blue-600 rounded-md font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition duration-200 ease-in-out"
-            >
+              legacyBehavior>
               <FaHome /> Về Trang Chủ Bloai
             </Link>
 
