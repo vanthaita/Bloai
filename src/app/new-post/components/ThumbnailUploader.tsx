@@ -12,6 +12,7 @@ interface ThumbnailUploaderProps {
     imageAlt: string;
     onImageAltChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
     isSEOValid: boolean; 
+    existingThumbnailUrl: string; // Thêm prop này
 }
 
 export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
@@ -20,25 +21,32 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
     imageAlt,
     onImageAltChange,
     isSEOValid,
+    existingThumbnailUrl, // Nhận prop
 }) => {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     useEffect(() => {
         let objectUrl: string | null = null;
+        
+        // Ưu tiên hiển thị ảnh mới được chọn
         if (thumbnail) {
             objectUrl = URL.createObjectURL(thumbnail);
             setPreviewUrl(objectUrl);
-        } else {
+        } 
+        // Nếu không có ảnh mới, hiển thị ảnh hiện có (nếu có)
+        else if (existingThumbnailUrl) {
+            setPreviewUrl(existingThumbnailUrl);
+        }
+        else {
             setPreviewUrl(null);
         }
 
         return () => {
             if (objectUrl) {
                 URL.revokeObjectURL(objectUrl);
-                 setPreviewUrl(null); 
             }
         };
-    }, [thumbnail]);
+    }, [thumbnail, existingThumbnailUrl]); // Thêm existingThumbnailUrl vào dependencies
 
     const handleFileDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles.length > 0 && acceptedFiles[0]) {
@@ -50,6 +58,7 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
 
     const handleRemoveThumbnail = useCallback(() => {
         onThumbnailChange(null);
+        // Không xóa existingThumbnailUrl ở đây, chỉ xóa ảnh mới chọn
     }, [onThumbnailChange]);
 
     return (
@@ -64,17 +73,32 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
                     maxSize={5 * 1024 * 1024} 
                     aria-label="Tải lên ảnh thu nhỏ"
                 />
-                {!isSEOValid && !thumbnail && <p className="text-xs text-red-600 pt-1">Vui lòng chọn ảnh thu nhỏ.</p>}
+                {!isSEOValid && !thumbnail && !existingThumbnailUrl && (
+                    <p className="text-xs text-red-600 pt-1">Vui lòng chọn ảnh thu nhỏ.</p>
+                )}
             </div>
             <div className="space-y-4">
                 {previewUrl ? (
                     <div className="relative space-y-2">
                         <p className="text-sm font-medium text-muted-foreground">Xem trước:</p>
                         <div className="relative aspect-video rounded-lg overflow-hidden border border-dashed border-muted">
-                            <img src={previewUrl} alt="Xem trước ảnh thu nhỏ" className="object-cover w-full h-full" />
-                            <Button variant="destructive" size="icon" className="absolute top-1 right-1 h-6 w-6" onClick={handleRemoveThumbnail} aria-label="Xóa ảnh thu nhỏ đã chọn">
-                                <TrashIcon className="w-3.5 h-3.5" />
-                            </Button>
+                            <img 
+                                src={previewUrl} 
+                                alt="Xem trước ảnh thu nhỏ" 
+                                className="object-cover w-full h-full" 
+                            />
+                            {/* Chỉ hiện nút xóa khi có ảnh mới được chọn */}
+                            {thumbnail && (
+                                <Button 
+                                    variant="destructive" 
+                                    size="icon" 
+                                    className="absolute top-1 right-1 h-6 w-6" 
+                                    onClick={handleRemoveThumbnail}
+                                    aria-label="Xóa ảnh thu nhỏ đã chọn"
+                                >
+                                    <TrashIcon className="w-3.5 h-3.5" />
+                                </Button>
+                            )}
                         </div>
                         <div className="space-y-1.5 pt-2">
                             <Label htmlFor="imageAlt" className="flex items-center gap-2 text-base">
@@ -93,7 +117,9 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
                         </div>
                     </div>
                 ) : (
-                    <div className="flex items-center justify-center h-full min-h-[150px] border border-dashed rounded-lg text-muted-foreground text-sm bg-muted/40">Xem trước ảnh thu nhỏ</div>
+                    <div className="flex items-center justify-center h-full min-h-[150px] border border-dashed rounded-lg text-muted-foreground text-sm bg-muted/40">
+                        Xem trước ảnh thu nhỏ
+                    </div>
                 )}
             </div>
         </div>

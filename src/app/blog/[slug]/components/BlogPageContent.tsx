@@ -148,7 +148,7 @@ const AuthorCard: React.FC<AuthorCardProps> = ({
                                  rel="noopener noreferrer nofollow"
                                  aria-label={label}
                                  title={label}
-                                 legacyBehavior>
+                                 >
                                 <Icon className="w-5 h-5" />
                             </Link>
                         ))}
@@ -435,7 +435,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                 <div className="h-px w-6 bg-gradient-to-r from-transparent via-gray-300 to-transparent my-2" />
 
                                 <div className="flex flex-col gap-3">
-                                     <a
+                                     <Link
                                         href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(blog.canonicalUrl)}&text=${encodeURIComponent(blog.title)}`}
                                         className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                                         target="_blank"
@@ -444,8 +444,8 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                         title="Share on Twitter"
                                     >
                                         <FaTwitter className="w-5 h-5 text-gray-500 hover:text-[#1DA1F2]" />
-                                    </a>
-                                    <a
+                                    </Link>
+                                    <Link
                                         href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(blog.canonicalUrl)}`}
                                         className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                                         target="_blank"
@@ -454,8 +454,8 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                          title="Share on Facebook"
                                     >
                                         <FaFacebook className="w-5 h-5 text-gray-500 hover:text-[#1877F2]" />
-                                    </a>
-                                    <a
+                                    </Link>
+                                    <Link
                                         href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(blog.canonicalUrl)}`}
                                         className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                                         target="_blank"
@@ -464,7 +464,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                          title="Share on LinkedIn"
                                     >
                                         <FaLinkedin className="w-5 h-5 text-gray-500 hover:text-[#0A66C2]" />
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -473,13 +473,13 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                     <main className="flex-1 min-w-0 max-w-3xl mx-auto lg:max-w-none">
                         <article>
                              <div className="mb-6">
-                                <Link href="/" passHref legacyBehavior>
-                                    <a className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+                                <Link href="/" passHref >
+                                    <span className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                         </svg>
                                         Về trang chủ
-                                    </a>
+                                    </span>
                                 </Link>
                             </div>
 
@@ -490,7 +490,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                         href="/tags"
                                         className="text-xs text-gray-500 self-center underline hover:text-gray-700"
                                         title="View all tags"
-                                        legacyBehavior>
+                                        >
                                         + {remainingTagsCount} more
                                     </Link>
                                 )}
@@ -563,14 +563,16 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                                         ${heading.level === 2 ? 'pl-6 text-sm border-l-4 border-orange-200' : ''}
                                                         ${heading.level === 3 ? 'pl-10 text-sm text-gray-600' : ''}
                                                     `}
-                                                    legacyBehavior>
-                                                    {heading.level > 1 && (
-                                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-orange-300 rounded-full" />
-                                                    )}
-                                                    
-                                                    <DynamicReactMarkdown>
-                                                        {heading.level === 3 ? `↳ ${heading.text}` : heading.text}
-                                                    </DynamicReactMarkdown>
+                                                    >
+                                                    <>
+                                                        {heading.level > 1 && (
+                                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-orange-300 rounded-full" />
+                                                        )}
+                                                        
+                                                        <DynamicReactMarkdown>
+                                                            {heading.level === 3 ? `↳ ${heading.text}` : heading.text}
+                                                        </DynamicReactMarkdown>
+                                                    </>
                                                 </Link>
                                             </li>
                                         ))}
@@ -622,7 +624,8 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                                     href={`/blog/${post.slug}`}
                                                     className="flex gap-3 items-start group"
                                                     aria-label={`Đọc bài viết: ${post.title}`}
-                                                    legacyBehavior>
+                                                    >
+                                                    <>
                                                     {post.imageUrl && (
                                                         <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-md overflow-hidden relative border border-gray-100">
                                                             <CldImage
@@ -651,6 +654,7 @@ const BlogPostPageContent: React.FC<BlogPageContentProps> = ({
                                                             <span>{post.readTime} phút đọc</span>
                                                         </div>
                                                     </div>
+                                                    </>
                                                 </Link>
                                             </article>
                                         ))}

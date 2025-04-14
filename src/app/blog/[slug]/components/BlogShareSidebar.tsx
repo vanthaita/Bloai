@@ -4,6 +4,7 @@ import React, { useCallback } from 'react';
 import { Share, Eye as EyeIcon } from 'lucide-react';
 import { FaTwitter, FaFacebook, FaLinkedin } from 'react-icons/fa';
 import { BlogCore } from '@/types/helper.type';
+import Link from 'next/link';
 
 interface BlogShareSidebarProps {
     blog: BlogCore | null;
@@ -50,7 +51,7 @@ const BlogShareSidebar: React.FC<BlogShareSidebarProps> = ({ blog, views }) => {
                     <div className="h-px w-6 bg-gradient-to-r from-transparent via-gray-300 to-transparent my-2" />
 
                     <div className="flex flex-col gap-3">
-                        <a
+                        <Link
                             href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
                             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                             target="_blank"
@@ -59,8 +60,8 @@ const BlogShareSidebar: React.FC<BlogShareSidebarProps> = ({ blog, views }) => {
                             title="Share on Twitter"
                         >
                             <FaTwitter className="w-5 h-5 text-gray-500 hover:text-[#1DA1F2]" />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                             href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
                             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                             target="_blank"
@@ -69,8 +70,8 @@ const BlogShareSidebar: React.FC<BlogShareSidebarProps> = ({ blog, views }) => {
                             title="Share on Facebook"
                         >
                             <FaFacebook className="w-5 h-5 text-gray-500 hover:text-[#1877F2]" />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
                             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                             target="_blank"
@@ -79,7 +80,7 @@ const BlogShareSidebar: React.FC<BlogShareSidebarProps> = ({ blog, views }) => {
                             title="Share on LinkedIn"
                         >
                             <FaLinkedin className="w-5 h-5 text-gray-500 hover:text-[#0A66C2]" />
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

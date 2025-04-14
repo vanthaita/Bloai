@@ -7,9 +7,6 @@ import { AIGenerationButton } from './AIGenerationButton';
 
 
 interface DescriptionInputsProps {
-    description: string;
-    onDescriptionChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-    setDescription: React.Dispatch<React.SetStateAction<string>>;
     metaDescription: string;
     onMetaDescriptionChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
     setMetaDescription: React.Dispatch<React.SetStateAction<string>>; 
@@ -22,9 +19,6 @@ interface DescriptionInputsProps {
 }
 
 export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
-    description,
-    onDescriptionChange,
-    setDescription,
     metaDescription,
     onMetaDescriptionChange,
     setMetaDescription,
@@ -36,19 +30,6 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
     contentForAI,
 }) => {
 
-    const handleGenerateExcerpt = async () => {
-      
-        try {
-            const generated = await generateExcerpt(contentForAI);
-            if (generated) {
-                setDescription(generated);
-            } 
-            return generated;
-        } catch (error) {
-            console.error(`Error generating Mô tả ngắn:`, error);
-            return null;
-        }
-    };
 
      const handleGenerateMetaDesc = async () => {
         try {
@@ -66,29 +47,6 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
 
     return (
         <>
-            <div className="space-y-1.5">
-                <Label htmlFor="description" className="flex items-center gap-2 text-base">
-                    Mô tả ngắn (Excerpt)
-                    <AIGenerationButton
-                        label="Mô tả ngắn"
-                        action={handleGenerateExcerpt}
-                        isGenerating={isGeneratingExcerpt}
-                        setIsGenerating={setIsGeneratingExcerpt}
-                        contentForAI={contentForAI}
-                        requiresContent={true}
-                    />
-                </Label>
-                <Textarea
-                    id="description"
-                    placeholder="Viết một đoạn mô tả ngắn gọn, hấp dẫn về bài viết..."
-                    rows={3}
-                    value={description}
-                    onChange={onDescriptionChange}
-                    maxLength={300}
-                />
-                <p className="text-xs text-muted-foreground">Còn lại {300 - description.length} ký tự</p>
-            </div>
-
             <div className="space-y-1.5">
                 <Label htmlFor="metaDescription" className="flex items-center gap-2 text-base">
                     Meta Mô tả *

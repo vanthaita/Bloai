@@ -53,7 +53,7 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
                         href="/tags"
                         className="text-xs text-gray-500 self-center underline hover:text-gray-700"
                         title="View all tags"
-                        legacyBehavior>
+                        >
                         + {remainingTagsCount} more
                     </Link>
                 )}

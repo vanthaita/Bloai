@@ -46,14 +46,16 @@ const BlogTableOfContents: React.FC<BlogTableOfContentsProps> = ({ headings }) =
                                     ${heading.level === 2 ? 'pl-6 text-sm border-l-4 border-orange-200' : ''}
                                     ${heading.level === 3 ? 'pl-10 text-sm text-gray-600' : ''}
                                 `}
-                                legacyBehavior>
-                                {heading.level > 1 && (
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-orange-300 rounded-full" />
-                                )}
+                                >
+                                <>
+                                    {heading.level > 1 && (
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-orange-300 rounded-full" />
+                                    )}
 
-                                <DynamicReactMarkdown components={{ p: React.Fragment }}>
-                                    {heading.level === 3 ? `↳ ${heading.text}` : heading.text}
-                                </DynamicReactMarkdown>
+                                    <DynamicReactMarkdown components={{ p: React.Fragment }}>
+                                        {heading.level === 3 ? `↳ ${heading.text}` : heading.text}
+                                    </DynamicReactMarkdown>
+                                </>
                             </Link>
                         </li>
                     ))}
