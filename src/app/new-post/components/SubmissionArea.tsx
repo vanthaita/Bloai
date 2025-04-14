@@ -7,12 +7,14 @@ interface SubmissionAreaProps {
     isSEOValid: boolean;
     isSubmitting: boolean;
     onSubmit: () => void;
+    isUpdateMode: boolean;
 }
 
 export const SubmissionArea: React.FC<SubmissionAreaProps> = ({
     isSEOValid,
     isSubmitting,
     onSubmit,
+    isUpdateMode
 }) => {
     return (
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 w-full">
@@ -27,7 +29,7 @@ export const SubmissionArea: React.FC<SubmissionAreaProps> = ({
                 <Button onClick={onSubmit} className='bg-black text-white hover:bg-gray-800' disabled={isSubmitting || !isSEOValid} aria-disabled={isSubmitting || !isSEOValid}>
                     {isSubmitting ? (
                         <><FiLoader className="animate-spin mr-2" size={18} /> Đang xuất bản...</>
-                    ) : ( "Xuất bản Ngay" )}
+                    ) : ( `${isUpdateMode ? 'Cập Nhật Ngay' : 'Xuất bản Ngay' }` )}
                 </Button>
             </div>
         </div>

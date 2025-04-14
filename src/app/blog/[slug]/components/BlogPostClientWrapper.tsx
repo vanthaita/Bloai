@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { IconUserOff } from '@tabler/icons-react';
+import { IconEdit, IconUserOff } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import Loading from '@/components/loading'; 
 
@@ -16,6 +16,7 @@ import BlogAuthorBioSection from './BlogAuthorBioSection';
 import BlogSuggestedPosts from './BlogSuggestedPosts';
 import ScrollToTopButton from './ScrollToTopButton';
 import { Author, Blog, Heading, slugify, SuggestedBlog } from '@/types/helper.type';
+import { useCurrentUser } from '@/hook/use-current-user';
 
 
 interface BlogPostClientWrapperProps {
@@ -31,6 +32,8 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
     const [views, setViews] = useState<number | null>(null);
     const [headings, setHeadings] = useState<Heading[]>([]);
     const [isMounted, setIsMounted] = useState(false);
+    const currentUser = useCurrentUser();
+    const [isAuthor, setIsAuthor] = useState(false);
     const router = useRouter();
     const extractedHeadings = useMemo(() => {
         if (!blog?.content || typeof blog.content !== 'string') {
@@ -110,6 +113,13 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, []);
 
+    useEffect(() => {
+        if (blog?.author && currentUser?.id) {
+            setIsAuthor(blog.author.id === currentUser.id);
+        } else {
+            setIsAuthor(false);
+        }
+    }, [blog?.author, currentUser?.id]);
     if (!isMounted) {
          return <Loading />;
     }
@@ -146,8 +156,19 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
     return (
         <>
             <BlogMetadata blog={blog} suggestedBlogs={suggestedBlogs} />
-
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                {isAuthor && (
+                    <div className="flex justify-end mb-6">
+                        <Button
+                            variant="outline"
+                            className="gap-2"
+                            onClick={() => router.push(`/new-post?blogSlug=${blog.slug}`)}
+                        >
+                            <IconEdit size={18} />
+                            Chỉnh Sửa Blog
+                        </Button>
+                    </div>
+                )}
                 <div className="flex flex-col lg:flex-row gap-x-8 lg:gap-x-12">
                     <BlogShareSidebar blog={blog} views={views} />
                     <main className="flex-1 min-w-0 max-w-3xl mx-auto lg:max-w-none">

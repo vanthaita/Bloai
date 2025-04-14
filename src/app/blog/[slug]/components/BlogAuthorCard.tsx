@@ -53,7 +53,7 @@ const AuthorCard: React.FC<AuthorCardProps> = ({
                                  rel="noopener noreferrer nofollow"
                                  aria-label={label}
                                  title={label}
-                                 legacyBehavior>
+                                >
                                 <Icon className="w-5 h-5" />
                             </Link>
                         ))}

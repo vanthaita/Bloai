@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import { getNodeText, Heading } from '@/types/helper.type';
+import Image from 'next/image';
 
 const DynamicReactMarkdown = dynamic(
     () => import('react-markdown').then(mod => mod.default),
@@ -20,7 +21,6 @@ interface BlogContentRendererProps {
 }
 
 const BlogContentRenderer: React.FC<BlogContentRendererProps> = ({ content, headings }) => {
-
     const CustomHeadingRenderer = useCallback(
         ({
             level,
@@ -44,15 +44,20 @@ const BlogContentRenderer: React.FC<BlogContentRendererProps> = ({ content, head
 
             return (
                 <Tag id={finalId} {...props} key={finalId}>
-                {children || ''}
+                    {children || ''}
                 </Tag>
             );
         },
-        [headings] 
+        [headings]
     );
 
     return (
-        <div className="prose prose-slate max-w-none lg:prose-lg prose-headings:scroll-mt-24 prose-img:rounded-lg prose-img:shadow-md prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-a:transition-colors prose-a:duration-150 prose-code:before:content-none prose-code:after:content-none mb-12">
+        <div className="prose prose-slate max-w-none lg:prose-lg prose-headings:scroll-mt-24 
+            prose-img:rounded-lg prose-img:shadow-md prose-img:max-w-full prose-img:h-auto 
+            prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-a:transition-colors 
+            prose-a:duration-150 prose-code:before:content-none prose-code:after:content-none 
+            mb-12"
+        >
             <DynamicReactMarkdown
                 rehypePlugins={[rehypeRaw]}
                 remarkPlugins={[remarkGfm]}
@@ -60,6 +65,9 @@ const BlogContentRenderer: React.FC<BlogContentRendererProps> = ({ content, head
                     h1: (props) => <CustomHeadingRenderer level={1} {...props} />,
                     h2: (props) => <CustomHeadingRenderer level={2} {...props} />,
                     h3: (props) => <CustomHeadingRenderer level={3} {...props} />,
+                    img: (props) => (
+                        <Image src={props.src as string} alt={props.alt as string} width={1200} height={200} />
+                    ),
                 }}
             >
                 {content}
