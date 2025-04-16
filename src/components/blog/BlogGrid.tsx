@@ -20,7 +20,6 @@ export function BlogGrid() {
   const { data: blogData, isLoading, error, isFetching } = api.blog.getAllBlog.useQuery({
     page: currentPage,
     limit: LIMIT
-   
   });
 
 

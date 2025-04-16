@@ -274,84 +274,84 @@ export const blogRouter = createTRPCRouter({
     }),
 
     getSuggestedBlogs: publicProcedure
-  .input(z.object({
-    slug: z.string(),
-    limit: z.number().int().positive().optional().default(3)
-  }))
-  .query(async ({ ctx, input }) => {
-    try {
-      const currentBlog = await ctx.db.blog.findUnique({
-        where: { slug: input.slug },
-        select: { tags: { select: { id: true } } }
-      });
-
-      if (!currentBlog) {
-        throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
-      }
-
-      const currentTagIds = currentBlog.tags.map(tag => tag.id);
-      let suggestedBlogs;
-
-      if (currentTagIds.length === 0) {
-        suggestedBlogs = await ctx.db.blog.findMany({
-          where: { slug: { not: input.slug } },
-          take: input.limit,
-          orderBy: { publishDate: 'desc' },
-          select: { 
-            slug: true,
-            title: true,
-            imageUrl: true,
-            imageAlt: true,
-            publishDate: true,
-            readTime: true,
-            metaDescription: true,
-            author: { select: { name: true, image: true } },
-            tags: { select: { name: true } }
-          }
+      .input(z.object({
+        slug: z.string(),
+        limit: z.number().int().positive().optional().default(3)
+      }))
+    .query(async ({ ctx, input }) => {
+      try {
+        const currentBlog = await ctx.db.blog.findUnique({
+          where: { slug: input.slug },
+          select: { tags: { select: { id: true } } }
         });
-      } else {
-        suggestedBlogs = await ctx.db.$queryRaw`
-        SELECT 
-          b."slug",
-          b."title",
-          b."imageUrl",
-          b."imageAlt",
-          b."publishDate",
-          b."readTime",
-          b."metaDescription",
-          json_build_object('name', a."name", 'image', a."image") as author,
-          COALESCE(
-            json_agg(json_build_object('name', t."name")) 
-            FILTER (WHERE t."id" IS NOT NULL), 
-            '[]'::json
-          ) as tags
-        FROM "Blog" b
-        INNER JOIN "User" a ON b."authorId" = a."id" 
-        LEFT JOIN "_BlogToTag" bt ON b."id" = bt."A"  
-        LEFT JOIN "Tag" t ON bt."B" = t."id"         
-        LEFT JOIN "_BlogToTag" bt_overlap 
-          ON b."id" = bt_overlap."A" 
-          AND bt_overlap."B" IN (${Prisma.join(currentTagIds)})  
-        WHERE b."slug" != ${input.slug}
-        GROUP BY b."id", a."id"
-        ORDER BY 
-          COUNT(bt_overlap."B") DESC, 
-          b."publishDate" DESC
-        LIMIT ${input.limit};
-      `;
-      }
 
-      return suggestedBlogs;
-    } catch (error) {
-      if (error instanceof TRPCError) {
-        throw error;
+        if (!currentBlog) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
+        }
+
+        const currentTagIds = currentBlog.tags.map(tag => tag.id);
+        let suggestedBlogs;
+
+        if (currentTagIds.length === 0) {
+          suggestedBlogs = await ctx.db.blog.findMany({
+            where: { slug: { not: input.slug } },
+            take: input.limit,
+            orderBy: { publishDate: 'desc' },
+            select: { 
+              slug: true,
+              title: true,
+              imageUrl: true,
+              imageAlt: true,
+              publishDate: true,
+              readTime: true,
+              metaDescription: true,
+              author: { select: { name: true, image: true } },
+              tags: { select: { name: true } }
+            }
+          });
+        } else {
+          suggestedBlogs = await ctx.db.$queryRaw`
+          SELECT 
+            b."slug",
+            b."title",
+            b."imageUrl",
+            b."imageAlt",
+            b."publishDate",
+            b."readTime",
+            b."metaDescription",
+            json_build_object('name', a."name", 'image', a."image") as author,
+            COALESCE(
+              json_agg(json_build_object('name', t."name")) 
+              FILTER (WHERE t."id" IS NOT NULL), 
+              '[]'::json
+            ) as tags
+          FROM "Blog" b
+          INNER JOIN "User" a ON b."authorId" = a."id" 
+          LEFT JOIN "_BlogToTag" bt ON b."id" = bt."A"  
+          LEFT JOIN "Tag" t ON bt."B" = t."id"         
+          LEFT JOIN "_BlogToTag" bt_overlap 
+            ON b."id" = bt_overlap."A" 
+            AND bt_overlap."B" IN (${Prisma.join(currentTagIds)})  
+          WHERE b."slug" != ${input.slug}
+          GROUP BY b."id", a."id"
+          ORDER BY 
+            COUNT(bt_overlap."B") DESC, 
+            b."publishDate" DESC
+          LIMIT ${input.limit};
+        `;
+        }
+
+        return suggestedBlogs;
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+        console.error("Database error:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch suggested blogs",
+        });
       }
-      console.error("Database error:", error);
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to fetch suggested blogs",
-      });
-    }
   }),
   getBySlug: publicProcedure
     .input(z.object({ slug: z.string() }))
@@ -387,4 +387,78 @@ export const blogRouter = createTRPCRouter({
 
       return tag
     }),
+
+
+    
+  fullTextSearch: publicProcedure
+  .input(z.object({
+    searchTerm: z.string().min(1, { message: "Search term cannot be empty" }),
+    slug: z.string().optional(),
+    page: z.number().int().positive().optional().default(1), 
+    limit: z.number().int().min(1).optional().default(4)
+  }))
+  .query(async ({ ctx, input }) => {
+    try {
+      const whereClause: Prisma.BlogWhereInput = {
+        OR: [
+          { title: { contains: input.searchTerm, mode: 'insensitive' } },
+          // { content: { contains: input.searchTerm, mode: 'insensitive' } },
+          { tags: { some: { name: { contains: input.searchTerm, mode: 'insensitive' } } } },
+          // { keywords: { has: input.searchTerm } } 
+        ],
+        ...(input.slug && { slug: { contains: input.slug, mode: 'insensitive' } })
+      };
+      const skipValue = (input.page - 1) * input.limit;
+      const [results, totalCount] = await ctx.db.$transaction([
+        ctx.db.blog.findMany({
+          where: whereClause,
+          select: { 
+            id: true,
+            title: true,
+            slug: true,
+            metaDescription: true, 
+            imageUrl: true,
+            imageAlt: true,
+            publishDate: true,
+            author: { 
+              select: {
+                id: true,
+                name: true,
+                image: true
+              }
+            },
+            tags: { 
+              select: {
+                id: true,
+                name: true
+              }
+            },
+          },
+          orderBy: {
+            publishDate: 'desc'
+          },
+          take: input.limit,
+          skip: skipValue,
+        }),
+        ctx.db.blog.count({ where: whereClause })
+      ]);
+      return {
+        results,
+        totalCount,
+        currentPage: input.page,
+        totalPages: Math.ceil(totalCount / input.limit),
+      };
+
+    } catch (error) {
+      console.error('Error in fullTextSearch:', error);
+      if (error instanceof TRPCError) {
+        throw error;
+      }
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to perform search',
+        cause: error instanceof Error ? error : undefined,
+      });
+    }
+  }),
 });
