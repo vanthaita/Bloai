@@ -2,8 +2,56 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { Prisma } from "@prisma/client";
+import { Resend } from "resend";
+import { render } from "@react-email/components";
+import { NewBlogNotification } from "@/lib/new-blog-notification";
+import { sendBlogNotifications } from "@/lib/notifySubscribers";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 export const blogRouter = createTRPCRouter({
-    create: protectedProcedure
+  subscribeToNewsletter: publicProcedure
+  .input(z.object({ email: z.string().email() }))
+  .mutation(async ({ ctx, input }) => {
+    try {
+      const existingSubscriber = await ctx.db.newsletterSubscription.findUnique({
+        where: { email: input.email },
+      });
+
+      if (existingSubscriber) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Email already subscribed",
+        });
+      }
+
+      const subscription = await ctx.db.newsletterSubscription.create({
+        data: {
+          email: input.email,
+          subscribedAt: new Date(),
+          active: true,
+        },
+      });
+      await resend.emails.send({
+        from: "ie204seo@gmail.com",
+        to: input.email,
+        subject: "Thanks for subscribing to our blog!",
+        html: await render(NewBlogNotification({ 
+          type: "confirmation",
+          blogTitle: "",
+          blogUrl: ""
+        })),
+      });
+      return { success: true, subscription };
+    } catch (error) {
+      console.error("Subscription error:", error);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to subscribe to newsletter",
+      });
+    }
+  }),
+  create: protectedProcedure
     .input(
       z.object({
         title: z.string().min(10).max(120),
@@ -75,6 +123,14 @@ export const blogRouter = createTRPCRouter({
         }, {
           timeout: 10000, 
         });
+        if (result) {
+          await sendBlogNotifications({
+            db: ctx.db,
+            blogId: result.id,
+            type: "new",
+          });
+        }
+
         return { success: true, result };
       } catch (err) {
         console.error(err);
@@ -492,4 +548,67 @@ export const blogRouter = createTRPCRouter({
       });
       return blog?.views ?? 0;
   }),
+
+  getLeaderBoard: publicProcedure
+    .input(z.object({
+    authorLimit: z.number().int().positive().optional().default(5),
+    blogLimit: z.number().int().positive().optional().default(5),
+  })) .query(async ({input, ctx}) => {
+    const topAuthors = await ctx.db.user.findMany({
+      take: input.authorLimit,
+      orderBy: {
+        blogs: {
+          _count: 'desc'
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        _count: {
+          select: {
+            blogs: true,
+          }
+        }
+      }
+    })
+
+    const topViewedBlogs = await ctx.db.blog.findMany({
+      take: input.blogLimit,
+      orderBy: {
+        views: 'desc'
+      },
+      select: {
+        id: true,
+        title: true,
+        views: true,
+        slug: true,
+        author: {
+          select: {
+            name: true,
+          }
+        }
+      }
+    })
+
+    const formattedAuthors = topAuthors.map((author) => ({
+      id: author.id,
+      name: author.name || 'Ẩn danh',
+      blogCount: author._count.blogs,
+      avatar: author.image || ''
+    }))
+
+    const formattedBlogs = topViewedBlogs.map((blog) => ({
+      id: blog.id,
+      title: blog.title,
+      views: blog.views,
+      author: blog.author.name || 'Ẩn danh',
+      slug: blog.slug
+    }));
+    return {
+      topAuthors: formattedAuthors,
+      topViewedBlogs: formattedBlogs,
+    };
+  })
+   
 });

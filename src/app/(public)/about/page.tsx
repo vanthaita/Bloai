@@ -17,10 +17,6 @@ interface Feature {
   desc: string
 }
 const AboutPage = () => {
-  const [heroImage] = useState(
-    "https://images.unsplash.com/photo-1507146426996-ef05306b995a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-  )
-
   const teamMembers: TeamMember[] = [
     {
       name: "Nhóm BloAI",
@@ -94,46 +90,6 @@ const AboutPage = () => {
 
   return (
     <div className="min-h-screen bg-white text-gray-800">
-      <section className="container mx-auto px-4 py-16">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-          <div className="lg:w-1/2 mb-12 lg:mb-0">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-              Bloai – Khám phá Trí tuệ Nhân tạo dễ dàng hơn bao giờ hết!
-              <span className="text-blue-600"> AI cho mọi người</span> – Học, Ứng dụng và Phát triển
-            </h1>
-            <p className="text-lg text-gray-600 mb-8">
-              Chào mừng bạn đến với BloAI! Đây là nơi giúp bạn tìm hiểu về trí tuệ nhân tạo (AI) theo cách đơn giản, dễ
-              hiểu và thực tế nhất. Nơi dành cho người mới bắt đầu với AI, muốn khám phá cách AI hoạt động, hay đang tìm
-              kiếm tài nguyên học tập AI chất lượng.
-            </p>
-            <div className="flex gap-4">
-              <Link
-                href="/auth/signin"
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg text-white font-medium transition-colors"
-                legacyBehavior>
-                Bắt đầu ngay
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Tìm hiểu thêm
-              </Link>
-            </div>
-          </div>
-          <div className="lg:w-1/2 relative">
-            <Image
-              src={heroImage || "/placeholder.svg"}
-              alt="AI Visualization"
-              width={600}
-              height={400}
-              className="rounded-xl shadow-xl border-4 border-blue-100"
-              priority
-            />
-          </div>
-        </div>
-      </section>
       <section className="bg-white-50 py-20">
         <div className="container mx-auto px-8">
           <h2 className="text-3xl font-bold text-center mb-12">Chúng tôi mang đến điều gì</h2>

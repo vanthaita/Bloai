@@ -51,7 +51,7 @@ const LandingPage = () => {
               <Link
                 href="/auth/signin"
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg text-white font-medium transition-colors"
-                legacyBehavior>
+                >
                 Bắt đầu ngay
                 <FaArrowRight className="mt-1" />
               </Link>
