@@ -8,8 +8,10 @@ import {
     aiGenerateTitleBlog,
     aiGenerateExcerpt,
     aiEnhanceContentBlogForSEO,
+    aiGenerateHtmlForEmail,
 } from '@/lib/gemini'
 import { db } from '@/server/db'
+import { BlogNotificationProps } from './notifySubscribers'
 
 export async function generateMetaDescription(content: string) {
   const generated = await aiGenerateMetaDescription(content)
@@ -55,5 +57,11 @@ export async function generateExcerpt(content: string) {
 }
 export async function generateEnhanceContentBlogForSEO(content: string) {
   const generated = await aiEnhanceContentBlogForSEO(content);
+  return generated
+}
+
+export async function generateHtmlForEmail(dataEmail: BlogNotificationProps) {
+  const generated = await aiGenerateHtmlForEmail(dataEmail);
+  console.log(generated);
   return generated
 }

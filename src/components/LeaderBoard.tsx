@@ -21,6 +21,8 @@ interface Blog {
     slug: string;
 }
 
+export const dynamic = 'force-dynamic';
+
 const LeaderBoard = async () => {
     const currentDate = new Date();
     const currentMonth = currentDate.toLocaleString('vi-VN', { month: 'long' });
