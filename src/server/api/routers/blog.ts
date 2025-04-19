@@ -3,15 +3,14 @@ import { createTRPCRouter, publicProcedure, protectedProcedure } from "@/server/
 import { TRPCError } from "@trpc/server";
 import { Prisma } from "@prisma/client";
 import { Resend } from "resend";
-import { render } from "@react-email/components";
-import { NewBlogNotification } from "@/lib/new-blog-notification";
-import { sendBlogNotifications } from "@/lib/notifySubscribers";
+import { BlogNotificationProps, sendBlogNotifications } from "@/lib/notifySubscribers";
+import { generateHtmlForEmail } from "@/lib/action";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const blogRouter = createTRPCRouter({
   subscribeToNewsletter: publicProcedure
-  .input(z.object({ email: z.string().email() }))
+  .input(z.object({ email: z.string().email(), name: z.string().optional() }))
   .mutation(async ({ ctx, input }) => {
     try {
       const existingSubscriber = await ctx.db.newsletterSubscription.findUnique({
@@ -32,22 +31,62 @@ export const blogRouter = createTRPCRouter({
           active: true,
         },
       });
-      await resend.emails.send({
-        from: "ie204seo@gmail.com",
-        to: input.email,
-        subject: "Thanks for subscribing to our blog!",
-        html: await render(NewBlogNotification({ 
-          type: "confirmation",
-          blogTitle: "",
-          blogUrl: ""
-        })),
-      });
+
+      const dataForEmail: BlogNotificationProps = {
+          type: "confirmation", 
+          subscriberName: input.name, 
+          unsubscribeUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/unsubscribe?email=${encodeURIComponent(input.email)}`,
+          blogName: "Bloai",
+          logoUrl: process.env.NEXT_PUBLIC_LOGO_URL || 'https://res.cloudinary.com/dq2z27agv/image/upload/v1745082810/hnckqv393urojneminwo.png', 
+          blogTitle: "", 
+          blogUrl: "",
+          description: undefined,
+          blogImgUrl: undefined,
+          authorName: undefined,
+      };
+
+      let emailHtml = null;
+      try {
+      
+         emailHtml = await generateHtmlForEmail(dataForEmail);
+      } catch (aiError) {
+          console.error("AI failed to generate confirmation email HTML:", aiError);
+      }
+
+
+      if (!emailHtml) {
+           console.warn(`AI failed or returned empty HTML for confirmation email to ${input.email}. Sending basic text email.`);
+            await resend.emails.send({
+                from: process.env.RESEND_FROM_EMAIL || '',
+                to: input.email,
+                subject: `Chào mừng bạn đến với Bloai!`,
+                text: `Cảm ơn bạn đã đăng ký nhận tin từ Bloai! Stay tuned for the latest updates on tech, AI, and more.\n\n Bloai Team \n\nĐể hủy đăng ký: ${dataForEmail.unsubscribeUrl}`,
+            });
+
+      } else {
+           await resend.emails.send({
+             from: process.env.RESEND_FROM_EMAIL || '',
+             to: input.email,
+             subject: `Chào mừng bạn đến với ${dataForEmail.blogName || 'Blog của chúng tôi'}!`,
+             html: emailHtml,
+           });
+           console.log(`Successfully sent confirmation email to ${input.email}`);
+      }
+
+
       return { success: true, subscription };
     } catch (error) {
       console.error("Subscription error:", error);
+      if (error instanceof TRPCError) {
+          throw error;
+      }
+      if (error instanceof Error) {
+          console.error("Error details:", error.message, error.stack);
+      }
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to subscribe to newsletter",
+        cause: error
       });
     }
   }),
