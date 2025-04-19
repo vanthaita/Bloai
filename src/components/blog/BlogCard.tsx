@@ -20,7 +20,7 @@ interface BlogCardProps {
 
 export function BlogCard({ blog }: BlogCardProps) {
   return (
-    <Link href={`/blog/${blog.slug}`} legacyBehavior={false}>
+    <Link href={`/blog/${blog.slug}`}>
       <div className="group relative bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all cursor-pointer border border-gray-100 h-full flex flex-col">
         <div className="relative h-48 overflow-hidden">
           <CldImage

@@ -29,7 +29,6 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
     suggestedBlogsData: suggestedBlogs = []
 }) => {
     const [isVisible, setIsVisible] = useState(false);
-    const [views, setViews] = useState<number | null>(null);
     const [headings, setHeadings] = useState<Heading[]>([]);
     const [isMounted, setIsMounted] = useState(false);
     const currentUser = useCurrentUser();
@@ -68,33 +67,6 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
     useEffect(() => {
         setHeadings(extractedHeadings);
     }, [extractedHeadings]);
-
-    useEffect(() => {
-        if (!blog?.slug) return;
-
-        const storageKey = `blog-views-${blog.slug}`;
-        const sessionViewKey = `blog-session-viewed-${blog.slug}`;
-        let currentViews = 0;
-
-        try {
-            const storedViews = localStorage.getItem(storageKey);
-            currentViews = storedViews ? parseInt(storedViews, 10) : 0;
-            if (isNaN(currentViews)) currentViews = 0;
-
-            const viewedInSession = sessionStorage.getItem(sessionViewKey);
-
-            if (!viewedInSession) {
-                currentViews += 1;
-                localStorage.setItem(storageKey, currentViews.toString());
-                sessionStorage.setItem(sessionViewKey, 'true');
-            }
-        } catch (error) {
-            console.error("Error accessing storage for views:", error);
-            currentViews = 0; 
-        }
-        setViews(currentViews);
-
-    }, [blog?.slug]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -170,7 +142,7 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
                     </div>
                 )}
                 <div className="flex flex-col lg:flex-row gap-x-8 lg:gap-x-12">
-                    <BlogShareSidebar blog={blog} views={views} />
+                    <BlogShareSidebar blog={blog} />
                     <main className="flex-1 min-w-0 max-w-3xl mx-auto lg:max-w-none">
                         <article>
                             <BlogHeader blog={blog} />

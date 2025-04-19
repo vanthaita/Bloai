@@ -461,4 +461,35 @@ export const blogRouter = createTRPCRouter({
       });
     }
   }),
+
+
+  viewCount: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .mutation(async ({ input, ctx }) => { 
+      const decodedSlug = decodeURIComponent(input.slug);
+      const blog = await ctx.db.blog.findUnique({
+        where: { slug: decodedSlug },
+        select: { id: true, views: true }
+      });
+
+      if (!blog) throw new Error("Blog not found");
+
+      const updateBlog = await ctx.db.blog.update({
+        where: { id: blog.id },
+        data: { views: blog.views + 1 },
+        select: { views: true }
+      });
+      
+      return updateBlog.views;
+  }),
+
+  getViews: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const blog = await ctx.db.blog.findUnique({
+        where: { slug: decodeURIComponent(input.slug) },
+        select: { views: true }
+      });
+      return blog?.views ?? 0;
+  }),
 });
