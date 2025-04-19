@@ -12,7 +12,7 @@ interface ThumbnailUploaderProps {
     imageAlt: string;
     onImageAltChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
     isSEOValid: boolean; 
-    existingThumbnailUrl: string; // Thêm prop này
+    existingThumbnailUrl: string; 
 }
 
 export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
@@ -21,19 +21,17 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
     imageAlt,
     onImageAltChange,
     isSEOValid,
-    existingThumbnailUrl, // Nhận prop
+    existingThumbnailUrl,
 }) => {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     useEffect(() => {
         let objectUrl: string | null = null;
         
-        // Ưu tiên hiển thị ảnh mới được chọn
         if (thumbnail) {
             objectUrl = URL.createObjectURL(thumbnail);
             setPreviewUrl(objectUrl);
         } 
-        // Nếu không có ảnh mới, hiển thị ảnh hiện có (nếu có)
         else if (existingThumbnailUrl) {
             setPreviewUrl(existingThumbnailUrl);
         }
@@ -46,7 +44,7 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
                 URL.revokeObjectURL(objectUrl);
             }
         };
-    }, [thumbnail, existingThumbnailUrl]); // Thêm existingThumbnailUrl vào dependencies
+    }, [thumbnail, existingThumbnailUrl]); 
 
     const handleFileDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles.length > 0 && acceptedFiles[0]) {
@@ -58,7 +56,6 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
 
     const handleRemoveThumbnail = useCallback(() => {
         onThumbnailChange(null);
-        // Không xóa existingThumbnailUrl ở đây, chỉ xóa ảnh mới chọn
     }, [onThumbnailChange]);
 
     return (
@@ -87,7 +84,6 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
                                 alt="Xem trước ảnh thu nhỏ" 
                                 className="object-cover w-full h-full" 
                             />
-                            {/* Chỉ hiện nút xóa khi có ảnh mới được chọn */}
                             {thumbnail && (
                                 <Button 
                                     variant="destructive" 

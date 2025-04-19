@@ -1,4 +1,4 @@
-import type { Metadata, ResolvingMetadata } from 'next';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { api } from '@/trpc/server';
 import BlogPostClientWrapper from './components/BlogPostClientWrapper'; 
@@ -24,9 +24,39 @@ export async function generateMetadata(
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'; 
     const blogUrl = blog.canonicalUrl || `${appUrl}/blog/${blog.slug}`;
 
+    const getTopKeywords = (tags: { name: string; relevance?: number }[], count = 5) => {
+        if (!tags || tags.length === 0) {
+            return 'AI, Technology, Machine Learning, Blog, Tutorial';
+        }
+        const sortedTags = [...tags].sort((a, b) => {
+            if (a.relevance !== undefined && b.relevance !== undefined) {
+                return b.relevance - a.relevance;
+            }
+                return a.name.localeCompare(b.name);
+        });
+    
+        const filteredTags = sortedTags.filter(tag => {
+            const lowerName = tag.name.toLowerCase();
+            const genericTags = ['general', 'blog', 'article', 'post', 'tech', 'technology'];
+            return !genericTags.includes(lowerName);
+        });
+        const prioritizedTags = filteredTags.sort((a, b) => b.name.length - a.name.length);
+        const uniqueTags = Array.from(new Set(prioritizedTags.map(t => t.name)))
+        .slice(0, count);
+        if (uniqueTags.length < count) {
+            const defaultTags = ['AI', 'Machine Learning', 'Technology', 'Tutorial', 'Guide'];
+            const needed = count - uniqueTags.length;
+            return [...uniqueTags, ...defaultTags.slice(0, needed)].join(', ');
+        }
+        return uniqueTags.join(', ');
+    };
+  
+    const keywords = getTopKeywords(blog.tags ?? [], 5);
+    console.log('key:', keywords);
     const blogPostSeo = {
         title: `${blog.title} | BloAI Technology Blog`,
         description: blog.metaDescription,
+        keywords: keywords,
         canonical: blogUrl,
         openGraph: {
             type: 'article' as const,
@@ -63,6 +93,7 @@ export async function generateMetadata(
     return {
         title: blogPostSeo.title,
         description: blogPostSeo.description,
+        keywords: blogPostSeo.keywords,
         alternates: {
             canonical: blogPostSeo.canonical,
         },

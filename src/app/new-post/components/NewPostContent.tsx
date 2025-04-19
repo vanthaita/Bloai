@@ -3,7 +3,7 @@ import React, { useCallback, useState, useEffect, useMemo, ChangeEvent } from 'r
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import slugify from 'slugify'
-import { ArrowLeft, HelpCircle } from 'lucide-react'
+import { ArrowLeft, HelpCircle, Lightbulb } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Button } from '@/components/ui/button'
 import { env } from '@/env'
@@ -45,6 +45,7 @@ const NewPostContent = () => {
     const [isGeneratingOgDescription, setIsGeneratingOgDescription] = useState(false);
     const [isGeneratingTitle, setIsGeneratingTitle] = useState(false);
     const [isGeneratingExcerpt, setIsGeneratingExcerpt] = useState(false);
+    const [isGeneratingEnhanceContent,setIsGeneratingEnhanceContent] = useState(false);
 
     const [isAutoCanonical, setIsAutoCanonical] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -292,12 +293,50 @@ const NewPostContent = () => {
         <TooltipProvider>
             {isLoading ? (
                 <Loading />
-            ) : ( <div className="bg-white min-h-screen p-1 md:p-4">
-                <div onClick={() => router.back()} className='max-w-10 mb-2 mt-2'>
-                    <Button variant='outline' className='flex justify-start items-center gap-x-2'>
-                        <ArrowLeft />
-                        <span>Trở lại</span>
+            ) : ( 
+            <div className="bg-white min-h-screen p-1 md:p-4">
+               <div className="space-y-4 mb-6">
+                <div 
+                    onClick={() => router.back()} 
+                    className="cursor-pointer group"
+                    aria-label="Quay lại trang trước"
+                >
+                    <Button 
+                    variant="ghost" 
+                    className="flex items-center gap-2 px-3 py-2 transition-all hover:bg-accent hover:pl-2"
+                    >
+                    <ArrowLeft className="w-5 h-5 text-primary group-hover:-translate-x-1 transition-transform" />
+                    <span className="font-medium">Trở lại danh sách</span>
                     </Button>
+                </div>
+                <div className="bg-blue-50/80 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <div className="flex items-start gap-3">
+                    <Lightbulb className="w-5 h-5 mt-0.5 text-blue-600 dark:text-blue-300 flex-shrink-0" />
+                    <div>
+                        <h3 className="font-semibold text-blue-800 dark:text-blue-100 mb-1.5">
+                        Lưu ý quan trọng khi tạo bài viết chuẩn SEO
+                        </h3>
+                        <ol className="list-decimal list-inside space-y-1.5 text-sm text-blue-700 dark:text-blue-300">
+                        <li>
+                            <span className="font-medium">Tạo Tags trước:</span> Xác định từ khóa chính 
+                            và phụ để hệ thống gợi ý nội dung phù hợp
+                        </li>
+                        <li>
+                            <span className="font-medium">Tiêu đề (Title):</span> Chứa từ khóa chính, 
+                            dưới 60 ký tự và thu hút click
+                        </li>
+                        <li>
+                            <span className="font-medium">Mô tả (Description):</span> Tóm tắt nội dung 
+                            trong 150-160 ký tự, chứa từ khóa
+                        </li>
+                        <li>
+                            <span className="font-medium">Header (H2, H3):</span> Phân cấp rõ ràng, 
+                            mỗi section nên chứa ít nhất 1 từ khóa phụ
+                        </li>
+                        </ol>
+                    </div>
+                    </div>
+                </div>
                 </div>
                 <Card>
                     <CardHeader>
@@ -354,6 +393,8 @@ const NewPostContent = () => {
                                 content={content}
                                 onContentChange={handleContentChange}
                                 readTime={readTime}
+                                isGeneratingEnhanceContent={isGeneratingEnhanceContent}
+                                setIsGeneratingEnhanceContent={(setIsGeneratingEnhanceContent)}
                             />
                         </div>
 

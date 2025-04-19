@@ -78,7 +78,7 @@ const Footer = () => {
                     <Link
                       href={link.href}
                       className="text-[#554640]/90 hover:text-[#3A6B4C] transition-colors"
-                      legacyBehavior>
+                      >
                       {link.name}
                     </Link>
                   </li>
@@ -94,7 +94,7 @@ const Footer = () => {
                     <Link
                       href={link.href}
                       className="text-[#554640]/90 hover:text-[#3A6B4C] transition-colors"
-                      legacyBehavior>
+                      >
                      {link.name}
                     </Link>
                   </li>
@@ -111,14 +111,14 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-[#554640]/80 hover:text-[#3A6B4C]"
                 aria-label="Twitter"
-                legacyBehavior>
+                >
                 <FaTwitter className="h-5 w-5" />
               </Link>
               <Link
                 href="#"
                 className="text-[#554640]/80 hover:text-[#3A6B4C]"
                 aria-label="LinkedIn"
-                legacyBehavior>
+                >
                 <FaLinkedin className="h-5 w-5" />
               </Link>
               <Link
@@ -127,7 +127,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-[#554640]/80 hover:text-[#3A6B4C]"
                 aria-label="GitHub"
-                legacyBehavior>
+                >
                 <FaGithub className="h-5 w-5" />
               </Link>
             </div>
@@ -140,13 +140,13 @@ const Footer = () => {
                 <Link
                   href="/privacy"
                   className="text-sm text-[#554640]/80 hover:text-[#3A6B4C]"
-                  legacyBehavior>
+                  >
                   {privacyPolicyText}
                 </Link>
                 <Link
                   href="/terms"
                   className="text-sm text-[#554640]/80 hover:text-[#3A6B4C]"
-                  legacyBehavior>
+                  >
                   {termsOfServiceText}
                 </Link>
               </div>

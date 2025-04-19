@@ -56,7 +56,7 @@ const Navbar = () => {
         {user ? (
           <div className="relative flex gap-x-4" ref={dropdownRef}>
             <Link href='/new-post' >
-              <Button className='bg-neutral-950 text-white hover:bg-gray-800'>
+              <Button className='bg-[#3A6B4C] text-white hover:bg-[#3A6B4C]/80'>
                 Tạo Blog
               </Button>
             </Link>
@@ -108,7 +108,7 @@ const Navbar = () => {
         ) : (
           <Link
             href="/auth/signin"
-            className="px-3 py-1.5 min-[375px]:px-4 min-[375px]:py-2 text-sm min-[375px]:text-base text-gray-800 hover:text-blue-600 hover:bg-blue-50 transition-colors border-2 border-black rounded-xl"
+            className="px-3 py-1.5 min-[375px]:px-4 min-[375px]:py-2 text-sm min-[375px]:text-base text-gray-800 hover:text-blue-600 hover:bg-blue-50 transition-colors border-2 border-black rounded-sm"
             aria-label="Sign in"
             >
             <span className='font-medium'>Đăng Nhập</span>
