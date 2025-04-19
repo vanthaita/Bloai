@@ -123,3 +123,10 @@ model Comment {
     authorId  String
     createdAt DateTime @default(now())
 }
+model NewsletterSubscription {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  subscribedAt DateTime @default(now())
+  unsubscribedAt DateTime?
+  active      Boolean  @default(true)
+}
