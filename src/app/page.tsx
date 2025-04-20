@@ -4,6 +4,7 @@ import Loading from "@/components/loading";
 import { Suspense } from "react";
 import LeaderBoard from "@/components/LeaderBoard";
 import EmailSubscribeSection from "@/components/EmailSubscribe";
+import TestimonialSection from "@/components/TestimonialSection";
 
 export const metadata: Metadata = {
   title: "Bloai Blog - Hướng Dẫn AI Từ Cơ Bản Đến Nâng Cao | Kiến Thức Công Nghệ Mới Nhất",
@@ -161,6 +162,11 @@ export default async function Home() {
             title="Đừng bỏ lỡ kiến thức AI mới nhất"
             description="Đăng ký nhận bản tin để cập nhật các bài viết mới, thủ thuật AI và tin tức công nghệ mỗi tuần."
           />
+        </section>
+
+
+        <section>
+          <TestimonialSection />
         </section>
       </main>
     </>

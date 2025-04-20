@@ -8,7 +8,7 @@ import {
     aiGenerateTitleBlog,
     aiGenerateExcerpt,
     aiEnhanceContentBlogForSEO,
-    aiGenerateHtmlForEmail,
+    aiGenerateFactAndknowledge,
 } from '@/lib/gemini'
 import { db } from '@/server/db'
 import { BlogNotificationProps } from './notifySubscribers'
@@ -60,8 +60,7 @@ export async function generateEnhanceContentBlogForSEO(content: string) {
   return generated
 }
 
-export async function generateHtmlForEmail(dataEmail: BlogNotificationProps) {
-  const generated = await aiGenerateHtmlForEmail(dataEmail);
-  console.log(generated);
+export async function generateFactAndknowledge(title: string) {
+  const generated = await aiGenerateFactAndknowledge(title);
   return generated
 }
