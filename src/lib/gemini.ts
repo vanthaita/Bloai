@@ -1,6 +1,5 @@
 import { env } from '@/env'
 import { GoogleGenerativeAI } from '@google/generative-ai' 
-import { BlogNotificationProps } from './notifySubscribers'
 
 const genAI = new GoogleGenerativeAI(env.GOOGLE_GEMINI_API)
 const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
@@ -75,71 +74,6 @@ const generateSEOContent = async (prompt: string): Promise<string | null> => {
     return null;
   }
 }
-const extractHtmlBlock = (aiOutputText: string | null): string | null => {
-  if (!aiOutputText) {
-      return null;
-  }
-
-  const trimmedOutput = aiOutputText.trim();
-
-  // Define potential start markers for HTML blocks or generic code blocks
-  const startMarkers = ['```html\n', '```html ', '```html', '```\n', '``` ', '```'];
-  let startIndex = -1;
-  let startMarkerLength = 0;
-
-  // Find the first occurrence of any start marker
-  for (const marker of startMarkers) {
-      const index = trimmedOutput.indexOf(marker);
-      if (index !== -1) {
-          startIndex = index; // Found the marker's start index
-          startMarkerLength = marker.length; // Store the marker's length
-          break; // Take the first found marker
-      }
-  }
-
-  // If no start marker is found, check if the text starts with '<' and ends with '>'
-  // as a fallback in case the AI didn't use markers but outputted raw HTML.
-  if (startIndex === -1) {
-       console.warn('extractHtmlBlock: No markdown start marker found. Checking for raw HTML structure.');
-       // Basic check for raw HTML: Starts with < and contains >
-       // Note: This is a heuristic and might not be perfect.
-       if (trimmedOutput.startsWith('<') && trimmedOutput.includes('>')) {
-           console.warn('extractHtmlBlock: Output seems like raw HTML, returning as is.');
-           return trimmedOutput;
-       }
-       console.error('extractHtmlBlock: Output is not in expected markdown block format and does not appear to be raw HTML.');
-       return null; // Not in expected format
-  }
-
-  // Content starts immediately after the marker
-  const contentStartIndex = startIndex + startMarkerLength;
-
-  // Find the end marker (```)
-  const endMarker = '```';
-  // Search for the last ``` *strictly after* where the content started
-  let endIndex = trimmedOutput.lastIndexOf(endMarker);
-
-  // Adjust endIndex if the last ``` is before or at the start of the content
-   if (endIndex !== -1 && endIndex < contentStartIndex) {
-        console.warn('extractHtmlBlock: Closing ``` marker not found after content start.');
-        endIndex = -1; // Treat as if no closing marker exists
-   }
-
-
-  let extractedText;
-  if (endIndex !== -1) {
-      // Extract between start marker and the valid end marker
-      extractedText = trimmedOutput.substring(contentStartIndex, endIndex);
-  } else {
-      // No valid end marker found, extract from start marker to the end of the string
-      extractedText = trimmedOutput.substring(contentStartIndex);
-      console.warn('extractHtmlBlock: No valid closing ``` marker found. Extracting till end.');
-  }
-
-  // Trim the extracted content
-  return extractedText.trim();
-}
-
 // export const aiGenerateSEOTags = async (content: string): Promise<string | null> => {
 //   const prompt = `
 //     **Mục tiêu:** Tạo bộ thẻ meta keywords TỐI ƯU NHẤT để bài viết này có khả năng ĐỨNG TOP 1 Google tại Việt Nam.
@@ -438,123 +372,30 @@ export const aiEnhanceContentBlogForSEO = async (content: string): Promise<strin
   return generateSEOContent(prompt);
 }
 
-export const aiGenerateHtmlForEmail = async (dataEmail: BlogNotificationProps): Promise<string | null> => {
-  const {
-    type,
-    blogTitle,
-    blogUrl,
-    description,
-    authorName,
-    subscriberName,
-    unsubscribeUrl,
-    blogName,
-    logoUrl,
-    blogImgUrl
-  } = dataEmail;
+export const aiGenerateFactAndknowledge = async (title: string): Promise<string | null> => {
+  const prompt = `
+    **Mục tiêu:** Tạo MỘT thông tin thú vị hoặc kiến thức chuyên sâu ngắn gọn, liên quan trực tiếp đến chủ đề AI của bài blog dựa trên tiêu đề đã cho. Mục đích là cung cấp một điểm nhấn đáng chú ý, có thể dùng làm "Did You Know?" hoặc một fact nhanh.
 
-  let prompt =
-    "role: Bạn là một chuyên gia marketing, content creator, **và đặc biệt là một chuyên gia thiết kế email HTML**. Bạn có khả năng tạo ra những email không chỉ chứa nội dung hấp dẫn mà còn có thiết kế trực quan đẹp mắt, chuyên nghiệp, và tuân thủ các nguyên tắc email marketing và thiết kế email cơ bản để đảm bảo hiển thị tốt trên đa số các trình email client.\n" +
-    `task: Tạo nội dung email cho loại "${type}" (ở định dạng HTML hoàn chỉnh) sử dụng dữ liệu được cung cấp. **Thiết kế email phải DẶC SẮC, THU HÚT VỀ MẶT THỊ GIÁC, và thể hiện nhận diện thương hiệu của blog.**\n` + 
-    "\n" +
-    `context: Email này nhằm mục đích:\n` +
-    `  - Loại "${type}": `;
+    **Nội dung cần phân tích (Dựa TRỰC TIẾP vào đây):**
+    Tiêu đề bài blog: "${title}"
+    **Yêu cầu NGHIÊM NGẶT (TUYỆT ĐỐI tuân thủ):**
+    1.  **Đầu ra:** CHỈ và CHỈ gồm MỘT chuỗi văn bản DUY NHẤT là thông tin/kiến thức đó. KHÔNG THÊM bất kỳ lời giải thích, lời mở đầu hay kết thúc nào về quá trình tạo. CHỈ TRẢ VỀ THÔNG TIN.
+    2.  **Nội dung:**
+        *   Phải liên quan MỘT CÁCH CHẶT CHẼ đến chủ đề AI được thể hiện trong tiêu đề.
+        *   Có thể là một sự thật ít biết, một thống kê ấn tượng (nếu có thể suy luận hợp lý từ chủ đề), một khái niệm cốt lõi được giải thích cực kỳ ngắn gọn, hoặc một ứng dụng nổi bật của AI trong lĩnh vực đó.
+        *   Sử dụng ngôn ngữ tiếng Việt tự nhiên, dễ hiểu, hấp dẫn.
+        *   Nên cung cấp một giá trị nhỏ hoặc gây tò mò liên quan đến chủ đề chính.
+    3.  **Độ dài:** Cực kỳ ngắn gọn, lý tưởng là 1-2 câu. KHÔNG VƯỢT QUÁ 150 ký tự. Hãy đếm ký tự của đầu ra cuối cùng để đảm bảo.
+    4.  **Định dạng:** Văn bản thuần túy. KHÔNG Markdown (headings, bold, lists, code blocks), KHÔNG emoji, KHÔNG dấu ngoặc kép quanh câu trả lời.
+    5.  **Đảm bảo:** Thông tin cung cấp phải có vẻ chính xác và đáng tin cậy dựa trên kiến thức chung về AI và chủ đề tiêu đề.
+    6.  **Không bắt đầu bằng "Bạn có biết" Or "Did you know":** Trong Template đã có sẵn "Bạn có biết" Chỉ output ra nội dung. 
+    **Đầu ra CHỈ và CHỈ gồm DUY NHẤT chuỗi thông tin/kiến thức theo định dạng yêu cầu. KHÔNG BẤT KỲ THÔNG TIN NÀO KHÁC.**
 
-  if (type === "new") {
-      prompt += "Chào đón người đăng ký mới, giới thiệu về blog (đặc biệt là các chủ đề liên quan đến AI), cung cấp thông tin hữu ích (bài viết mới nhất) và khuyến khích khám phá thêm.\n";
-  } else if (type === "update") {
-      prompt += `Thông báo về bài viết được cập nhật: "${blogTitle}". Nhấn mạnh những thay đổi hoặc lý do cập nhật, và mời đọc lại.\n`;
-  } else if (type === "confirmation") {
-      prompt += "Xác nhận việc đăng ký thành công nhận tin từ blog. Cảm ơn người dùng và cung cấp thông tin cần thiết (link hủy đăng ký).\n";
-  } else {
-       prompt += "Thông báo chung từ blog.\n";
-  }
-
-  prompt +=
-    "Email cần thân thiện, cá nhân hóa, chuyên nghiệp và **đặc biệt là dễ đọc, có bố cục rõ ràng và thu hút ngay từ cái nhìn đầu tiên**.\n" +
-    "\n" +
-    "Actual Data for this Email:\n" +
-    `type: ${type}\n`;
-
-  if (blogTitle) prompt += `blogTitle: ${JSON.stringify(blogTitle)}\n`;
-  if (blogUrl) prompt += `blogUrl: ${JSON.stringify(blogUrl)}\n`;
-  if (description) prompt += `description: ${JSON.stringify(description)}\n`;
-  if (authorName) prompt += `authorName: ${JSON.stringify(authorName)}\n`;
-  if (subscriberName) prompt += `subscriberName: ${JSON.stringify(subscriberName)}\n`;
-  if (unsubscribeUrl) prompt += `unsubscribeUrl: ${JSON.stringify(unsubscribeUrl)}\n`;
-  if (blogName) prompt += `blogName: ${JSON.stringify(blogName)}\n`;
-  if (logoUrl) prompt += `logoUrl: ${JSON.stringify(logoUrl)}\n`;
-  if (blogImgUrl) prompt += `blogImgUrl: ${JSON.stringify(blogImgUrl)}\n`;
-
-  prompt +=
-    "\n" +
-    "output:\n" +
-    "1. Gợi ý 2-3 tiêu đề email hấp dẫn, phù hợp với loại email và nội dung được cung cấp (Mỗi tiêu đề trên một dòng mới).\n" +
-    "--- HTML START ---\n" +
-    "2. Mã HTML hoàn chỉnh cho nội dung email, được bao quanh bởi cặp thẻ ```html``` (hoặc chỉ ```).\n" +
-     "--- HTML END ---\n" +
-    "\n" +
-    "html_requirements:\n" +
-    "- **Tuân thủ Email Client:** Sử dụng các thẻ HTML và CSS inline cơ bản, an toàn, và tương thích rộng rãi với các trình email client phổ biến (ví dụ: `<p>`, `<h1>`-`<h2>`, `<a>`, `<img>`, `div` cho khối nội dung, `table` cho cấu trúc layout cơ bản nếu cần). KHÔNG sử dụng CSS phức tạp, JavaScript, hoặc các kỹ thuật hiện đại không được hỗ trợ rộng rãi trong email.\n" +
-    "- **Thiết kế Phản hồi (Mobile-Friendly):** Đảm bảo email hiển thị tốt và dễ đọc trên cả desktop và thiết bị di động. Sử dụng `max-width` cho ảnh, cấu trúc layout đơn giản (ví dụ: các khối nội dung xếp chồng lên nhau trên mobile) để dễ dàng điều chỉnh trên màn hình nhỏ.\n" +
-    "- **Logo & Branding:** Nếu 'logoUrl' được cung cấp, đặt logo rõ ràng, có kích thước phù hợp (không quá lớn), và căn chỉnh hợp lý (thường là căn giữa hoặc căn trái) ở đầu email để thể hiện nhận diện thương hiệu.\n" +
-    "- **Hình ảnh Bài viết:** Nếu 'blogImgUrl' được cung cấp, sử dụng nó một cách nổi bật làm hình ảnh đại diện cho nội dung bài viết được giới thiệu (trong email loại 'new' hoặc 'update'). Đảm bảo hình ảnh có `alt text` mô tả và `max-width: 100%` để phản hồi.\n" +
-    "- **Sử dụng Khoảng trắng (Whitespace):** Sử dụng khoảng trắng hợp lý (padding, margin thông qua cấu trúc HTML) giữa các khối nội dung, giữa các dòng text để tạo sự thoáng đãng, dễ đọc và phân tách rõ các phần khác nhau của email.\n" +
-    "- **Typography:** Chọn các font chữ web-safe, dễ đọc trên nhiều hệ điều hành (ví dụ: Arial, Helvetica, Georgia, Times New Roman). Sử dụng kích thước font phù hợp cho nội dung chính (khoảng 14-16px) và kích thước lớn hơn, đậm hơn cho tiêu đề và lời kêu gọi hành động để tạo hệ thống phân cấp thị giác.\n" +
-    "- **Màu sắc (Gợi ý Branding):** Nếu có thể, sử dụng màu sắc (cho nút, đường viền phân cách, nền nhẹ của một phần nào đó) một cách tinh tế để tạo điểm nhấn và gợi ý nhận diện thương hiệu của blog (ví dụ: dùng màu chủ đạo từ logo nếu có thể đoán được, hoặc các màu chuyên nghiệp như xanh dương, xám). Tránh màu sắc quá chói hoặc khó đọc.\n" +
-    "- **Kêu gọi Hành động (CTA) Nổi bật:** Thiết kế các nút hoặc liên kết CTA (ví gọi hành động) thật rõ ràng và hấp dẫn về mặt thị giác. Sử dụng inline CSS để tạo hiệu ứng nút (background color, padding, text color tương phản, border-radius nhẹ). Đảm bảo CTA dễ tìm và dễ nhấp trên mọi thiết bị.\n" +
-    "- **Đường phân cách (Optional):** Có thể sử dụng các đường phân cách đơn giản (ví dụ: `<hr>` hoặc border trên div/table cell) để chia các phần nội dung lớn, giúp email có cấu trúc rõ ràng hơn.\n" +
-    "- **Chân trang (Footer) Chuyên nghiệp:** Bao gồm thông tin cần thiết (tên blog) và **BẮT BUỘC** link hủy đăng ký ở cuối email. Phần chân trang nên gọn gàng, không làm phân tán sự chú ý khỏi nội dung chính. Link hủy đăng ký phải sử dụng giá trị từ 'unsubscribeUrl' được cung cấp.\n" +
-    "- **Văn bản Thay thế (Alt Text):** Luôn thêm `alt text` cho tất cả các thẻ `<img>`.\n" +
-    "\n" +
-    "content_requirements:\n" +
-    "- **Phần Đầu Email:**\n" +
-    "    - Nếu có logoUrl, đặt logo một cách nổi bật nhưng không chiếm quá nhiều diện tích.\n" +
-    "    - Lời chào cá nhân hóa: Nếu 'subscriberName' được cung cấp, dùng \"Chào [giá trị của subscriberName],\". Ngược lại, dùng \"Chào bạn/Chào độc giả,\". Đặt lời chào ở vị trí dễ thấy.\n" +
-    `    - Lời cảm ơn hoặc thông báo phù hợp với loại email, sử dụng tên blog ([giá trị của blogName] nếu được cung cấp). Trình bày một cách rõ ràng, thân thiện ngay sau lời chào.\n`;
-
-  if (type === "new") {
-      prompt +=
-      "- **Giới thiệu Blog & Giá trị:**\n" +
-      `    - Giới thiệu ngắn gọn về blog ([giá trị của blogName] nếu được cung cấp) và các chủ đề chính (nhấn mạnh về công nghệ, AI, đổi mới...). Sử dụng một tiêu đề phụ hoặc đoạn văn intro hấp dẫn.\n` +
-      `    - Nêu bật giá trị mà người đọc nhận được khi theo dõi blog (kiến thức chuyên sâu, cập nhật xu hướng, phân tích...). Trình bày dưới dạng gạch đầu dòng đơn giản hoặc đoạn văn ngắn.\n` +
-      "- **Điểm nhấn AI (Fact/Kiến thức thú vị):**\n" +
-      "    - Chèn một đoạn ngắn (1-2 câu) chứa một sự thật thú vị, ứng dụng bất ngờ, hoặc kiến thức nền tảng về công nghệ AI để khơi gợi sự tò mò và minh họa cho chủ đề của blog. *AI tự chọn fact này.* Có thể định dạng đoạn này khác biệt một chút (ví dụ: in nghiêng, nền nhẹ) để tạo điểm nhấn.\n" +
-      "- **Giới thiệu Bài viết mới nhất & Kêu gọi hành động (CTA):**\n" +
-      `    - Giới thiệu bài viết mới nhất với tiêu đề "[giá trị của blogTitle]". Sử dụng H2 hoặc định dạng text nổi bật.\n` +
-      "    - Nếu 'blogImgUrl' được cung cấp, hiển thị hình ảnh của bài viết ngay trước hoặc bên cạnh mô tả để thu hút sự chú ý.\n" +
-      "    - Sử dụng 'description' (nếu được cung cấp) để mô tả ngắn gọn nội dung bài viết. Giữ đoạn mô tả súc tích.\n" +
-      "    - Nếu 'authorName' được cung cấp, có thể thêm \"(bởi [giá trị của authorName])\" ở dưới tiêu đề hoặc mô tả.\n" +
-      "    - Tạo một nút hoặc liên kết rõ ràng, **được thiết kế nổi bật theo 'html_requirements'**, để đọc bài viết đầy đủ. Văn bản trên nút/liên kết nên là lời kêu gọi hành động trực tiếp (ví dụ: \"Đọc Bài Viết Ngay\", \"Khám phá Chi Tiết\"). Link đích là [giá trị của blogUrl].\n";
-  } else if (type === "update") {
-       prompt +=
-       "- **Thông báo cập nhật bài viết:**\n" +
-       `    - Thông báo bài viết "[giá trị của blogTitle]" đã được cập nhật. Sử dụng H1 hoặc H2 cho tiêu đề này.\n` +
-       "    - Nếu 'blogImgUrl' được cung cấp, hiển thị hình ảnh của bài viết một cách rõ ràng.\n" +
-       "    - Sử dụng 'description' (nếu được cung cấp) để mô tả về nội dung cập nhật hoặc lý do cập nhật. Giải thích ngắn gọn những điểm mới hoặc quan trọng.\n" +
-       `    - Tạo một nút hoặc liên kết rõ ràng, **được thiết kế nổi bật theo 'html_requirements'**, để đọc bài viết cập nhật. Văn bản trên nút nên hấp dẫn (ví dụ: "Đọc Phiên Bản Cập Nhật", "Xem Có Gì Mới"). Link đích là [giá trị của blogUrl].\n`;
-  } else if (type === "confirmation") {
-      prompt +=
-      "- **Xác nhận đăng ký & Lợi ích:**\n" +
-      `    - Cảm ơn người dùng vì đã đăng ký nhận tin từ blog ([giá trị của blogName] nếu được cung cấp). Sử dụng ngôn từ ấm áp, chân thành.\n` +
-      "    - Thông báo họ sẽ nhận được các bản cập nhật mới nhất, thông tin chuyên sâu về AI và công nghệ. Nhắc lại ngắn gọn giá trị nhận được.\n" +
-      "    - Giới thiệu qua về loại nội dung họ có thể mong đợi.\n";
-  }
-
-  prompt +=
-    "- **Lời kết:**\n" +
-    "    - Lời chúc tốt đẹp (ví dụ: Chúc bạn một ngày tốt lành!) và khuyến khích khám phá thêm các nội dung khác trên blog (nếu phù hợp với loại email) bằng cách ghé thăm trang chủ (nếu có thể, thêm link trang chủ blog).\n" +
-    `    - Chữ ký: Đội ngũ từ [giá trị của blogName] hoặc tên người gửi cụ thể nếu phù hợp (ví dụ: Từ [giá trị của authorName] và Đội ngũ [giá trị của blogName]).\n` +
-    "- **Chân trang & Hủy đăng ký:**\n" +
-    "    - **Bắt buộc** thêm một liên kết ở cuối email với văn bản như \"Hủy đăng ký nhận email tại đây\" hoặc tương tự. Link đích là [giá trị của unsubscribeUrl]. Phần chân trang nên bao gồm tên blog và link hủy đăng ký, có thể căn giữa và sử dụng font chữ nhỏ hơn.\n";
-
-
-  const rawAiOutput = await generateSEOContent(prompt);
-  const htmlContent = extractHtmlBlock(rawAiOutput); 
-  console.log(htmlContent)
-  if (!htmlContent) {
-      console.error('aiGenerateHtmlForEmail: Failed to extract HTML block from AI output.');
-      return null;
-  }
-
-  return htmlContent;
+    **Ví dụ Định dạng Đầu ra Mong muốn (CHỈ trả về phần này):**
+    Một mô hình ngôn ngữ lớn như GPT-4 có thể có tới 1.7 nghìn tỷ tham số, cho phép nó hiểu và tạo ra văn bản phức tạp đáng kinh ngạc.
+    **Ví dụ Định dạng Đầu ra Không Mong muốn (Không trả về phần này):**
+    Bạn Có biết: Một mô hình ngôn ngữ lớn như GPT-4 có thể có tới 1.7 nghìn tỷ tham số, cho phép nó hiểu và tạo ra văn bản phức tạp đáng kinh ngạc.
+    ---END---
+  `;
+  return generateSEOContent(prompt);
 }
