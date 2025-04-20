@@ -2,7 +2,7 @@ import { env } from '@/env'
 import { GoogleGenerativeAI } from '@google/generative-ai' 
 
 const genAI = new GoogleGenerativeAI(env.GOOGLE_GEMINI_API)
-const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 // gemini-1.5-pro 
 const generateSEOContent = async (prompt: string): Promise<string | null> => {
   try {

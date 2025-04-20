@@ -2,7 +2,9 @@ import axios from 'axios';
 import { env } from '@/env';
 
 function isValidImageUrl(url: string): boolean {
-  return /^https?:\/\/.+(\.(png|jpg|jpeg|gif|webp|svg))(\?.+)?$/i.test(url);
+  return /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(url) && 
+         (/\.(png|jpg|jpeg|gif|webp|svg)(\?.*)?$/i.test(url) || 
+          /\/image\/|\.(jpg|png|gif)(\?|$)|%2F(image|img)/i.test(url));
 }
 function transformCloudinaryUrl(url: string, options: {
     quality?: number | 'auto';
