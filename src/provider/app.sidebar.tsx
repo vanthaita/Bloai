@@ -8,7 +8,7 @@ import Navbar from '@/components/Navbar';
 const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
-  const isNewPostRoute = pathname.startsWith('/new-post');
+  const isNewPostRoute = pathname.startsWith('/new-post') || pathname.startsWith('/unsubscribe');
   
   return (
     <>

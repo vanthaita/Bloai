@@ -8,6 +8,48 @@ import { sendBlogNotifications, sendConfirmationEmail } from "@/lib/notifySubscr
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const blogRouter = createTRPCRouter({
+  unsubscribeToNewsletter: publicProcedure
+  .input(z.object({ email: z.string().email() }))
+  .mutation(async ({ ctx, input }) => {
+    try {
+      const existingSubscriber = await ctx.db.newsletterSubscription.findUnique({
+        where: { email: input.email },
+      });
+
+      if (!existingSubscriber) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Email not found in our subscription list",
+        });
+      }
+
+      if (!existingSubscriber.active) {
+        return { success: true, message: "Email was already unsubscribed" };
+      }
+
+      await ctx.db.newsletterSubscription.update({
+        where: {
+          email: input.email,
+        },
+        data: {
+          active: false,
+          unsubscribedAt: new Date(), 
+        },
+      });
+      
+      return { success: true };
+    } catch (error) {
+      console.error("Unsubscription error:", error);
+      if (error instanceof TRPCError) {
+        throw error;
+      }
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to unsubscribe from newsletter",
+        cause: error,
+      });
+    }
+  }),
   subscribeToNewsletter: publicProcedure
   .input(z.object({ email: z.string().email(), name: z.string().optional() }))
   .mutation(async ({ ctx, input }) => {
