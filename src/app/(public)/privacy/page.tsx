@@ -1,8 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import Link from "next/link"
-import { FaArrowLeft, FaBook, FaLock, FaShieldAlt } from "react-icons/fa"
+import { FaBook, FaShieldAlt } from "react-icons/fa"
 
 export default function TermsAndPrivacy() {
   return (

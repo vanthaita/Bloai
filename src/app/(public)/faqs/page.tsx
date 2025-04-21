@@ -113,7 +113,7 @@ export default function FAQsPage() {
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl text-white font-medium transition-colors"
-                legacyBehavior>
+                >
                 <FaEnvelope />
                 Liên hệ ngay
               </Link>
@@ -143,7 +143,7 @@ export default function FAQsPage() {
                   <Link
                     href={resource.link}
                     className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
-                    legacyBehavior>
+                    >
                     Xem thêm
                     <FaArrowRight className="ml-2 text-sm" />
                   </Link>
