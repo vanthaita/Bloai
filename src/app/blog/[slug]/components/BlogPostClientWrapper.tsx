@@ -17,6 +17,7 @@ import BlogSuggestedPosts from './BlogSuggestedPosts';
 import ScrollToTopButton from './ScrollToTopButton';
 import { Author, Blog, Heading, slugify, SuggestedBlog } from '@/types/helper.type';
 import { useCurrentUser } from '@/hook/use-current-user';
+import BlogComments from './BlogComment';
 
 
 interface BlogPostClientWrapperProps {
@@ -150,10 +151,12 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
                             <BlogContentRenderer content={blog.content} headings={headings} />
                             <hr className="my-12 border-gray-200" />
                             <BlogAuthorBioSection author={author} />
+                            <BlogComments slug={blog.slug}/>
                         </article>
                     </main>
                     <BlogSuggestedPosts author={author} suggestedBlogs={suggestedBlogs} />
                 </div>
+
             </div>
 
             <ScrollToTopButton isVisible={isVisible} onClick={scrollToTop} />

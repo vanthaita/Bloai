@@ -3,17 +3,27 @@ import { notFound } from 'next/navigation';
 import { api } from '@/trpc/server';
 import BlogPostClientWrapper from './components/BlogPostClientWrapper'; 
 import { Blog, SuggestedBlog } from '@/types/helper.type';
+import { unstable_cache } from 'next/cache';
 
 type Props = {
     params: Promise<{ slug: string }>
 }
-
+const getCachedBlog = unstable_cache(
+    async (slug: string) => {
+        console.log(`*** Actually Fetching Blog for slug: ${slug} (via cache wrapper) ***`);
+        return await api.blog.getBlog({ slug });
+    },
+    ['blog-by-slug'], 
+    {
+        tags: ['blog'], 
+    }
+);
 export async function generateMetadata(
     { params }: Props,
 ): Promise<Metadata> {
     const { slug } = await params;
 
-    const blog = await api.blog.getBlog({ slug });
+    const blog = await getCachedBlog(slug);
 
     if (!blog) {
         return {
@@ -32,27 +42,39 @@ export async function generateMetadata(
             if (a.relevance !== undefined && b.relevance !== undefined) {
                 return b.relevance - a.relevance;
             }
-                return a.name.localeCompare(b.name);
+            return a.name.localeCompare(b.name);
         });
-    
+
         const filteredTags = sortedTags.filter(tag => {
             const lowerName = tag.name.toLowerCase();
             const genericTags = ['general', 'blog', 'article', 'post', 'tech', 'technology'];
             return !genericTags.includes(lowerName);
         });
         const prioritizedTags = filteredTags.sort((a, b) => b.name.length - a.name.length);
-        const uniqueTags = Array.from(new Set(prioritizedTags.map(t => t.name)))
-        .slice(0, count);
+        const uniqueTagsMap = new Map<string, string>();
+        prioritizedTags.forEach(tag => {
+             if (!uniqueTagsMap.has(tag.name.toLowerCase())) {
+                 uniqueTagsMap.set(tag.name.toLowerCase(), tag.name);
+             }
+         });
+        const uniqueTags = Array.from(uniqueTagsMap.values()).slice(0, count);
+
+
         if (uniqueTags.length < count) {
             const defaultTags = ['AI', 'Machine Learning', 'Technology', 'Tutorial', 'Guide'];
             const needed = count - uniqueTags.length;
-            return [...uniqueTags, ...defaultTags.slice(0, needed)].join(', ');
+            defaultTags.forEach(tag => {
+                if (uniqueTags.length < count && !uniqueTagsMap.has(tag.toLowerCase())) {
+                     uniqueTags.push(tag);
+                     uniqueTagsMap.set(tag.toLowerCase(), tag); 
+                 }
+             });
         }
-        return uniqueTags.join(', ');
+        return Array.from(new Set(uniqueTags.slice(0, count).map(tag => tag.trim()))).join(', ');
     };
-  
-    const keywords = getTopKeywords(blog.tags ?? [], 5);
-    console.log('key:', keywords);
+
+
+    const keywords = getTopKeywords(blog.tags || [], 5); 
     const blogPostSeo = {
         title: `${blog.title} | BloAI Technology Blog`,
         description: blog.metaDescription,
@@ -75,8 +97,9 @@ export async function generateMetadata(
                 alt: blog.title,
             }] : []),
             article: {
-                publishedTime: blog.publishDate?.toISOString(),
-                modifiedTime: blog.updatedAt?.toISOString() || blog.publishDate?.toISOString(),
+                publishedTime: blog.publishDate instanceof Date ? blog.publishDate.toISOString() : undefined,
+                modifiedTime: (blog.updatedAt instanceof Date ? blog.updatedAt.toISOString() : 
+                              (blog.publishDate instanceof Date ? blog.publishDate.toISOString() : undefined)),
                 authors: blog.author?.name ? [blog.author.name] : ['BloAI Team'],
                 tags: blog.tags?.map((tag: { name: string }) => tag.name) ?? [], 
             },
@@ -106,10 +129,9 @@ export default async function BlogPostPage({ params }: Props) {
     const { slug } = await params; 
 
     const [blog, suggestedBlogsResult] = await Promise.all([
-        api.blog.getBlog({ slug }),
+        getCachedBlog(slug),
         api.blog.getSuggestedBlogs({ slug, limit: 6 }) 
     ]);
-
     if (!blog) {
         notFound();
     }

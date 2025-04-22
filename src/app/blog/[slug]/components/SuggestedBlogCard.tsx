@@ -1,4 +1,3 @@
-// components/blog/SuggestedBlogCard.tsx
 import React from 'react';
 import Link from 'next/link';
 import { CldImage } from 'next-cloudinary';
@@ -15,18 +14,23 @@ const SuggestedBlogCard: React.FC<SuggestedBlogCardProps> = ({ post }) => {
                 href={`/blog/${post.slug}`}
                 className="flex gap-3 items-start group"
                 aria-label={`Đọc bài viết: ${post.title}`}
-                >
+            >
                 {post.imageUrl && (
                     <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-md overflow-hidden relative border border-gray-100">
                         <CldImage
-                            width={200}
-                            height={150}
+                            width={80}
+                            height={80}
                             src={post.imageUrl}
                             alt={post.imageAlt || `Thumbnail for ${post.title}`}
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                             loading="lazy"
                             sizes="(max-width: 640px) 64px, 80px"
-                            quality={70}
+                            quality={80}
+                            format="webp"
+                            crop="fill"
+                            gravity="auto"
+                            dpr="auto" 
+                            fetchPriority="low"
                         />
                     </div>
                 )}
