@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { CldImage } from 'next-cloudinary';
 import { FaEye, FaHeart, FaBookOpen } from 'react-icons/fa';
 import { Prisma } from '@prisma/client'; 
@@ -10,17 +9,23 @@ type Blog = Prisma.BlogGetPayload<{
     tags: true;
     author: true;
   };
+
 }> & {
 };
 
 
 interface BlogCardProps {
   blog: Blog;
+  onClick?: () => void;
+  isNavigating?: boolean;
 }
 
-export function BlogCard({ blog }: BlogCardProps) {
+export function BlogCard({ blog, onClick, isNavigating }: BlogCardProps) {
   return (
-    <Link href={`/blog/${blog.slug}`}>
+    <div 
+    onClick={onClick}
+    className={`relative cursor-pointer ${isNavigating ? 'opacity-50 pointer-events-none' : ''}`}
+    >
       <div className="group relative bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all cursor-pointer border border-gray-100 h-full flex flex-col">
         <div className="relative h-48 overflow-hidden">
           <CldImage
@@ -39,16 +44,7 @@ export function BlogCard({ blog }: BlogCardProps) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-transparent" />
 
-          <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-            {blog.tags.slice(0, 2).map((tag) => (
-              <span
-                key={tag.id} 
-                className={`px-3 py-1 text-white text-xs font-medium rounded-full backdrop-blur-sm`}
-              >
-                {tag.name}
-              </span>
-            ))}
-          </div>
+          
         </div>
 
         <div className="p-5 space-y-3 flex-grow flex flex-col justify-between">
@@ -79,17 +75,29 @@ export function BlogCard({ blog }: BlogCardProps) {
                 </div>
               </div>
             </div>
-
-            <div className="text-right text-xs text-gray-400">
-              {new Date(blog.publishDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-              })}
+            <div className='flex justify-between items-center'>
+              <div className="flex flex-wrap gap-2">
+                  {blog.tags.slice(0, 2).map((tag) => (
+                    <span
+                      key={tag.id} 
+                      className={` text-black text-xs font-medium rounded-full backdrop-blur-sm`}
+                    >
+                      #{tag.name}
+                    </span>
+                  ))}
+                </div>
+              <div className="text-right text-xs text-gray-400">
+                
+                {new Date(blog.publishDate).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                })}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

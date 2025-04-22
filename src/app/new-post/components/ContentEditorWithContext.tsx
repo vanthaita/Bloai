@@ -39,14 +39,20 @@ export const ContentEditorWithContext: React.FC<ContentEditorWithContextProps> =
         };
         onContentChange((content ?? '') + ` ${examples[format] ?? ''}`);
     }, [onContentChange, content]);
-    const handlegenerateEnhanceContentBlogForSEO = async (content: string) => {
+    const handlegenerateEnhanceContentBlogForSEO = async (content: string): Promise<string | null> => {
         try {
+            setIsGeneratingEnhanceContent(true);
             const generated = await generateEnhanceContentBlogForSEO(content);
-            if (generated) onContentChange(generated);
-            return generated;
+            if (generated) {
+                onContentChange(generated);
+                return generated;
+            }
+            return null;
         } catch (error) {
             console.error(error);
             return null;
+        } finally {
+            setIsGeneratingEnhanceContent(false);
         }
     };
     const handleContentChangeWithImageProcessing = async () => {
@@ -61,8 +67,8 @@ export const ContentEditorWithContext: React.FC<ContentEditorWithContextProps> =
         } finally {
           setIsProcessing(false);
         }
-      };
-      return (
+    };
+    return (
         <div className="space-y-1.5">
             <div className="flex items-center justify-between">
                 <Label htmlFor="content-editor" id="content-editor-label" className="flex items-center gap-2 text-base">

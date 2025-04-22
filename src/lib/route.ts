@@ -17,6 +17,7 @@ export const PUBLIC_ROUTES = [
   "/sitemap.xml",
   "/robots.txt",
   "/favicon.ico",
+  "/unsubscribe"
 ];
 
 // For protected routes configuration

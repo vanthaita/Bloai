@@ -1,27 +1,32 @@
 'use client'
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, Suspense } from 'react';
 import { BentoGrid } from "../ui/bento-grid"; 
 import { api } from '@/trpc/react';
 import Pagination from '../Pagintion'; 
 import Loading from '../loading'; 
-
+import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
 import { BlogFilterBar } from './BlogFilterBar';
 import { BlogCard } from './BlogCard';
 
-
 const LIMIT = 9;
 
 export function BlogGrid() {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [activeFilter, setActiveFilter] = useState('');
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
 
   const { data: blogData, isLoading, error, isFetching } = api.blog.getAllBlog.useQuery({
     page: currentPage,
     limit: LIMIT
   });
 
+  const handleCardClick = (slug: string) => {
+    setNavigatingTo(slug);
+    router.push(`/blog/${slug}`);
+  };
 
   const filterTags = useMemo(() => {
     if (!blogData?.blogs || blogData.blogs.length === 0) {
@@ -72,7 +77,7 @@ export function BlogGrid() {
             tags={filterTags}
             activeFilter={activeFilter}
             onFilterChange={setActiveFilter}
-             moreTagsLink="/tags" 
+            moreTagsLink="/tags" 
           />
       </div>
       {isFetching && !isLoading && (
@@ -81,8 +86,13 @@ export function BlogGrid() {
       <BentoGrid className="px-4 pb-16">
         {filteredBlogs.length > 0 ? (
           filteredBlogs.map((blog) => (
-            
-            <BlogCard key={blog.id} blog={blog} />
+            <Suspense key={blog.id} fallback={<Loading />}>
+              <BlogCard 
+                blog={blog} 
+                onClick={() => handleCardClick(blog.slug)}
+                isNavigating={navigatingTo === blog.slug}
+              />
+            </Suspense>
           ))
         ) : (
           <div className="col-span-full text-center py-10 text-gray-500">
@@ -90,10 +100,10 @@ export function BlogGrid() {
               ? `No blog posts found for the tag "${activeFilter.replace(/-/g, ' ')}".`
               : 'No blog posts found.'}
             {activeFilter && (
-                 <Button variant="link" onClick={() => setActiveFilter('')} className="ml-2">
-                    Clear filter
-                 </Button>
-             )}
+              <Button variant="link" onClick={() => setActiveFilter('')} className="ml-2">
+                Clear filter
+              </Button>
+            )}
           </div>
         )}
       </BentoGrid>

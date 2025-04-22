@@ -1,6 +1,7 @@
 'use client'
 import React from 'react';
 import { Quote } from 'lucide-react';
+import { FaFacebook, FaLinkedin, FaTwitter } from 'react-icons/fa';
 
 const userData = [
   {"id":"cm8oew3q2000137jc4cy276se","name":"IE204SEO","email":"ie204seo@gmail.com","emailVerified":null,"image":"https://lh3.googleusercontent.com/a/ACg8ocKswwNkHBoUHLuaeWvHX9cH5EMzc6dsY-SQrb3QUP5JAPeskQ=s96-c","bio":null},
@@ -32,72 +33,75 @@ interface Testimonial extends TestimonialContent {
 const TestimonialSection = () => {
   const testimonialContentTemplates: TestimonialContent[] = [
     {
-      quote: "BloAI giúp mình học machine learning dễ hiểu hơn với các bài viết giải thích trực quan. Đặc biệt thích series về neural network cơ bản, rất phù hợp cho sinh viên như mình!",
-      role: "Sinh viên AI tại UIT",
+      quote: "Bloai giúp mình học machine learning dễ hiểu hơn với các bài viết giải thích trực quan. Đặc biệt thích series về neural network cơ bản, rất phù hợp cho sinh viên như mình!",
+      role: "Sinh Viên CNTT",
       platform: "facebook",
       date: "15/05/2024",
       rating: 5
     },
     {
-      quote: "Là người mới bắt đầu với deep learning, mình đánh giá cao cách BloAI trình bày các khái niệm phức tạp một cách đơn giản. Bài về CNN và ứng dụng trong computer vision rất hữu ích!",
-      role: "Sinh viên năm 3 ngành AI",
+      quote: "Là người mới bắt đầu với deep learning, mình đánh giá cao cách Bloai trình bày các khái niệm phức tạp một cách đơn giản. Bài về CNN và ứng dụng trong computer vision rất hữu ích!",
+      role: "Sinh Viên CNTT",
       platform: "twitter",
       date: "22/05/2024",
       rating: 4
     },
     {
-      quote: "Mình tìm thấy BloAI khi đang làm đồ án về NLP. Các hướng dẫn xử lý ngôn ngữ tự nhiên bằng Python và thư viện Transformers đã giúp mình hoàn thành project đúng hạn!",
-      role: "Sinh viên Đại học Bách Khoa",
+      quote: "Mình tìm thấy Bloai khi đang làm đồ án về NLP. Các hướng dẫn xử lý ngôn ngữ tự nhiên bằng Python và thư viện Transformers đã giúp mình hoàn thành project đúng hạn!",
+      role: "Sinh Viên CNTT",
       platform: "linkedin",
       date: "01/06/2024",
       rating: 5
     },
     {
-      quote: "Dù mới ra mắt nhưng BloAI đã có nhiều bài viết chất lượng về AI/ML. Mình thường xuyên chia sẻ blog này cho nhóm học tập vì nội dung phù hợp với chương trình học.",
-      role: "Lớp trưởng lớp AI",
+      quote: "Dù mới ra mắt nhưng Bloai đã có nhiều bài viết chất lượng về AI/ML. Mình thường xuyên chia sẻ blog này cho nhóm học tập vì nội dung phù hợp với chương trình học.",
+      role: "Sinh Viên CNTT",
       platform: "facebook",
       date: "10/06/2024",
       rating: 4
     },
-        {
-          "quote": "Bài hướng dẫn xây dựng AI Assistant từ Notion của BloAI rất chi tiết và thực tế. Áp dụng kiến trúc RAG theo hướng dẫn đã giúp tôi quản lý tài nguyên cá nhân hiệu quả hơn 🚀",
-          "role": "Kỹ sư Dữ liệu & AI",
-          "platform": "linkedin",
-          "date": "20/03/2025",
-          "rating": 5
-        },
-        {
-          "quote": "Chiến lược Prompt Kép của BloAI là 'game changer' cho công việc marketing của tôi. Nội dung tạo ra giờ thu hút và tăng tương tác hơn hẳn! Cảm ơn team BloAI!",
-          "role": "Content Marketer",
-          "platform": "facebook",
-          "date": "18/03/2025"
-        },
-        {
-          "quote": "Tìm thấy lộ trình 10 bước để trở thành lập trình viên chuyên nghiệp trên BloAI thật đúng lúc. Hướng dẫn rất rõ ràng và truyền cảm hứng cho mình tiếp tục cố gắng 💪",
-          "role": "Sinh viên CNTT",
-          "platform": "twitter",
-          "date": "25/03/2025"
-        },
-        {
-          "quote": "Bài review top công cụ AI viết content của BloAI giúp tôi chọn được công cụ phù hợp nhất, tiết kiệm hàng giờ làm việc mỗi tuần. Chất lượng nội dung cũng cải thiện đáng kể.",
-          "role": "Freelancer Content Writer",
-          "platform": "facebook",
-          "date": "01/04/2025",
-          "rating": 4
-        },
-        {
-          "quote": "Hướng dẫn dùng Midjourney không cần Discord trên BloAI quá đỉnh! Từ giờ việc tạo ảnh AI trở nên đơn giản hơn bao giờ hết. Cực kỳ chi tiết và dễ làm theo.",
-          "role": "Thiết kế Đồ họa",
-          "platform": "twitter",
-          "date": "05/04/2025"
-        },
-        {
-          "quote": "BloAI là blog tiếng Việt hiếm hoi cập nhật các chủ đề nóng về AI như RAG, Prompt Engineering, và các công cụ mới nhất với kiến thức chuyên sâu nhưng dễ hiểu.",
-          "role": "Độc giả thường xuyên của BloAI",
-          "platform": "linkedin",
-          "date": "10/04/2025",
-          "rating": 5
-        }
+    {
+      "quote": "Bài hướng dẫn xây dựng AI Assistant từ Notion của Bloai rất chi tiết và thực tế. Áp dụng kiến trúc RAG theo hướng dẫn đã giúp tôi quản lý tài nguyên cá nhân hiệu quả hơn 🚀",
+      "role": "Sinh Viên CNTT",
+      "platform": "linkedin",
+      "date": "20/03/2025",
+      "rating": 5
+    },
+    {
+      "quote": "Chiến lược Prompt Kép của Bloai là 'game changer' cho việc học AI của tôi. Nội dung tạo ra giờ thu hút và dễ hiểu hơn hẳn! Cảm ơn team Bloai!",
+      "role": "Sinh Viên CNTT",
+      "platform": "facebook",
+      "date": "18/03/2025",
+      "rating": 5
+    },
+    {
+      "quote": "Tìm thấy lộ trình 10 bước để trở thành lập trình viên chuyên nghiệp trên Bloai thật đúng lúc. Hướng dẫn rất rõ ràng và truyền cảm hứng cho mình tiếp tục cố gắng 💪",
+      "role": "Sinh Viên CNTT",
+      "platform": "twitter",
+      "date": "25/03/2025",
+      "rating": 4
+    },
+    {
+      "quote": "Bài review top công cụ AI viết content của Bloai giúp tôi chọn được công cụ phù hợp nhất cho đồ án môn học, tiết kiệm hàng giờ làm việc mỗi tuần.",
+      "role": "Sinh Viên CNTT",
+      "platform": "facebook",
+      "date": "01/04/2025",
+      "rating": 4
+    },
+    {
+      "quote": "Hướng dẫn dùng Midjourney không cần Discord trên Bloai quá đỉnh! Từ giờ việc tạo ảnh AI cho đồ án trở nên đơn giản hơn bao giờ hết.",
+      "role": "Sinh Viên CNTT",
+      "platform": "twitter",
+      "date": "05/04/2025",
+      "rating": 5
+    },
+    {
+      "quote": "Bloai là blog tiếng Việt hiếm hoi cập nhật các chủ đề nóng về AI như RAG, Prompt Engineering với kiến thức chuyên sâu nhưng dễ hiểu cho sinh viên.",
+      "role": "Sinh Viên CNTT",
+      "platform": "linkedin",
+      "date": "10/04/2025",
+      "rating": 5
+    }
   ];
 
   const numberOfTestimonialsToShow = Math.min(userData.length, testimonialContentTemplates.length);
@@ -115,11 +119,11 @@ const TestimonialSection = () => {
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
       case 'twitter':
-        return <span className="text-[#1DA1F2]">Twitter</span>;
+        return <FaTwitter className="w-4 h-4 inline ml-1" />;
       case 'linkedin':
-        return <span className="text-[#0077B5]">LinkedIn</span>;
+        return <FaLinkedin className="w-4 h-4 inline ml-1" />;
       case 'facebook':
-        return <span className="text-[#1877F2]">Facebook</span>;
+        return <FaFacebook className="w-4 h-4 inline ml-1" />;
       default:
         return platform;
     }
@@ -128,7 +132,7 @@ const TestimonialSection = () => {
   const renderStars = (rating?: number) => {
     if (!rating) return null;
     return (
-      <div className="flex items-center mt-2">
+      <div className="flex items-center mt-1">
         {[...Array(5)].map((_, i) => (
           <svg
             key={i}
@@ -155,9 +159,9 @@ const TestimonialSection = () => {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#2B463C] mb-4">Sinh viên AI nói gì về BloAI?</h2>
+          <h2 className="text-3xl font-bold text-[#2B463C] mb-4">Sinh viên CNTT nói gì về Bloai?</h2>
           <p className="text-lg text-[#554640]/80 max-w-2xl mx-auto">
-            Phản hồi từ cộng đồng sinh viên công nghệ và trí tuệ nhân tạo
+            Phản hồi từ cộng đồng sinh viên công nghệ thông tin về nền tảng học tập AI/ML
           </p>
         </div>
 
@@ -165,25 +169,29 @@ const TestimonialSection = () => {
           {testimonials.map((testimonial, index) => (
             <div
               key={testimonial.id}
-              className={getItemSpanClasses(index)}
+              className={`${getItemSpanClasses(index)} transition-all duration-300 hover:scale-[1.02] hover:shadow-lg`}
             >
-              <div className="bg-[#F8F5F2] rounded-xl p-6 h-full flex flex-col border border-gray-100">
-                <Quote className="text-[#3A6B4C] w-8 h-8 mb-4" />
-                <p className="text-[#554640] italic mb-6 flex-grow text-base">"{testimonial.quote}"</p>
+              <div className="bg-[#F8F5F2] rounded-xl p-6 h-full flex flex-col border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <Quote className="text-[#3A6B4C] w-8 h-8 mb-4 opacity-80" />
+                <p className="text-[#554640] italic mb-6 flex-grow text-base leading-relaxed">"{testimonial.quote}"</p>
 
                 <div className="mt-auto">
                   <div className="flex items-center">
                     <img
                       src={testimonial.avatar}
                       alt={testimonial.name}
-                      className="w-12 h-12 rounded-full object-cover mr-4 border border-gray-200"
+                      className="w-12 h-12 rounded-full object-cover mr-4 border-2 border-white shadow-sm"
                     />
                     <div>
                       <h4 className="font-semibold text-[#2B463C] text-base">{testimonial.name}</h4>
                       <p className="text-sm text-[#554640]/80">{testimonial.role}</p>
-                      <p className="text-xs text-[#554640]/60 mt-1">
-                        Đăng trên {getPlatformIcon(testimonial.platform)} • {testimonial.date}
-                      </p>
+                      <div className="flex items-center mt-1">
+                        <p className="text-xs text-[#554640]/60 flex items-center">
+                          {testimonial.date}
+                          <span className="mx-1">•</span>
+                          {getPlatformIcon(testimonial.platform)}
+                        </p>
+                      </div>
                       {renderStars(testimonial.rating)}
                     </div>
                   </div>
@@ -193,9 +201,12 @@ const TestimonialSection = () => {
           ))}
         </div>
 
-        <div className="text-center mt-8 text-sm text-[#554640]/60">
-          <p>
-            BloAI - Nền tảng chia sẻ kiến thức AI/ML cho sinh viên, cập nhật xu hướng công nghệ mới nhất.
+        <div className="text-center mt-12">
+          <button className="bg-[#3A6B4C] hover:bg-[#2B463C] text-white font-medium py-3 px-6 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg">
+            Xem thêm đánh giá
+          </button>
+          <p className="text-sm text-[#554640]/60 mt-6">
+            Bloai - Nền tảng chia sẻ kiến thức AI/ML cho sinh viên CNTT, cập nhật xu hướng công nghệ mới nhất.
           </p>
         </div>
       </div>

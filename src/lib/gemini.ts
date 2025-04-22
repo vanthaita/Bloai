@@ -339,7 +339,7 @@ export const aiGenerateExcerpt = async (content: string, generatedKeywords: stri
 
 
 
-export const aiEnhanceContentBlogForSEO = async (content: string): Promise<string | null> => {
+export const aiEnhanceContentBlogForSEO = async (content: string, p0: { signal: AbortSignal }): Promise<string | null> => {
   const prompt = `
     **Mục tiêu:** Tối ưu hóa TOÀN BỘ nội dung bài blog sau cho SEO, cải thiện khả năng xếp hạng trên Google và trải nghiệm đọc cho độc giả Việt Nam.
 
