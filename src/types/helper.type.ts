@@ -33,7 +33,14 @@ export interface Author {
   bio?: string;
   socials?: AuthorSocials;
 }
-
+export interface Comment {
+  id: string;
+  content?: string;
+  blogId?: string;
+  author?: Author | null;
+  authorId?: string
+  createdAt: string | Date
+} 
 export interface BlogCore {
   slug: string;
   title: string;
@@ -46,6 +53,7 @@ export interface BlogCore {
   canonicalUrl: string;
   tags: { name: string }[];
   readTime?: number;
+  comments: Comment[],
 }
 
 export interface Blog extends BlogCore {
@@ -57,7 +65,7 @@ export interface SuggestedBlog {
   title: string;
   imageUrl?: string;
   imageAlt?: string;
-  publishDate: Date;
+  publishDate: string | Date;
   readTime: number;
   metaDescription: string;
   author: {
@@ -72,46 +80,4 @@ export interface Heading {
   level: number;
   id: string;
 }
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  metaDescription: string;
-  content: string;
-  imageUrl: string | null;
-  imageAlt: string | null;
-  authorId: string;
-  publishDate: Date;
-  updatedAt: Date;
-  readTime: number;
-  views: number;
-  likes: number;
-  keywords: string[];
-  canonicalUrl: string | null;
-  structuredData: string | null;
-  ogTitle: string | null;
-  ogDescription: string | null;
-  ogImageUrl: string | null;
-  twitterCard: string | null;
-  featured: boolean;
-  tags: { id: string; name: string; description: string | null }[];
-  author: {
-    id: string;
-    name: string;
-    email: string;
-    emailVerified: Date | null;
-    image: string | null;
-    bio: string | null;
-  } | null;
-}
 
-
-export interface Comment {
-  id: string;
-  author: {
-    name: string;
-    avatar: string;
-  };
-  content: string;
-  createdAt: string;
-}

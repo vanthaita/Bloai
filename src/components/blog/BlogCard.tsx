@@ -34,7 +34,8 @@ export function BlogCard({ blog }: BlogCardProps) {
             crop="fill"
             gravity="auto"
             quality="auto:best"
-            format="auto"
+            format="webp"
+            dpr="auto" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-transparent" />
 

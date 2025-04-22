@@ -4,6 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { Prisma } from "@prisma/client";
 import { Resend } from "resend";
 import { sendBlogNotifications, sendConfirmationEmail } from "@/lib/notifySubscribers";
+import { connect } from "http2";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -306,9 +307,13 @@ export const blogRouter = createTRPCRouter({
                 include: {
                   tags: true,
                   author: true,
+                  comments: {
+                    include: { author: true },
+                    orderBy: { createdAt: 'desc' },
+                  },
                 },
             });
-
+            console.log(blog?.comments)
             if (!blog) {
                 throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
             }
@@ -667,6 +672,55 @@ export const blogRouter = createTRPCRouter({
       topAuthors: formattedAuthors,
       topViewedBlogs: formattedBlogs,
     };
-  })
-   
+  }),
+  addComment: publicProcedure
+  .input(z.object({ 
+    slug: z.string(),   
+    content: z.string().min(1),
+    name: z.string().optional(),
+    email: z.string().email().optional(), 
+  }))
+  .mutation(async ({ input, ctx }) => {
+    if (!ctx.session?.user && (!input.name || !input.email)) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Name and email are required for guest comments',
+      })
+    }
+    const comment = await ctx.db.comment.create({
+      data: {
+        content: input.content,
+        blog: {
+          connect: {
+            slug: input.slug
+          }
+        },
+        author: ctx.session?.user
+          ? { connect: { id: ctx.session.user.id } }
+          : {
+              create: {
+                name: input.name!,
+                email: input.email!,
+              },
+            },
+      },
+      include: {
+        author: true,
+      },
+    })
+    return comment
+  }),
+  listBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input, ctx }) => {
+      return ctx.db.comment.findMany({
+        where: { 
+          blog: {
+            slug: input.slug
+          }
+        },
+        include: { author: true },
+        orderBy: { createdAt: 'desc' },
+      })
+  }),
 });

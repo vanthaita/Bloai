@@ -2,7 +2,7 @@
 
 import { useCurrentUser } from '@/hook/use-current-user';
 import Link from 'next/link';
-import { FaSearch, FaBell, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import { FaSearch, FaBell, FaUser, FaSignOutAlt, FaPenAlt } from 'react-icons/fa';
 import { signOut } from 'next-auth/react';
 import { useState, useEffect, useRef } from 'react';
 import { useIsMobile } from '@/hook/use-mobile';
@@ -55,9 +55,10 @@ const Navbar = () => {
 
         {user ? (
           <div className="relative flex gap-x-4" ref={dropdownRef}>
-            <Link href='/new-post' >
-              <Button className='bg-[#3A6B4C] text-white hover:bg-[#3A6B4C]/80'>
-                Tạo Blog
+            <Link href='/new-post'>
+              <Button className='bg-[#3A6B4C] text-white hover:bg-[#3A6B4C]/90 flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg'>
+                <FaPenAlt className="text-sm" />
+                <span>Tạo Blog</span>
               </Button>
             </Link>
             <button
