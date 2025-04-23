@@ -7,9 +7,6 @@ import { AIGenerationButton } from './AIGenerationButton';
 
 
 interface DescriptionInputsProps {
-    description: string;
-    onDescriptionChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-    setDescription: React.Dispatch<React.SetStateAction<string>>;
     metaDescription: string;
     onMetaDescriptionChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
     setMetaDescription: React.Dispatch<React.SetStateAction<string>>; 
@@ -22,9 +19,6 @@ interface DescriptionInputsProps {
 }
 
 export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
-    description,
-    onDescriptionChange,
-    setDescription,
     metaDescription,
     onMetaDescriptionChange,
     setMetaDescription,
@@ -36,6 +30,7 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
     contentForAI,
 }) => {
 
+<<<<<<< HEAD
     const handleGenerateExcerpt = async () => {
       
         try {
@@ -49,6 +44,8 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
             return null;
         }
     };
+=======
+>>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
 
      const handleGenerateMetaDesc = async () => {
         try {
@@ -67,6 +64,7 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
     return (
         <>
             <div className="space-y-1.5">
+<<<<<<< HEAD
                 <Label htmlFor="description" className="flex items-center gap-2 text-base">
                     Mô tả ngắn (Excerpt)
                     <AIGenerationButton
@@ -90,6 +88,8 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
             </div>
 
             <div className="space-y-1.5">
+=======
+>>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
                 <Label htmlFor="metaDescription" className="flex items-center gap-2 text-base">
                     Meta Mô tả *
                     <span className={`text-xs ${metaDescription.length >= 120 && metaDescription.length <= 165 ? 'text-green-600' : 'text-yellow-600'}`}>

@@ -19,25 +19,18 @@ const NotFound = () => {
     <>
       <div className="flex items-center justify-center min-h-screen bg-gray-50 text-gray-800 px-4 py-16">
         <div className="text-center max-w-lg w-full">
-          {/* Icon lỗi */}
           <FaExclamationTriangle className="mx-auto text-yellow-500 text-6xl mb-6" />
-
-          {/* Mã lỗi */}
           <h1 className="text-6xl md:text-8xl font-bold text-gray-400 mb-4">
             404
           </h1>
-
-          {/* Tiêu đề chính */}
           <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-3">
             Oops! Có vẻ như trang này đã "bay màu".
           </h2>
 
-          {/* Mô tả lỗi và gợi ý */}
           <p className="text-base md:text-lg text-gray-600 mb-8">
             Trang bạn đang tìm kiếm không tồn tại, có thể đã bị xóa, đổi tên hoặc tạm thời không khả dụng. Đừng lo lắng, hãy thử các cách sau:
           </p>
 
-          {/* Form Tìm kiếm */}
           <div className="mb-8">
             <p className="text-gray-600 mb-3 font-medium">Tìm kiếm nội dung khác trên Bloai:</p>
             <form
@@ -63,17 +56,14 @@ const NotFound = () => {
             </form>
           </div>
 
-          {/* Nút Hành động */}
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            {/* Nút Trang chủ */}
             <Link
               href="/"
               className="px-6 py-2.5 flex items-center justify-center gap-2 bg-blue-600 rounded-md font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition duration-200 ease-in-out"
-            >
+              >
               <FaHome /> Về Trang Chủ Bloai
             </Link>
 
-            {/* Nút Quay lại */}
             <button
               onClick={() => window.history.back()}
               className="px-6 py-2.5 flex items-center justify-center gap-2 bg-gray-200 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-1 transition duration-200 ease-in-out"
@@ -82,7 +72,6 @@ const NotFound = () => {
             </button>
           </div>
 
-          {/* Footer nhỏ */}
           <div className="mt-16 text-gray-500 text-sm">
             Nếu bạn nghĩ đây là lỗi, vui lòng <Link href="/contact" className="text-blue-600 hover:underline">liên hệ</Link> với chúng tôi.
             <br />

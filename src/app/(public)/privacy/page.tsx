@@ -1,7 +1,11 @@
 "use client"
 
 import { motion } from "framer-motion"
+<<<<<<< HEAD
 import {  FaBook, FaShieldAlt } from "react-icons/fa"
+=======
+import { FaBook, FaShieldAlt } from "react-icons/fa"
+>>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
 
 export default function TermsAndPrivacy() {
   return (

@@ -1,8 +1,9 @@
+import Link from 'next/link'
 import React from 'react'
 
 const Logo = () => {
   return (
-    <>
+    <Link href='/'>
         <svg width="75" height="75" viewBox="0 0 824 508" fill="none" xmlns="http://www.w3.org/2000/svg"
         className='object-cover'
         >
@@ -32,7 +33,7 @@ const Logo = () => {
         <path d="M640.08 293.066C633.67 299.474 623.804 288.584 629.701 283.403C636.468 277.465 646.491 286.657 640.08 293.066Z" fill="#1F2937"/>
         <path d="M420.195 79.6675C449.464 74.6861 461.443 112.867 436.357 125.798C402.092 143.454 383.788 85.8763 420.195 79.6675Z" fill="#1F2937"/>
         </svg>
-    </>
+    </Link>
   )
 }
 

@@ -65,7 +65,6 @@ const TagsContent = () => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(tagsSchema).replace(/</g, '\\u003c') }}
       />
-
       <div className="min-h-screen p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-9xl">
           <header className="mb-10 border-b border-gray-200 pb-8 text-center md:mb-14">
@@ -89,7 +88,7 @@ const TagsContent = () => {
                     href={'/tags'}
                     key={tag.id}
                     className="group flex h-full transform md:flex-col rounded-lg border border-gray-200/90 bg-white shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-lg hover:border-[#3A6B4C]/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3A6B4C] focus-visible:ring-offset-2"
-                  >
+                    legacyBehavior>
                     <div className="flex h-full flex-col p-5">
                       <div className="mb-3 flex md:flex-row sm:flex-col items-start justify-between gap-3">
                         <h2 className="flex items-center gap-2.5 pr-2 text-lg font-semibold text-gray-800 transition-colors group-hover:text-[#3A6B4C] sm:text-xl">
@@ -116,7 +115,7 @@ const TagsContent = () => {
                         </div>
                       </div> */}
                     </div>
-                  </Link> 
+                  </Link>
                 );
               })}
             </div>

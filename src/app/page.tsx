@@ -1,29 +1,59 @@
 import { BlogGrid } from "@/components/blog/BlogGrid";
 import Loading from "@/components/loading"; 
 import { Suspense } from "react";
+<<<<<<< HEAD
 import { blogPageMetadata, blogSchema, safeJsonLdStringify } from "@/config/seo";
+=======
+import LeaderBoard from "@/components/LeaderBoard";
+import EmailSubscribeSection from "@/components/EmailSubscribe";
+import TestimonialSection from "@/components/TestimonialSection";
+>>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
 
 export const metadata = blogPageMetadata
 
 export default async function Page() {
   return (
     <>
+<<<<<<< HEAD
      <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(blogSchema) }}
       />
       <main>
         <div className="px-4 min-[375px]:px-6 md:px-8 lg:px-10 xl:px-12 py-6 min-[375px]:py-8">
+=======
+      <script
+         type="application/ld+json"
+         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema).replace(/</g, '\\u003c') }}
+       />
+        <main className="flex flex-col">
+        <section className="px-4 min-[375px]:px-6 md:px-8 lg:px-10 xl:px-12 py-6 min-[375px]:py-8">
+>>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
           <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200 text-center underline decoration-[#3A6B4C] decoration-4 underline-offset-4">
             BÀI VIẾT NỔI BẬT
           </h1>
+          
           <Suspense fallback={<Loading />}>
-            <BlogGrid
-            />
+            <BlogGrid />
           </Suspense>
-        </div>
+        </section>
+
+        <section className="w-full">
+          <LeaderBoard />
+        </section>
+
+        <section className="w-full bg-gray-50 dark:bg-gray-800 py-12">
+          <EmailSubscribeSection 
+            title="Đừng bỏ lỡ kiến thức AI mới nhất"
+            description="Đăng ký nhận bản tin để cập nhật các bài viết mới, thủ thuật AI và tin tức công nghệ mỗi tuần."
+          />
+        </section>
+
+
+        <section>
+          <TestimonialSection />
+        </section>
       </main>
     </>
-
   );
 }

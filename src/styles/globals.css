@@ -140,3 +140,9 @@ html {
 .prose h3:hover {
   color: #2563eb;
 }
+.prose img {
+  height: auto;
+  max-width: 100%;
+  display: block;
+  margin: 1rem auto;
+}

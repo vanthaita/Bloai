@@ -1,19 +1,19 @@
 'use client'
-import React, { useCallback, useState, useEffect, useMemo, ChangeEvent, KeyboardEvent } from 'react'
+import React, { useCallback, useState, useEffect, useMemo, ChangeEvent } from 'react'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import slugify from 'slugify'
-import { ArrowLeft, HelpCircle } from 'lucide-react'
+import { ArrowLeft, HelpCircle, Lightbulb } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Button } from '@/components/ui/button' // Keep Button for Tooltip trigger
+import { Button } from '@/components/ui/button'
 import { env } from '@/env'
 import { api } from '@/trpc/react'
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import useRefetch from '@/hook/use-refresh'
 import { toast } from 'react-toastify';
 import { useDebounce } from 'use-debounce';
-import { TitleSlugInput } from './TitleSlugInput'; // Adjust paths
+import { TitleSlugInput } from './TitleSlugInput';
 import { DescriptionInputs } from './DescriptionInputs';
 import { ThumbnailUploader } from './ThumbnailUploader';
 import { ContentEditorWithContext } from './ContentEditorWithContext';
@@ -21,15 +21,18 @@ import { TagsManagementInput } from './TagsManagementInput';
 import { SEOPreviewDisplay } from './SEOPreviewDisplay';
 import { AdvancedSEOFormFields } from './AdvancedSEOFormFields';
 import { SubmissionArea } from './SubmissionArea';
+import { useCurrentUser } from '@/hook/use-current-user'
+import Loading from '@/components/loading'
+
 const NewPostContent = () => {
     const [tags, setTags] = useState<string[]>([])
     const [thumbnail, setThumbnail] = useState<File | null>(null)
+    const [existingThumbnailUrl, setExistingThumbnailUrl] = useState<string>('')
     const [content, setContent] = useState('**Xin chào thế giới!!!**')
     const [title, setTitle] = useState('')
     const [slug, setSlug] = useState('')
     const [metaDescription, setMetaDescription] = useState('')
     const [imageAlt, setImageAlt] = useState('')
-    const [description, setDescription] = useState('')
     const [canonicalUrl, setCanonicalUrl] = useState('')
     const [ogTitle, setOgTitle] = useState('')
     const [ogDescription, setOgDescription] = useState('')
@@ -42,25 +45,69 @@ const NewPostContent = () => {
     const [isGeneratingOgDescription, setIsGeneratingOgDescription] = useState(false);
     const [isGeneratingTitle, setIsGeneratingTitle] = useState(false);
     const [isGeneratingExcerpt, setIsGeneratingExcerpt] = useState(false);
+    const [isGeneratingEnhanceContent,setIsGeneratingEnhanceContent] = useState(false);
 
     const [isAutoCanonical, setIsAutoCanonical] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoading, setIsLoading] = useState(false)
 
-    const { mutateAsync: createPost } = api.blog.create.useMutation();
+    const { mutateAsync: createBlog } = api.blog.create.useMutation();
+    const { mutateAsync: updateBlog } = api.blog.update.useMutation();
     const refresh = useRefetch();
     const router = useRouter();
     const [debouncedTitle] = useDebounce(title, 300);
     const [debouncedContent] = useDebounce(content, 500);
+
+    const currentUser = useCurrentUser();
+    const searchParams = useSearchParams();
+    const blogSlug = searchParams.get('blogSlug') as string;
+    const { data: blogData, isLoading: isBlogLoading } = api.blog.getBlog.useQuery({ slug: blogSlug }, {
+        enabled: !!blogSlug,
+        select: (data) => ({
+            ...data,
+            tags: data.tags.map(tag => tag.name), 
+        }),
+    });
+
+    useEffect(() => {
+        if (blogSlug && blogData && currentUser?.id !== blogData.authorId) {
+            toast.error('Bạn không có quyền chỉnh sửa bài viết này');
+            router.push('/');
+        }
+    }, [blogSlug, blogData, currentUser?.id, router]);
+
+    useEffect(() => {
+        setIsLoading(!!blogSlug && isBlogLoading);
+    }, [blogSlug, isBlogLoading]);
+
+    useEffect(() => {
+        if (blogData) {
+            setTitle(blogData.title || '');
+            setSlug(blogData.slug || '');
+            setContent(blogData.content || '');
+            setTags(blogData.tags || []);
+            setExistingThumbnailUrl(blogData.imageUrl || '');
+            setMetaDescription(blogData.metaDescription || '');
+            setImageAlt(blogData.imageAlt || '');
+            setCanonicalUrl(blogData.canonicalUrl || '');
+            setOgTitle(blogData.ogTitle || '');
+            setOgDescription(blogData.ogDescription || '');
+            setReadTime(blogData.readTime || 0);
+            
+            if (blogData.canonicalUrl && blogData.canonicalUrl !== `${env.NEXT_PUBLIC_APP_URL}/blog/${blogData.slug}`) {
+                setIsAutoCanonical(false);
+            }
+        }
+    }, [blogData]);
 
     useEffect(() => {
         if (isAutoCanonical && slug) {
             setCanonicalUrl(`${env.NEXT_PUBLIC_APP_URL}/blog/${slug}`);
         }
         if (isAutoCanonical && !canonicalUrl && slug) {
-             setCanonicalUrl(`${env.NEXT_PUBLIC_APP_URL}/blog/${slug}`);
+            setCanonicalUrl(`${env.NEXT_PUBLIC_APP_URL}/blog/${slug}`);
         }
     }, [slug, isAutoCanonical, canonicalUrl]);
-
 
     useEffect(() => {
         if (debouncedTitle && !isGeneratingSlugManually) {
@@ -80,12 +127,11 @@ const NewPostContent = () => {
     }, [title, ogTitle]);
 
     useEffect(() => {
-         if (!ogDescription) {
-            const fallback = metaDescription || description;
+        if (!ogDescription) {
+            const fallback = metaDescription;
             if (fallback) setOgDescription(fallback);
         }
-    }, [metaDescription, description, ogDescription]);
-
+    }, [metaDescription, ogDescription]);
 
     const isSEOValid = useMemo(() => {
         return (
@@ -93,11 +139,10 @@ const NewPostContent = () => {
             metaDescription.length <= 160 &&
             title.trim().length > 0 &&
             slug.trim().length > 0 &&
-            thumbnail !== null
+            (thumbnail !== null || existingThumbnailUrl !== '')
         );
-    }, [metaDescription, slug, title, thumbnail]);
+    }, [metaDescription, slug, title, thumbnail, existingThumbnailUrl]);
 
-   
     const handleTitleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value);
         setIsGeneratingSlugManually(false); 
@@ -109,12 +154,8 @@ const NewPostContent = () => {
         setIsGeneratingSlugManually(true);
     }, []);
 
-     const handleToggleManualSlug = useCallback(() => {
+    const handleToggleManualSlug = useCallback(() => {
         setIsGeneratingSlugManually(prev => !prev);
-    }, []);
-
-    const handleDescriptionChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
-        setDescription(e.target.value);
     }, []);
 
     const handleMetaDescriptionChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -142,14 +183,14 @@ const NewPostContent = () => {
         setContent(value ?? '');
     }, []);
 
-     const handleThumbnailChange = useCallback((file: File | null) => {
+    const handleThumbnailChange = useCallback((file: File | null) => {
         setThumbnail(file);
-        if(file && !imageAlt && title) {
+        if (file && !imageAlt && title) {
             setImageAlt(title.slice(0, 125));
         }
-         if(!file) {
-             setImageAlt(''); 
-         }
+        if (!file) {
+            setImageAlt(''); 
+        }
     }, [imageAlt, title]); 
 
     const uploadImageToCloudinary = useCallback(async (file: File): Promise<string | null> => {
@@ -172,12 +213,13 @@ const NewPostContent = () => {
             return null;
         }
     }, []); 
+
     const handleSubmit = useCallback(async () => {
-         if (!isSEOValid) {
+        if (!isSEOValid) {
             let errorMessages: string[] = ['Vui lòng điền đầy đủ thông tin và tối ưu SEO:'];
             if (!title.trim()) errorMessages.push('- Tiêu đề còn trống.');
             if (!slug.trim()) errorMessages.push('- Đường dẫn (Slug) còn trống.');
-            if (!thumbnail) errorMessages.push('- Ảnh thu nhỏ chưa được chọn.');
+            if (!thumbnail && !existingThumbnailUrl) errorMessages.push('- Ảnh thu nhỏ chưa được chọn.');
             if (metaDescription.length < 120 || metaDescription.length > 160) {
                 errorMessages.push(`- Meta Description phải từ 120-160 ký tự (hiện tại ${metaDescription.length}).`);
             }
@@ -185,26 +227,25 @@ const NewPostContent = () => {
             return;
         }
 
-        if (!thumbnail) {
-             toast.error("Lỗi nội bộ: Ảnh thu nhỏ không tồn tại dù đã qua kiểm tra.");
-             return;
-        }
-
         setIsSubmitting(true);
         try {
-            const imageUrl = await uploadImageToCloudinary(thumbnail);
-            if (!imageUrl) {
-                setIsSubmitting(false); 
-                return; 
+            let imageUrl = existingThumbnailUrl;
+            
+            if (thumbnail) {
+                const uploadedUrl = await uploadImageToCloudinary(thumbnail);
+                if (!uploadedUrl) {
+                    setIsSubmitting(false); 
+                    return; 
+                }
+                imageUrl = uploadedUrl;
             }
 
             const finalSlug = slug.trim();
             const finalTitle = title.trim();
             const finalMetaDesc = metaDescription.trim();
-            const finalDesc = description.trim(); 
             const finalCanonical = canonicalUrl.trim() || `${env.NEXT_PUBLIC_APP_URL}/blog/${finalSlug}`;
             const finalOgTitle = ogTitle.trim() || finalTitle; 
-            const finalOgDesc = ogDescription.trim() || finalMetaDesc || finalDesc; 
+            const finalOgDesc = ogDescription.trim() || finalMetaDesc; 
 
             const postData = {
                 title: finalTitle,
@@ -214,45 +255,102 @@ const NewPostContent = () => {
                 thumbnail: imageUrl,
                 metaDescription: finalMetaDesc,
                 imageAlt: imageAlt.trim().slice(0, 125),
-                description: finalDesc, 
                 canonicalUrl: finalCanonical,
                 ogTitle: finalOgTitle,
                 ogDescription: finalOgDesc,
                 readTime: readTime, 
             };
 
-            await createPost(postData);
-            toast.success('Bài viết đã được xuất bản thành công!');
+            if (blogSlug && blogData) {
+                await updateBlog({
+                    id: blogData.id,
+                    ...postData
+                });
+                toast.success('Bài viết đã được cập nhật thành công!');
+            } else {
+                await createBlog(postData);
+                toast.success('Bài viết đã được xuất bản thành công!');
+            }
+
             refresh(); 
-            router.push(`/blog/${postData.slug}`);
+            router.push(`/blog/${finalSlug}`);
 
         } catch (error: any) {
             console.error('Error submitting form:', error);
             if (error?.message !== 'Cloudinary upload failed: No secure_url found' && !(error?.message?.includes('Lỗi tải ảnh lên Cloudinary'))) {
-                 toast.error(`Đã xảy ra lỗi khi xuất bản: ${error.message || 'Vui lòng thử lại!'}`);
+                toast.error(`Đã xảy ra lỗi: ${error.message || 'Vui lòng thử lại!'}`);
             }
         } finally {
             setIsSubmitting(false);
         }
     }, [
         isSEOValid, uploadImageToCloudinary, thumbnail, title, slug, content, tags,
-        metaDescription, imageAlt, description, canonicalUrl, ogTitle, ogDescription,
-        readTime, createPost, router, refresh,
+        metaDescription, imageAlt, canonicalUrl, ogTitle, ogDescription,
+        readTime, createBlog, updateBlog, router, refresh, blogSlug, blogData, existingThumbnailUrl
     ]);
 
     return (
         <TooltipProvider>
+            {isLoading ? (
+                <Loading />
+            ) : ( 
             <div className="bg-white min-h-screen p-1 md:p-4">
+<<<<<<< HEAD
                 <div onClick={() => router.back()} className='max-w-10'>
                     <Button variant='outline' className='flex justify-start items-center gap-x-2'>
                         <ArrowLeft />
                         <span>Trở lại</span>
                     </Button>
                 </div>
+=======
+               <div className="space-y-4 mb-6">
+                <div 
+                    onClick={() => router.back()} 
+                    className="cursor-pointer group"
+                    aria-label="Quay lại trang trước"
+                >
+                    <Button 
+                    variant="ghost" 
+                    className="flex items-center gap-2 px-3 py-2 transition-all hover:bg-accent hover:pl-2"
+                    >
+                    <ArrowLeft className="w-5 h-5 text-primary group-hover:-translate-x-1 transition-transform" />
+                    <span className="font-medium">Trở lại danh sách</span>
+                    </Button>
+                </div>
+                <div className="bg-blue-50/80 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <div className="flex items-start gap-3">
+                    <Lightbulb className="w-5 h-5 mt-0.5 text-blue-600 dark:text-blue-300 flex-shrink-0" />
+                    <div>
+                        <h3 className="font-semibold text-blue-800 dark:text-blue-100 mb-1.5">
+                        Lưu ý quan trọng khi tạo bài viết chuẩn SEO
+                        </h3>
+                        <ol className="list-decimal list-inside space-y-1.5 text-sm text-blue-700 dark:text-blue-300">
+                        <li>
+                            <span className="font-medium">Tạo Tags trước:</span> Xác định từ khóa chính 
+                            và phụ để hệ thống gợi ý nội dung phù hợp
+                        </li>
+                        <li>
+                            <span className="font-medium">Tiêu đề (Title):</span> Chứa từ khóa chính, 
+                            dưới 60 ký tự và thu hút click
+                        </li>
+                        <li>
+                            <span className="font-medium">Mô tả (Description):</span> Tóm tắt nội dung 
+                            trong 150-160 ký tự, chứa từ khóa
+                        </li>
+                        <li>
+                            <span className="font-medium">Header (H2, H3):</span> Phân cấp rõ ràng, 
+                            mỗi section nên chứa ít nhất 1 từ khóa phụ
+                        </li>
+                        </ol>
+                    </div>
+                    </div>
+                </div>
+                </div>
+>>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
-                            Tạo Bài Viết Mới
+                            {blogSlug ? 'Chỉnh Sửa Bài Viết' : 'Tạo Bài Viết Mới'}
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button variant="ghost" size="icon" className="w-5 h-5 p-0">
@@ -280,9 +378,6 @@ const NewPostContent = () => {
                             />
 
                             <DescriptionInputs
-                                description={description}
-                                onDescriptionChange={handleDescriptionChange}
-                                setDescription={setDescription}
                                 metaDescription={metaDescription}
                                 onMetaDescriptionChange={handleMetaDescriptionChange}
                                 setMetaDescription={setMetaDescription} 
@@ -300,12 +395,15 @@ const NewPostContent = () => {
                                 imageAlt={imageAlt}
                                 onImageAltChange={handleImageAltChange}
                                 isSEOValid={isSEOValid}
+                                existingThumbnailUrl={existingThumbnailUrl}
                             />
 
                             <ContentEditorWithContext
                                 content={content}
                                 onContentChange={handleContentChange}
                                 readTime={readTime}
+                                isGeneratingEnhanceContent={isGeneratingEnhanceContent}
+                                setIsGeneratingEnhanceContent={(setIsGeneratingEnhanceContent)}
                             />
                         </div>
 
@@ -348,14 +446,15 @@ const NewPostContent = () => {
                     </CardContent>
 
                     <CardFooter>
-                         <SubmissionArea
+                        <SubmissionArea
                             isSEOValid={isSEOValid}
                             isSubmitting={isSubmitting}
                             onSubmit={handleSubmit}
-                         />
+                            isUpdateMode={!!blogSlug}
+                        />
                     </CardFooter>
                 </Card>
-            </div>
+            </div>)}
         </TooltipProvider>
     )
 }
