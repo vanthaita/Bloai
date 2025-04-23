@@ -159,9 +159,9 @@ const TestimonialSection = () => {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#2B463C] mb-4">Sinh viên CNTT nói gì về Bloai?</h2>
+          <h2 className="text-3xl font-bold text-[#2B463C] mb-4">Người dùng CNTT nói gì về Bloai?</h2>
           <p className="text-lg text-[#554640]/80 max-w-2xl mx-auto">
-            Phản hồi từ cộng đồng sinh viên công nghệ thông tin về nền tảng học tập AI/ML
+            Phản hồi từ cộng đồng người dùng yêu thích công nghệ và trí tuệ nhân tạo
           </p>
         </div>
 
