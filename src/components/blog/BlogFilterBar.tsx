@@ -54,7 +54,7 @@ export function BlogFilterBar({
             )}
             onClick={() => handleFilterClick(tag.value)}
           >
-            {tag.label}
+            #{tag.label}
             {activeFilter === tag.value && (
               <span className="ml-1.5">✓</span>
             )}
