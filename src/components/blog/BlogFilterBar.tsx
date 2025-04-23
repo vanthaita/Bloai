@@ -1,4 +1,4 @@
-'use client' 
+'use client'
 
 import React from 'react';
 import Link from 'next/link';
@@ -38,34 +38,44 @@ export function BlogFilterBar({
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-3 mb-12">
-      {visibleTags.map((tag) => (
-        <Button
-          key={tag.value}
-          variant={'outline'}
-          size="sm"
-          className={cn(
-            "rounded-full h-auto py-1.5 px-4 font-medium transition-all border-[#D1D5DB] text-gray-900 hover:bg-gray-100",
-            activeFilter === tag.value && 'bg-[#3A6B4C] text-white border-[#3A6B4C] hover:bg-[#3A6B4C]/90'
-          )}
-          onClick={() => handleFilterClick(tag.value)}
-        >
-          {tag.label}
-        </Button>
-      ))}
-      {hasMoreTags && (
-        <Link href={moreTagsLink} passHref legacyBehavior>
-             <Button
-               variant={'outline'}
-               size="sm"
-               className={cn(
-                 "rounded-full h-auto py-1.5 px-4 font-medium transition-all border-[#D1D5DB] text-gray-900 hover:bg-gray-100 underline",
-               )}
-             >
-               + More
-             </Button>
-        </Link>
-      )}
+    <div className="flex flex-col gap-4 mb-12">
+      <div className="flex flex-wrap justify-center gap-2">
+        {visibleTags.map((tag) => (
+          <Button
+            key={tag.value}
+            variant={'outline'}
+            size="sm"
+            className={cn(
+              "rounded-full h-auto py-1.5 px-4 font-medium transition-all",
+              "border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900",
+              "shadow-sm hover:shadow-md",
+              activeFilter === tag.value && 
+                'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700 hover:text-white'
+            )}
+            onClick={() => handleFilterClick(tag.value)}
+          >
+            {tag.label}
+            {activeFilter === tag.value && (
+              <span className="ml-1.5">✓</span>
+            )}
+          </Button>
+        ))}
+        {hasMoreTags && (
+          <Link href={moreTagsLink} passHref legacyBehavior>
+            <Button
+              variant={'outline'}
+              size="sm"
+              className={cn(
+                "rounded-full h-auto py-1.5 px-4 font-medium",
+                "border-gray-200 text-gray-700 hover:bg-gray-50",
+                "shadow-sm hover:shadow-md"
+              )}
+            >
+              View all tags →
+            </Button>
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 'use server'
 import {
-    // aiGenerateSEOTags,
     aiGenerateMetaDescription,
     aiGenerateSEOKeywords,
     aiGenerateOpenGraphTitle,
@@ -11,56 +10,80 @@ import {
     aiGenerateFactAndknowledge,
 } from '@/lib/gemini'
 import { db } from '@/server/db'
-import { BlogNotificationProps } from './notifySubscribers'
 
-export async function generateMetaDescription(content: string) {
-  const generated = await aiGenerateMetaDescription(content)
-  return generated
+let generatedKeywordsCache: string = '';
+
+async function getExistingKeywords() {
+  try {
+    const tagsList = await db.tag.findMany({
+      select: { name: true },
+      take: 100 
+    });
+    return tagsList.map(tag => tag.name);
+  } catch (error) {
+    console.error('Failed to fetch tags:', error);
+    return [];
+  }
 }
 
-// export async function generateSEOTags(content: string) {
-//   const generated = await aiGenerateSEOTags(content)
-//   return generated
-// }
+export async function generateMetaDescription(content: string) {
+  if (!content) return '';
+  return await aiGenerateMetaDescription(content.slice(0, 5000));
+}
 
-let generatedKeywords: string = '';
 export async function generateSEOKeywords(content: string) {
-  const tagsList = db.tag.findMany();
-  const existingKeywords = (await tagsList).map((tag) => {
-    return tag.name;
-  });
-  const generated = await aiGenerateSEOKeywords(content, existingKeywords); 
-  generatedKeywords = generated || ''
-  console.log(generatedKeywords)
+  if (!content) return '';
+  
+  const existingKeywords = await getExistingKeywords();
+  const generated = await aiGenerateSEOKeywords(content.slice(0, 5000), existingKeywords); 
+  generatedKeywordsCache = generated || '';
   return generated;
 }
 
-
 export async function generateOpenGraphTitle(content: string) {
-  const generated = await aiGenerateOpenGraphTitle(content, generatedKeywords)
-  return generated
+  if (!content) return '';
+  return await aiGenerateOpenGraphTitle(content.slice(0, 5000), generatedKeywordsCache);
 }
 
 export async function generateOpenGraphDescription(content: string) {
-  const generated = await aiGenerateOpenGraphDescription(content,generatedKeywords)
-  return generated
+  if (!content) return '';
+  return await aiGenerateOpenGraphDescription(content.slice(0, 5000), generatedKeywordsCache);
 }
 
 export async function generateTitleBlog(content: string) {
-  const generated = await aiGenerateTitleBlog(content,generatedKeywords)
-  return generated
+  if (!content) return '';
+  return await aiGenerateTitleBlog(content.slice(0, 5000), generatedKeywordsCache);
 }
 
 export async function generateExcerpt(content: string) {
-  const generated = await aiGenerateExcerpt(content,generatedKeywords)
-  return generated
+  if (!content) return '';
+  return await aiGenerateExcerpt(content.slice(0, 5000), generatedKeywordsCache);
 }
+
 export async function generateEnhanceContentBlogForSEO(content: string) {
-  const generated = await aiEnhanceContentBlogForSEO(content);
-  return generated
+  if (!content) return '';
+  
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25000);
+    
+    const contentToProcess = content.length > 10000 
+      ? content.slice(0, 5000) + '...' + content.slice(-5000)
+      : content;
+
+    const generated = await aiEnhanceContentBlogForSEO(contentToProcess, {
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeout);
+    return generated;
+  } catch (error) {
+    console.error('Content generation failed:', error);
+    return content;
+  }
 }
 
 export async function generateFactAndknowledge(title: string) {
-  const generated = await aiGenerateFactAndknowledge(title);
-  return generated
+  if (!title) return '';
+  return await aiGenerateFactAndknowledge(title.slice(0, 200));
 }
