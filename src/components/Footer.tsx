@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Mail, ArrowRight } from 'lucide-react'; 
 import Link from 'next/link';
 import Logo from './logo';
-import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
+import { FaFacebook, FaGithub, FaYoutube } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 import { api } from '@/trpc/react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -79,9 +80,10 @@ const Footer = () => {
     ],
     socials_title: 'Kết nối',
     socials: [
-      { name: 'Twitter', href: 'https://x.com/Bloai_Team', icon: 'FaTwitter' }, 
+      { name: 'X', href: 'https://x.com/Bloai_Team', icon: 'FaXTwitter' }, 
       { name: 'GitHub', href: 'https://github.com/TDevUIT/Bloai', icon: 'FaGithub' },
-      { name: 'Facebook', href: 'https://www.youtube.com/channel/UCi396lyYi5FURzdp-W93lHg', icon: 'FaFacebook' },
+      { name: 'Facebook', href: 'https://web.facebook.com/bloai/', icon: 'FaFacebook' },
+      { name: 'Youtube', href: 'https://www.youtube.com/channel/UCi396lyYi5FURzdp-W93lHg', icon: 'FaYoutube' },
     ],
     copyright: 'Bloai Team. Đã đăng ký bản quyền.', 
   };
@@ -174,20 +176,20 @@ const Footer = () => {
           <div className="border-t border-[#3A6B4C] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex space-x-4">
               <Link
-                href={footerContent.socials.find(s => s.name === 'Twitter')?.href || '#'}
+                href={footerContent.socials.find(s => s.name === 'X')?.href || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#554640]/80 hover:text-[#3A6B4C]"
-                aria-label="Twitter"
+                aria-label="XTwitter"
               >
-                <FaTwitter className="h-5 w-5" />
+                <FaXTwitter className="h-5 w-5" />
               </Link>
               <Link
-                href="#"
+                href={footerContent.socials.find(s => s.name === 'Facebook')?.href || '#'}
                 className="text-[#554640]/80 hover:text-[#3A6B4C]"
-                aria-label="LinkedIn"
+                aria-label="Facebook"
               >
-                <FaLinkedin className="h-5 w-5" />
+                <FaFacebook className="h-5 w-5" />
               </Link>
               <Link
                 href={footerContent.socials.find(s => s.name === 'GitHub')?.href || '#'}
@@ -197,6 +199,15 @@ const Footer = () => {
                 aria-label="GitHub"
               >
                 <FaGithub className="h-5 w-5" />
+              </Link>
+              <Link
+                href={footerContent.socials.find(s => s.name === 'Youtube')?.href || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#554640]/80 hover:text-[#3A6B4C]"
+                aria-label="Youtube"
+              >
+                <FaYoutube className="h-5 w-5" />
               </Link>
             </div>
 
