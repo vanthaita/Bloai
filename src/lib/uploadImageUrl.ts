@@ -2,6 +2,9 @@ import axios from 'axios';
 import { env } from '@/env';
 
 function isValidImageUrl(url: string): boolean {
+  if (url.startsWith('blob:')) {
+    return true;
+  }
   return /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(url) && 
          (/\.(png|jpg|jpeg|gif|webp|svg)(\?.*)?$/i.test(url) || 
           /\/image\/|\.(jpg|png|gif)(\?|$)|%2F(image|img)/i.test(url));
@@ -23,31 +26,38 @@ function transformCloudinaryUrl(url: string, options: {
     return `${urlParts[0]}/upload/${transformationString}/${urlParts[1]}`;
   }
   
-export async function uploadImageToCloudinary(
-    imageUrl: string,
+  export async function uploadImageToCloudinary(
+    imageData: string | File, // Accept both URL string or File object
     options: {
       quality?: number | 'auto';
       width?: number;
       format?: 'webp' | 'auto';
     } = {}
   ): Promise<string | null> {
-    console.debug(`[uploadImageToCloudinary] Starting upload for ${imageUrl}`);
+    console.debug(`[uploadImageToCloudinary] Starting upload`);
     
-    if (!isValidImageUrl(imageUrl)) {
-      console.warn(`[uploadImageToCloudinary] Invalid image URL: ${imageUrl}`);
-      return null;
-    }
-  
     if (!env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || !env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET) {
       console.error('[uploadImageToCloudinary] Missing Cloudinary configuration!');
       return null;
     }
   
     try {
-      const payload = {
-        file: imageUrl,
-        upload_preset: env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
-      };
+      const payload = new FormData();
+      
+      if (typeof imageData === 'string') {
+        // Handle base64 data
+        if (imageData.startsWith('data:')) {
+          payload.append('file', imageData);
+        } else {
+          // Handle URL
+          payload.append('file', imageData);
+        }
+      } else {
+        // Handle File object directly
+        payload.append('file', imageData);
+      }
+      
+      payload.append('upload_preset', env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
   
       const apiUrl = `https://api.cloudinary.com/v1_1/${env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`;
       const response = await axios.post(apiUrl, payload);
@@ -57,7 +67,7 @@ export async function uploadImageToCloudinary(
         return null;
       }
   
-      const { secure_url, public_id } = response.data;
+      const { secure_url } = response.data;
   
       const transformedUrl = transformCloudinaryUrl(secure_url, {
         quality: options.quality,
@@ -73,10 +83,6 @@ export async function uploadImageToCloudinary(
           code: error.code,
           status: error.response?.status,
           responseData: error.response?.data,
-          config: {
-            url: error.config?.url,
-            data: error.config?.data
-          }
         });
       } else {
         console.error('[uploadImageToCloudinary] Unexpected Error:', error);
@@ -84,6 +90,7 @@ export async function uploadImageToCloudinary(
       return null;
     }
   }
+  
   
 
 export async function processMarkdownImages(content: string): Promise<{
@@ -148,4 +155,17 @@ export async function processMarkdownImages(content: string): Promise<{
     processedContent,
     failedUrls,
   };
+}
+
+export function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      const base64Data = result.split(',')[1] || result;
+      resolve(base64Data);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
 }
