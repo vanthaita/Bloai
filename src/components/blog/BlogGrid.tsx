@@ -81,7 +81,7 @@ export function BlogGrid() {
           />
       </div>
       {isFetching && !isLoading && (
-        <div className="text-center py-4 text-gray-500">Updating posts...</div>
+        <div className="text-center py-4 text-gray-500">Updating Blog...</div>
       )}
       <BentoGrid className="px-4 pb-16">
         {filteredBlogs.length > 0 ? (
