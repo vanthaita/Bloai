@@ -22,6 +22,7 @@ interface ContentEditorWithContextProps {
     readTime: number;
     isGeneratingEnhanceContent?: boolean;
     setIsGeneratingEnhanceContent?: React.Dispatch<React.SetStateAction<boolean>>;
+    modelAi?: string;
 }
 
 export const ContentEditorWithContext: React.FC<ContentEditorWithContextProps> = ({
@@ -30,6 +31,7 @@ export const ContentEditorWithContext: React.FC<ContentEditorWithContextProps> =
     readTime,
     isGeneratingEnhanceContent = false,
     setIsGeneratingEnhanceContent = () => {},
+    modelAi,
 }) => {
     const [isProcessing,setIsProcessing] = useState(false); 
     const insertMarkdown = useCallback((format: string) => {
@@ -42,7 +44,7 @@ export const ContentEditorWithContext: React.FC<ContentEditorWithContextProps> =
     const handlegenerateEnhanceContentBlogForSEO = async (content: string): Promise<string | null> => {
         try {
             setIsGeneratingEnhanceContent(true);
-            const generated = await generateEnhanceContentBlogForSEO(content);
+            const generated = await generateEnhanceContentBlogForSEO(content,modelAi);
             if (generated) {
                 onContentChange(generated);
                 return generated;

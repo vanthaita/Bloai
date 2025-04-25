@@ -2,7 +2,7 @@
 import React, { ChangeEvent } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { generateExcerpt, generateMetaDescription } from '@/lib/action'; 
+import { generateMetaDescription } from '@/lib/action'; 
 import { AIGenerationButton } from './AIGenerationButton';
 
 
@@ -15,6 +15,7 @@ interface DescriptionInputsProps {
     isGeneratingMetaDesc: boolean;
     setIsGeneratingMetaDesc: React.Dispatch<React.SetStateAction<boolean>>;
     isSEOValid: boolean;
+    modelAi?: string;
     contentForAI: string;
 }
 
@@ -22,18 +23,17 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
     metaDescription,
     onMetaDescriptionChange,
     setMetaDescription,
-    isGeneratingExcerpt,
-    setIsGeneratingExcerpt,
     isGeneratingMetaDesc,
     setIsGeneratingMetaDesc,
     isSEOValid,
     contentForAI,
+    modelAi,
 }) => {
 
 
      const handleGenerateMetaDesc = async () => {
         try {
-            const generated = await generateMetaDescription(contentForAI);
+            const generated = await generateMetaDescription(contentForAI,modelAi);
             if (generated) {
                 setMetaDescription(generated);
             }

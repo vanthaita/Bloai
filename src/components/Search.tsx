@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { FaSearch, FaCalendarAlt, FaUser } from 'react-icons/fa';
 import Image from 'next/image';
 import Link from 'next/link';
+import { CldImage } from 'next-cloudinary';
 
 const LIMIT = 4;
 const DEBOUNCE_DELAY = 300;
@@ -110,9 +111,6 @@ const Search = () => {
                     className="w-full bg-gray-50 text-gray-800 rounded-lg
                             py-2.5 px-4 pl-11
                             text-base
-                            border border-gray-200
-                            focus:border-blue-500 focus:ring-2 focus:ring-blue-200
-                            hover:border-gray-300
                             outline-none shadow-sm transition-all"
                     aria-label="Search articles"
                     autoComplete="off"
@@ -161,12 +159,19 @@ const Search = () => {
                                                 <div className="flex items-start space-x-3">
                                                     {result.imageUrl && (
                                                         <div className="flex-shrink-0 w-16 h-16 relative">
-                                                            <Image
+                                                            <CldImage
+                                                                width={300}
+                                                                height={300}
                                                                 src={result.imageUrl}
                                                                 alt={result.imageAlt || result.title}
-                                                                fill
-                                                                className="object-cover rounded"
-                                                                sizes="64px" 
+                                                                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                                                                loading="lazy"
+                                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                                                crop="fill"
+                                                                gravity="auto"
+                                                                quality="auto:best"
+                                                                format="webp"
+                                                                dpr="auto" 
                                                             />
                                                         </div>
                                                     )}

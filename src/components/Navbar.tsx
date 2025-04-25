@@ -2,7 +2,7 @@
 
 import { useCurrentUser } from '@/hook/use-current-user';
 import Link from 'next/link';
-import { FaSearch, FaBell, FaUser, FaSignOutAlt, FaPenAlt } from 'react-icons/fa';
+import { FaSearch, FaBell, FaUser, FaSignOutAlt, FaPenAlt, FaRobot } from 'react-icons/fa';
 import { signOut } from 'next-auth/react';
 import { useState, useEffect, useRef } from 'react';
 import { useIsMobile } from '@/hook/use-mobile';
@@ -31,21 +31,25 @@ const Navbar = () => {
   return (
     <nav
       className={cn(
-        "h-14 min-[375px]:h-16 bg-white border-b-2 border-black/70 flex items-center justify-between",
+        "h-14 min-[375px]:h-16 bg-white border-b border-black/10 flex items-center justify-between",
         "px-2 min-[375px]:px-4 md:px-6 lg:px-8 shadow-sm",
         "fixed top-0 left-0 w-full z-20" 
       )}
       aria-label="Main navigation"
     >
-      <div className="flex items-center flex-shrink-0">
+      <div className="flex items-center flex-shrink-0 md:max-w-6xl md:w-full">
           <Logo />
-      </div>
-      {!isMobile && (
-        <div className="flex-1 max-w-2xl mx-4">
-          <Search />
-        </div>
+        {!isMobile && (
+          <div className="flex-1 max-w-2xl mx-4">
+            <Search />
+          </div>
       )}
+      </div>
+      
       <div className="flex items-center justify-end gap-2 min-[375px]:gap-4 flex-shrink-0">
+        {/* <Link href="/ai-tools" className="p-1.5 min-[375px]:p-2 text-gray-600 hover:text-purple-600 transition-colors">
+          <FaRobot className="w-4 h-4 min-[375px]:w-5 min-[375px]:h-5" aria-label="AI Tools" />
+        </Link> */}
         <button
           className="hidden sm:flex p-1.5 min-[375px]:p-2 text-gray-600 hover:text-blue-600 transition-colors"
           aria-label="Notifications"
@@ -57,8 +61,8 @@ const Navbar = () => {
           <div className="relative flex gap-x-4" ref={dropdownRef}>
             <Link href='/new-post'>
               <Button className='bg-[#3A6B4C] text-white hover:bg-[#3A6B4C]/90 flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg'>
-                <FaPenAlt className="text-sm" />
-                <span>Tạo Blog</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" fill="none" viewBox="0 0 24 24" aria-label="Write"><path fill="currentColor" d="M14 4a.5.5 0 0 0 0-1zm7 6a.5.5 0 0 0-1 0zm-7-7H4v1h10zM3 4v16h1V4zm1 17h16v-1H4zm17-1V10h-1v10zm-1 1a1 1 0 0 0 1-1h-1zM3 20a1 1 0 0 0 1 1v-1zM4 3a1 1 0 0 0-1 1h1z"></path><path stroke="currentColor" d="m17.5 4.5-8.458 8.458a.25.25 0 0 0-.06.098l-.824 2.47a.25.25 0 0 0 .316.316l2.47-.823a.25.25 0 0 0 .098-.06L19.5 6.5m-2-2 2.323-2.323a.25.25 0 0 1 .354 0l1.646 1.646a.25.25 0 0 1 0 .354L19.5 6.5m-2-2 2 2"></path></svg>
+                <span>Viết Blog</span>
               </Button>
             </Link>
             <button

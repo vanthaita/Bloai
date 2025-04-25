@@ -26,8 +26,8 @@ function transformCloudinaryUrl(url: string, options: {
     return `${urlParts[0]}/upload/${transformationString}/${urlParts[1]}`;
   }
   
-  export async function uploadImageToCloudinary(
-    imageData: string | File, // Accept both URL string or File object
+export async function uploadImageToCloudinary(
+    imageData: string | File, 
     options: {
       quality?: number | 'auto';
       width?: number;
@@ -45,15 +45,12 @@ function transformCloudinaryUrl(url: string, options: {
       const payload = new FormData();
       
       if (typeof imageData === 'string') {
-        // Handle base64 data
         if (imageData.startsWith('data:')) {
           payload.append('file', imageData);
         } else {
-          // Handle URL
           payload.append('file', imageData);
         }
       } else {
-        // Handle File object directly
         payload.append('file', imageData);
       }
       
@@ -89,7 +86,7 @@ function transformCloudinaryUrl(url: string, options: {
       }
       return null;
     }
-  }
+}
   
   
 

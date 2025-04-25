@@ -1,5 +1,5 @@
 'use client'
-import { blobToBase64, uploadImageToCloudinary } from '@/lib/uploadImageUrl';
+import { uploadImageToCloudinary } from '@/lib/uploadImageUrl';
 import dynamic from 'next/dynamic'
 import { useCallback, useState, useRef } from 'react'
 import { toast } from 'react-toastify';

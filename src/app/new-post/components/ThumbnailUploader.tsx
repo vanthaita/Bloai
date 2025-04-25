@@ -5,6 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { TrashIcon } from 'lucide-react';
+import { AIGenerationButton } from './AIGenerationButton';
+import { generateImage } from '@/lib/action';
 
 interface ThumbnailUploaderProps {
     thumbnail: File | null;
@@ -13,6 +15,9 @@ interface ThumbnailUploaderProps {
     onImageAltChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
     isSEOValid: boolean; 
     existingThumbnailUrl: string; 
+    content?: string;
+    modelAi?: string;
+
 }
 
 export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
@@ -22,8 +27,11 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
     onImageAltChange,
     isSEOValid,
     existingThumbnailUrl,
+    content,
+    modelAi,
 }) => {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
     useEffect(() => {
         let objectUrl: string | null = null;
@@ -58,10 +66,42 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
         onThumbnailChange(null);
     }, [onThumbnailChange]);
 
+    const handleGenerateImage = useCallback(async () => {
+        if (!content) return;
+        
+        setIsGeneratingImage(true);
+        try {
+            const url = await generateImage(content, modelAi);
+            if (url) {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const file = new File([blob], 'ai-generated-thumbnail.png', {
+                    type: blob.type,
+                    lastModified: Date.now()
+                });
+                onThumbnailChange(file);
+            }
+            return url
+        } catch (error) {
+            console.error('Error generating image:', error);
+            return null;
+        } finally {
+            setIsGeneratingImage(false);
+        }
+    }, [content, onThumbnailChange]);
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
             <div className="space-y-1.5">
                 <Label htmlFor="thumbnail-dropzone" className="text-base">Ảnh thu nhỏ *</Label>
+                <AIGenerationButton
+                    label="Tạo ảnh"
+                    action={handleGenerateImage}
+                    isGenerating={isGeneratingImage}
+                    setIsGenerating={setIsGeneratingImage}
+                    contentForAI={content as string}
+                    requiresContent={true}
+                />
                 <Dropzone
                     id="thumbnail-dropzone"
                     onDrop={handleFileDrop}

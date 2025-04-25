@@ -24,6 +24,7 @@ interface AdvancedSEOFormFieldsProps {
     setIsGeneratingOgDescription: React.Dispatch<React.SetStateAction<boolean>>;
     slug: string; 
     contentForAI: string;
+    modelAi?: string;
 }
 
 export const AdvancedSEOFormFields: React.FC<AdvancedSEOFormFieldsProps> = ({
@@ -43,6 +44,7 @@ export const AdvancedSEOFormFields: React.FC<AdvancedSEOFormFieldsProps> = ({
     setIsGeneratingOgDescription,
     slug,
     contentForAI,
+    modelAi
 }) => {
     const handleResetCanonical = () => {
         setIsAutoCanonical(true);
@@ -51,7 +53,7 @@ export const AdvancedSEOFormFields: React.FC<AdvancedSEOFormFieldsProps> = ({
 
     const handleGenerateOgTitle = async (content: string) => {
         try {
-            const generated = await generateOpenGraphTitle(content);
+            const generated = await generateOpenGraphTitle(content,modelAi);
             if (generated) setOgTitle(generated);
             return generated;
         } catch (error) {
@@ -62,7 +64,7 @@ export const AdvancedSEOFormFields: React.FC<AdvancedSEOFormFieldsProps> = ({
 
     const handleGenerateOgDesc = async (content: string) => {
         try {
-            const generated = await generateOpenGraphDescription(content);
+            const generated = await generateOpenGraphDescription(content,modelAi);
             if (generated) setOgDescription(generated);
             return generated;
         } catch (error) {

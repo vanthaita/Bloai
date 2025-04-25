@@ -5,32 +5,89 @@ import AppSidebarProvider from "@/provider/app.sidebar";
 import { auth } from "@/server/auth";
 import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/react"
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Inter } from 'next/font/google'
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Inter } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics } from '@next/third-parties/google';
 import Loading from "@/components/loading";
 
 export const metadata: Metadata = {
   title: {
-    default: "Bloai Blog",
+    default: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ Mới Nhất",
     template: "%s | Bloai Blog"
   },
-  description: "Bloai Blog - Trang tin tức, hướng dẫn và chia sẻ kiến thức chuyên sâu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam. Cập nhật xu hướng công nghệ mới nhất, ứng dụng AI trong đời sống, kinh doanh, giáo dục và các lĩnh vực đột phá. Khám phá bài viết chi tiết về ChatGPT, Midjourney, AI Generative cùng hướng dẫn thực tế, phù hợp cho cả người mới bắt đầu và chuyên gia. Đồng hành cùng cộng đồng AI Việt Nam!",
+  description: "Bloai Blog - Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam. Cập nhật xu hướng công nghệ mới nhất, hướng dẫn sử dụng ChatGPT, Midjourney, AI Generative và ứng dụng AI trong đời sống, kinh doanh, giáo dục.",
+  keywords: [
+    "AI Việt Nam", 
+    "Trí tuệ nhân tạo", 
+    "ChatGPT", 
+    "Midjourney", 
+    "AI Generative", 
+    "Công nghệ AI", 
+    "Hướng dẫn AI", 
+    "Tin tức công nghệ",
+    "Ứng dụng AI"
+  ],
   metadataBase: new URL('https://www.bloai.blog'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ Mới Nhất",
+    description: "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",
+    url: "https://www.bloai.blog",
+    siteName: "Bloai Blog",
+    images: [
+      {
+        url: "https://www.bloai.blog/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ",
+      },
+    ],
+    locale: "vi_VN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ Mới Nhất",
+    description: "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",
+    images: ["https://www.bloai.blog/images/og-image.jpg"],
+    site: "@bloaiblog",
+    creator: "@bloaiblog",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: "your-google-verification-code",
+    yandex: "your-yandex-verification-code",
+  },
 };
 
 const inter = Inter({
   subsets: ['vietnamese'],
   variable: '--font-inter',
-})
+  display: 'swap',
+});
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "Bloai Blog",
   "url": "https://www.bloai.blog",
+  "description": "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",
   "potentialAction": {
     "@type": "SearchAction",
     "target": "https://www.bloai.blog/search?q={search_term_string}",
@@ -47,43 +104,60 @@ const organizationSchema = {
   "sameAs": [
     "https://www.facebook.com/bloaiblog",
     "https://twitter.com/bloaiblog",
-    "https://www.linkedin.com/company/bloaiblog"
-  ]
+    "https://www.linkedin.com/company/bloaiblog",
+    "https://www.youtube.com/@bloaiblog"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+84-xxx-xxx-xxxx",
+    "contactType": "customer service",
+    "areaServed": "VN",
+    "availableLanguage": "Vietnamese"
+  }
 };
 
 const navigationSchema = {
   "@context": "https://schema.org",
-  "@type": "ItemList",
+  "@type": "SiteNavigationElement",
+  "name": "Main Navigation",
+  "description": "Primary navigation for Bloai Blog",
+  "url": "https://www.bloai.blog",
+  "potentialAction": {
+    "@type": "NavigateAction",
+    "target": [
+      {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.bloai.blog/landing"
+      },
+      {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.bloai.blog/"
+      },
+      {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.bloai.blog/about"
+      },
+      {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.bloai.blog/tags"
+      },
+      {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.bloai.blog/contact"
+      }
+    ]
+  }
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
   "itemListElement": [
     {
       "@type": "ListItem",
       "position": 1,
       "name": "Trang Chủ",
-      "item": "https://www.bloai.blog/landing"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Bài Viết",
-      "item": "https://www.bloai.blog/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Về chúng tôi",
-      "item": "https://www.bloai.blog/about"
-    },
-    {
-      "@type": "ListItem",
-      "position": 4,
-      "name": "Danh Mục",
-      "item": "https://www.bloai.blog/tags"
-    },
-    {
-      "@type": "ListItem",
-      "position": 5,
-      "name": "Liên hệ",
-      "item": "https://www.bloai.blog/contact"
+      "item": "https://www.bloai.blog"
     }
   ]
 };
@@ -108,15 +182,19 @@ export default async function RootLayout({
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(navigationSchema).replace(/</g, '\\u003c') }}
           />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
+          />
         </head>
         <body className="bg-gray-50" suppressHydrationWarning>
           <TRPCReactProvider>
-            <main>
+            <main id="main-content" aria-label="Nội dung chính">
               <AppSidebarProvider>
                 <Suspense fallback={<Loading />}>
-                    {children}
+                  {children}
                 </Suspense>
-                <ToastContainer/>
+                <ToastContainer position="bottom-right" />
                 <Analytics />
                 <SpeedInsights />
                 <GoogleAnalytics gaId="G-CL7D21ZY78" />
