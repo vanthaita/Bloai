@@ -1,30 +1,42 @@
-import { env } from '@/env'
-import { GoogleGenerativeAI } from '@google/generative-ai' 
+import { GoogleGenAI } from '@google/genai';
 
-const genAI = new GoogleGenerativeAI(env.GOOGLE_GEMINI_API)
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
-// gemini-1.5-pro 
-const generateSEOContent = async (prompt: string): Promise<string | null> => {
+const genAI = new GoogleGenAI({
+  apiKey: process.env.GOOGLE_GEMINI_API,
+});
+
+const generateSEOContent = async (prompt: string, modelAi: string = 'gemini-1.5-flash'): Promise<string | null> => {
   try {
     console.log('--- Sending Prompt to AI ---');
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    console.log(`--- IsUsing ${modelAi} model ---`);
+    const model = modelAi;
+    const contents = [
+      {
+        role: 'user',
+        parts: [
+          {
+            text: prompt,
+          },
+        ],
+      },
+    ];
+    const result = await genAI.models.generateContent({
+      model,
+      contents
     });
-
-    if (!result || !result.response || !result.response.text()) {
-       console.error('AI Generation Error: No text in response or response blocked.');
-       console.error('AI Response Error Details:', result?.response?.promptFeedback);
-       if (result?.response?.candidates) {
-           console.error('AI Response Candidate Error:', JSON.stringify(result.response.candidates, null, 2));
-       }
-       return null;
+    if (!result || !result.text) {
+      console.error('AI Generation Error: No text in response or response blocked.');
+      console.error('AI Response Error Details:', result?.promptFeedback);
+      if (result?.candidates) {
+        console.error('AI Response Candidate Error:', JSON.stringify(result.candidates, null, 2));
+      }
+      return null;
     }
 
-    let text = result.response.text();
+    let text = result.text;
 
     console.log('--- Received AI Response ---');
 
-    text = text.trim(); 
+    text = text.trim();
 
     const startMarkers = [
       '```markdown\n',
@@ -33,32 +45,32 @@ const generateSEOContent = async (prompt: string): Promise<string | null> => {
       '```json ',
       '```text\n',
       '```text ',
-      '```\n', 
-      '``` ',  
-      '```',   
+      '```\n',
+      '``` ',
+      '```',
     ];
 
     for (const marker of startMarkers) {
-        if (text.startsWith(marker)) {
-            text = text.substring(marker.length).trimStart();
-            break;
-        }
+      if (text.startsWith(marker)) {
+        text = text.substring(marker.length).trimStart();
+        break;
+      }
     }
 
     const endMarkers = [
       '\n```',
-      ' ```', 
-      '```',   
+      ' ```',
+      '```',
     ];
 
-     for (const marker of endMarkers) {
-        if (text.endsWith(marker)) {
-            text = text.substring(0, text.length - marker.length).trimEnd();
-            break;
-        }
+    for (const marker of endMarkers) {
+      if (text.endsWith(marker)) {
+        text = text.substring(0, text.length - marker.length).trimEnd();
+        break;
+      }
     }
 
-    text = text.trim(); 
+    text = text.trim();
 
 
     return text;
@@ -67,9 +79,9 @@ const generateSEOContent = async (prompt: string): Promise<string | null> => {
     console.error('AI Generation Error:', error?.message || error);
     if (error.response) {
       console.error('AI Response Error Details:', JSON.stringify(error.response.promptFeedback, null, 2));
-       if (error.response.candidates) {
-           console.error('AI Response Candidate Error:', JSON.stringify(error.response.candidates, null, 2));
-       }
+      if (error.response.candidates) {
+        console.error('AI Response Candidate Error:', JSON.stringify(error.response.candidates, null, 2));
+      }
     }
     return null;
   }
@@ -105,7 +117,7 @@ const generateSEOContent = async (prompt: string): Promise<string | null> => {
 //   return generateSEOContent(prompt);
 // }
 
-export const aiGenerateMetaDescription = async (content: string, generatedKeywords: string = ''): Promise<string | null> => {
+export const aiGenerateMetaDescription = async (content: string, generatedKeywords: string = '', modelAi?: string): Promise<string | null> => {
   const prompt = `
     **Mục tiêu:** Tạo MỘT mô tả meta DUY NHẤT, cực kỳ hấp dẫn, tối ưu SEO, và thôi thúc người dùng nhấp vào KHI XUẤT HIỆN TRÊN GOOGLE.
 
@@ -137,10 +149,10 @@ export const aiGenerateMetaDescription = async (content: string, generatedKeywor
     Làm chủ 7 kỹ thuật tối ưu React ${new Date().getFullYear()} giúp giảm tải trang 50%. Khám phá bí quyết cho component và quản lý state hiệu quả, tăng tốc ứng dụng ngay hôm nay. Click xem!
     ---END---
   `;
-  return generateSEOContent(prompt);
+  return generateSEOContent(prompt, modelAi);
 }
 
-export const aiGenerateSEOKeywords = async (content: string, existingKeywords: string[] = []): Promise<string | null> => {
+export const aiGenerateSEOKeywords = async (content: string, existingKeywords: string[] = [], modelAi?: string): Promise<string | null> => {
   const existingKeywordsString = existingKeywords.join(', ');
   const prompt = `
     **Mục tiêu:** Tạo danh sách từ khóa SEO chiến lược giúp nội dung bao phủ tối đa các truy vấn tìm kiếm liên quan của người dùng Việt Nam. Danh sách từ khóa này nên bao gồm cả các từ khóa quan trọng từ database hiện có của tôi nếu chúng phù hợp với nội dung.
@@ -178,10 +190,10 @@ export const aiGenerateSEOKeywords = async (content: string, existingKeywords: s
     react development,component architecture,state management,performance optimization,react hooks best practices,redux toolkit configuration,tối ưu react app,từ khóa cũ 1,từ khóa cũ 2,... (Đủ 15 từ)
     ---END---
   `;
-  return generateSEOContent(prompt);
+  return generateSEOContent(prompt, modelAi);
 }
 
-export const aiGenerateOpenGraphTitle = async (content: string, generatedKeywords: string = ''): Promise<string | null> => {
+export const aiGenerateOpenGraphTitle = async (content: string, generatedKeywords: string = '', modelAi?: string): Promise<string | null> => {
   const prompt = `
     **Mục tiêu:** Tạo MỘT tiêu đề Open Graph (og:title) CỰC KỲ THU HÚT, khiến người dùng muốn nhấp vào khi thấy bài viết được chia sẻ trên Facebook, Zalo, Twitter...
 
@@ -210,10 +222,10 @@ export const aiGenerateOpenGraphTitle = async (content: string, generatedKeyword
     🚀 Tối Ưu Performance React: 7 Bí Mật Giúp App Chạy Nhanh Hơn ${new Date().getFullYear()}
     ---END---
   `;
-  return generateSEOContent(prompt);
+  return generateSEOContent(prompt, modelAi);
 }
 
-export const aiGenerateOpenGraphDescription = async (content: string, generatedKeywords: string = ''): Promise<string | null> => {
+export const aiGenerateOpenGraphDescription = async (content: string, generatedKeywords: string = '', modelAi?: string): Promise<string | null> => {
   const prompt = `
     **Mục tiêu:** Tạo MỘT mô tả Open Graph (og:description) súc tích, cung cấp giá trị cốt lõi và khuyến khích người dùng khám phá thêm khi thấy trên mạng xã hội.
 
@@ -242,10 +254,10 @@ export const aiGenerateOpenGraphDescription = async (content: string, generatedK
     Lập Trình Frontend | 10 phút | Nâng cao ✨ Hơn 70% ứng dụng React gặp lỗi performance? Khám phá 7 kỹ thuật tối ưu độc quyền ${new Date().getFullYear()} giúp tăng tốc độ tải và trải nghiệm người dùng vượt trội. Đừng bỏ lỡ bí mật từ chuyên gia! 👉 Tìm hiểu ngay!
     ---END---
   `;
-  return generateSEOContent(prompt);
+  return generateSEOContent(prompt, modelAi);
 }
 
-export const aiGenerateTitleBlog = async (content: string, generatedKeywords: string = ''): Promise<string | null> => {
+export const aiGenerateTitleBlog = async (content: string, generatedKeywords: string = '', modelAi?: string): Promise<string | null> => {
   const prompt = `
     **Mục tiêu:** Tạo MỘT tiêu đề bài blog (Title Tag) được tối ưu SEO HOÀN HẢO để vừa thu hút người đọc Việt Nam vừa đạt thứ hạng cao trên Google.
 
@@ -273,10 +285,10 @@ export const aiGenerateTitleBlog = async (content: string, generatedKeywords: st
     Tối Ưu Performance React: 7 Sai Lầm Phổ Biến Cần Tránh (${new Date().getFullYear()})
     ---END---
   `;
-  return generateSEOContent(prompt);
+  return generateSEOContent(prompt, modelAi);
 }
 
-export const aiGenerateSummaryContent = async (content: string, generatedKeywords: string = ''): Promise<string | null> => {
+export const aiGenerateSummaryContent = async (content: string, generatedKeywords: string = '', modelAi?: string): Promise<string | null> => {
   const prompt = `
     **Mục tiêu:** Tạo MỘT bản tóm tắt NỔI BẬT, GIẬT TÍT để chia sẻ trên mạng xã hội (Facebook, Twitter, LinkedIn...), thu hút sự chú ý và tương tác của cộng đồng developer/người quan tâm tại Việt Nam.
 
@@ -306,10 +318,10 @@ export const aiGenerateSummaryContent = async (content: string, generatedKeyword
     TIN NÓNG: Điểm chuẩn React ${new Date().getFullYear()} chỉ ra 7 kỹ thuật tối ưu giúp giảm tải trang tới 60%! 🚀🔥 Khám phá ngay bí quyết xử lý re-render và lazy loading hiệu quả mà ít ai chia sẻ. #FrontendDev #OptimizeReact Tag ngay một đồng nghiệp Reactjs!
     ---END---
   `;
-  return generateSEOContent(prompt);
+  return generateSEOContent(prompt, modelAi);
 }
 
-export const aiGenerateExcerpt = async (content: string, generatedKeywords: string = ''): Promise<string | null> => {
+export const aiGenerateExcerpt = async (content: string, generatedKeywords: string = '', modelAi?: string): Promise<string | null> => {
   const prompt = `
     **Mục tiêu:** Tạo MỘT đoạn trích blog (excerpt) NGẮN GỌN, HẤP DẪN, khơi gợi đủ sự tò mò để người đọc nhấp vào xem toàn bộ bài viết từ trang danh sách blog hoặc kết quả tìm kiếm.
 
@@ -330,49 +342,97 @@ export const aiGenerateExcerpt = async (content: string, generatedKeywords: stri
     6.  **Định dạng:** CHỈ trả về DUY NHẤT một đoạn văn bản thuần túy. KHÔNG BẤT KỲ THÔNG TIN NÀO KHÁC.
     7.  **Xác thực Cuối cùng:** **Đảm bảo đã ưu tiên sử dụng từ khóa từ danh sách được cung cấp nếu phù hợp và lồng ghép tự nhiên.**
 
+    **Đầu ra CHỈ và CHỈ gồm DUY NHẤT đoạn trích theo định dạng yêu cầu. KHÔNG BẤT KỲ THÔNG TIN NÀO KHÁC.**
+
     **Ví dụ Định dạng Đầu ra Mong muốn (CHỈ trả về phần này):**
     [Cập nhật ${new Date().getFullYear()}] Ứng dụng React ì ạch? Hơn 70% dev gặp khó khăn tối ưu. Khám phá 7 chiến lược performance đã được kiểm chứng giúp code sạch, tải trang nhanh hơn thấy rõ.
     ---END---
   `;
-  return generateSEOContent(prompt);
+  return generateSEOContent(prompt, modelAi);
 }
 
 
 
-export const aiEnhanceContentBlogForSEO = async (content: string, p0: { signal: AbortSignal }): Promise<string | null> => {
+export const aiEnhanceContentBlogForSEO = async (content: string, p0: { signal: AbortSignal }, modelAi?: string): Promise<string | null> => {
   const prompt = `
-    **Mục tiêu:** Tối ưu hóa TOÀN BỘ nội dung bài blog sau cho SEO, cải thiện khả năng xếp hạng trên Google và trải nghiệm đọc cho độc giả Việt Nam.
+    **NHIỆM VỤ TỐI ƯU SEO:** Chuyển đổi nội dung kỹ thuật/blog sau thành định dạng thân thiện với người đọc và tối ưu SEO trong khi vẫn giữ nguyên độ chính xác kỹ thuật tuyệt đối.
 
-    **Nội dung cần tối ưu (Dựa TRỰC TIẾP vào đây, TUYỆT ĐỐI KHÔNG THAY ĐỔI Ý CHÍNH):**
+    **NỘI DUNG GỐC (KHÔNG THAY ĐỔI Ý CHÍNH):**
     "${content}"
 
-    **Yêu cầu NGHIÊM NGẶT (TUYỆT ĐỐI tuân thủ):**
-    1.  **Đầu ra:** PHẢI là TOÀN BỘ nội dung bài viết đã được tối ưu, ở định dạng Markdown chuẩn. KHÔNG THÊM bất kỳ lời giải thích, lời mở đầu hay kết thúc nào về quá trình tối ưu. CHỈ TRẢ VỀ NỘI DUNG.
-    2.  **Tối ưu hóa SEO trong nội dung:**
-        *   Tích hợp MỘT CÁCH TỰ NHIÊN và KHÔNG GƯỢNG ÉP các từ khóa và cụm từ khóa liên quan được gợi ý bởi nội dung gốc vào các đoạn văn, tiêu đề phụ (heading). Từ khóa nên xuất hiện ở đầu bài viết và rải rác khắp nội dung một cách hợp lý.
-        *   Cải thiện cấu trúc bài viết bằng cách sử dụng các heading (H1, H2, H3...) để chia nhỏ nội dung thành các phần dễ đọc, dễ quét (skim) và có cấu trúc logic. H1 nên được sử dụng cho tiêu đề chính (tức là dòng đầu tiên sau khi tối ưu), H2 cho các phần lớn, H3 cho các phần nhỏ hơn.
-        *   Đảm bảo câu văn rõ ràng, súc tích, sử dụng ngôn ngữ tiếng Việt tự nhiên, văn phong phù hợp với chủ đề và đối tượng độc giả (developer, người dùng phổ thông, v.v. - suy luận từ nội dung gốc).
-        *   Sử dụng danh sách (unordered lists bằng \`*\` hoặc \`-\`, ordered lists bằng \`1.\`, \`2.\`, v.v.) nếu các đoạn nội dung gốc trình bày các bước, liệt kê, hoặc các điểm chính cần nhấn mạnh.
-        *   Thêm **in đậm** (\`**từ/cụm từ**\`) cho các thuật ngữ quan trọng hoặc từ khóa chính xuất hiện lần đầu trong mỗi phần/đoạn để nhấn mạnh.
-    3.  **Định dạng Markdown chuẩn:**
-        *   Sử dụng cú pháp Markdown cho headings (\`#\`, \`##\`, \`###\`), paragraphs (dòng trống), lists (\`*\`, \`-\`, \`1.\`), bold (\`**\`), italic (\`*\`), code blocks (\` \`\` \` cho inline, \` \`\`\` \` cho multi-line, kèm theo ngôn ngữ nếu có thể suy luận), quotes (\`>\`).
-        *   **Xử lý hình ảnh (Quan trọng):** Nếu trong nội dung gốc có bất kỳ thông tin nào gợi ý về hình ảnh (ví dụ: mô tả hình ảnh, URL hình ảnh, hoặc cả hai), hãy định dạng nó thành \`![Mô tả alt text cho hình ảnh](URL_hình_ảnh)\`.
-            *   Tạo alt text (Mô tả alt text cho hình ảnh) thật mô tả, súc tích và liên quan chặt chẽ đến nội dung hình ảnh và ngữ cảnh đoạn văn, như cách người dùng khiếm thị hoặc công cụ tìm kiếm hiểu về hình ảnh đó. Tuyệt đối không chỉ dùng từ khóa nhồi nhét.
-            *   Sử dụng URL hình ảnh gốc nếu được cung cấp.
-            *   Nếu nội dung gốc chỉ có mô tả, tạo alt text và sử dụng một placeholder URL nếu không có URL thật (ví dụ: \`https://placeholder.com/image.jpg\`). Tuy nhiên, ưu tiên sử dụng URL thật nếu có.
-            *   Nếu nội dung gốc chỉ có URL trần, cố gắng tạo alt text hợp lý dựa trên ngữ cảnh đoạn văn chứa URL đó.
-            *   Nếu nội dung gốc không đề cập hình ảnh nhưng đoạn văn có thể hữu ích nếu có hình ảnh minh họa, KHÔNG TỰ Ý TẠO HÌNH ẢNH hay URL. Chỉ xử lý hình ảnh đã được gợi ý trong nội dung gốc.
-    4.  **Giữ nguyên ý chính và Dữ liệu:** Tuyệt đối KHÔNG thay đổi ý nghĩa cốt lõi, thông tin kỹ thuật, số liệu, ví dụ code, hoặc các lập luận chính của bài viết gốc. Chỉ tập trung vào việc *trình bày lại*, *tổ chức cấu trúc* và *bổ sung từ khóa* một cách tự nhiên để tối ưu SEO.
-    5.  **Độ dài:** Độ dài nội dung sau tối ưu nên tương đương hoặc dài hơn một chút (khoảng 5-15%) so với nội dung gốc để thêm từ khóa và heading, nhưng tránh lặp từ, nhồi nhét từ khóa, hoặc kéo dài không cần thiết làm giảm chất lượng đọc.
-    6.  **Ngôn ngữ:** Tiếng Việt chuẩn, tự nhiên, văn phong nhất quán với nội dung gốc, dễ hiểu cho độc giả mục tiêu.
-    7.  **Định dạng đầu ra cuối cùng:** CHỈ và CHỈ gồm DUY NHẤT chuỗi Markdown của nội dung đã được tối ưu.
+    **YÊU CẦU NGHIÊM NGẶT:**
+    1. **Định dạng đầu ra:**
+      - Chỉ trả về nội dung đã tối ưu bằng Markdown
+      - Không có bình luận meta hoặc giải thích quá trình
+      - Giữ nguyên tất cả khối code, thuật ngữ kỹ thuật và dữ liệu
 
-    ---END---
+    2. **Tối ưu SEO kỹ thuật:**
+      - Tích hợp từ khóa tự nhiên (mật độ 1-2%) tập trung vào:
+        * Thuật ngữ kỹ thuật chính
+        * Cụm từ tìm kiếm dài
+        * Xu hướng tìm kiếm tại Việt Nam
+      - Nhóm từ khóa ngữ nghĩa xung quanh khái niệm cốt lõi
+      - Đặt từ khóa LSI trong tiêu đề và đoạn đầu
+
+    3. **Cấu trúc nội dung:**
+      - Cấu trúc tiêu đề phân cấp (H1 > H2 > H3)
+      - Đoạn văn giới hạn 3-5 dòng để dễ đọc
+      - Điểm bullet cho tính năng/lợi ích kỹ thuật
+      - Danh sách đánh số cho quy trình/bước
+      - In đậm (**) cho thuật ngữ quan trọng khi xuất hiện lần đầu
+
+    4. **Bảo toàn nội dung kỹ thuật:**
+      - Giữ nguyên khối code
+      - Tham chiếu API giữ nguyên bản gốc
+      - Giữ nguyên số phiên bản
+      - Thông báo lỗi/giữ nguyên định dạng gốc
+
+    5. **Placeholder ảnh (Chèn 1 ảnh mỗi 300 từ):**
+      Định dạng: ![ALT_TEXT](AI_PROMPT)
+      - ALT_TEXT: Mô tả bao gồm:
+        * Thành phần chính
+        * Mối quan hệ với nội dung
+        * Từ khóa SEO
+      - AI_PROMPT (Tiếng Anh): Phải bao gồm:
+        * Phong cách: "Minh họa nội dung" hoặc "Ảnh chụp UI sạch" hoặc "Phong cách hoạt hình disney/pixel"
+        * Thành phần: Các thành phần cụ thể cần mô tả
+        * Ngữ cảnh: "Dành cho blog về [chủ đề]"
+        * Ví dụ: "Minh họa 3D isometric kiến trúc đám mây với microservices, phong cách blog kỹ thuật, đường nét sạch với điểm nhấn gradient"
+
+    6. **Khả năng đọc kỹ thuật:**
+      - Đơn giản hóa khái niệm phức tạp nhưng không làm mất đi tính kỹ thuật
+      - Thêm phép loại suy cho chủ đề khó
+      - Chia nhỏ đoạn văn lớn thành các phần dễ hiểu
+      - Duy trì độ sâu kỹ thuật nhất quán
+
+    7. **Tối ưu hóa tiếng Việt:**
+      - Sử dụng thuật ngữ kỹ thuật tự nhiên (không dịch word-by-word)
+      - Tối ưu cho xu hướng tìm kiếm địa phương
+      - Bao gồm các lỗi chính tả/biến thể phổ biến
+      - Duy trì văn phong blog kỹ thuật chuyên nghiệp
+
+    8. **Kiểm soát chất lượng:**
+      - Không nhồi nhét từ khóa
+      - Không thay đổi sự thật
+      - Không thêm nội dung không có trong bản gốc
+      - Giữ nguyên ví dụ/case study gốc
+
+    **QUY TẮC ĐỊNH DẠNG ĐẦU RA:**
+    - Dòng đầu tiên phải là tiêu đề H1
+    - Dòng cuối cùng phải là nội dung (không có chữ ký)
+    - Chỉ sử dụng cú pháp Markdown tiêu chuẩn
+    - Giữ nguyên encoding UTF-8
+    - Giữ nguyên ngắt dòng
+
+    **HÀNH ĐỘNG CẤM:**
+    - Thay đổi thông số kỹ thuật
+    - Thêm tuyên bố chưa xác minh
+    - Sửa đổi ví dụ code
+    - Thay đổi phiên bản phụ thuộc
   `;
-  return generateSEOContent(prompt);
+  return generateSEOContent(prompt, modelAi);
 }
-
-export const aiGenerateFactAndknowledge = async (title: string): Promise<string | null> => {
+export const aiGenerateFactAndknowledge = async (title: string, modelAi?: string): Promise<string | null> => {
   const prompt = `
     **Mục tiêu:** Tạo MỘT thông tin thú vị hoặc kiến thức chuyên sâu ngắn gọn, liên quan trực tiếp đến chủ đề AI của bài blog dựa trên tiêu đề đã cho. Mục đích là cung cấp một điểm nhấn đáng chú ý, có thể dùng làm "Did You Know?" hoặc một fact nhanh.
 
@@ -388,7 +448,7 @@ export const aiGenerateFactAndknowledge = async (title: string): Promise<string 
     3.  **Độ dài:** Cực kỳ ngắn gọn, lý tưởng là 1-2 câu. KHÔNG VƯỢT QUÁ 150 ký tự. Hãy đếm ký tự của đầu ra cuối cùng để đảm bảo.
     4.  **Định dạng:** Văn bản thuần túy. KHÔNG Markdown (headings, bold, lists, code blocks), KHÔNG emoji, KHÔNG dấu ngoặc kép quanh câu trả lời.
     5.  **Đảm bảo:** Thông tin cung cấp phải có vẻ chính xác và đáng tin cậy dựa trên kiến thức chung về AI và chủ đề tiêu đề.
-    6.  **Không bắt đầu bằng "Bạn có biết" Or "Did you know":** Trong Template đã có sẵn "Bạn có biết" Chỉ output ra nội dung. 
+    6.  **Không bắt đầu bằng "Bạn có biết" Or "Did you know":** Trong Template đã có sẵn "Bạn có biết" Chỉ output ra nội dung.
     **Đầu ra CHỈ và CHỈ gồm DUY NHẤT chuỗi thông tin/kiến thức theo định dạng yêu cầu. KHÔNG BẤT KỲ THÔNG TIN NÀO KHÁC.**
 
     **Ví dụ Định dạng Đầu ra Mong muốn (CHỈ trả về phần này):**
@@ -397,5 +457,40 @@ export const aiGenerateFactAndknowledge = async (title: string): Promise<string 
     Bạn Có biết: Một mô hình ngôn ngữ lớn như GPT-4 có thể có tới 1.7 nghìn tỷ tham số, cho phép nó hiểu và tạo ra văn bản phức tạp đáng kinh ngạc.
     ---END---
   `;
-  return generateSEOContent(prompt);
+  return generateSEOContent(prompt, modelAi);
 }
+
+export const aiGeneratePromptForImage = async (content: string, modelAi?: string) => {
+  const prompt = `Tạo một bản mô tả hình ảnh chi tiết (KHÔNG PHẢI ẢNH THẬT) để minh họa phong cách hoạt hình phương Tây dựa trên nội dung: "${content}".  
+    **LƯU Ý QUAN TRỌNG**:  
+    - Đây chỉ là **MÔ TẢ VĂN BẢN**, không phải lệnh tạo ảnh trực tiếp.  
+    - Mục đích: Cung cấp hướng dẫn chi tiết để họa sĩ hoặc AI khác vẽ sau này.  
+    **Yêu cầu mô tả**:  
+    1. **Phong cách**:  
+    - Hoạt hình tươi sáng (Pixar/Disney), không anime.  
+    - Đường nét mềm mại, tỷ lệ nhân vật cân đối (có thể phóng đại biểu cảm).  
+
+    2. **Màu sắc**:  
+    - Bảng màu rực rỡ, tương phản nhẹ (vd: xanh dương + cam, tím + vàng).  
+    - Tránh tông màu tối hoặc đơn sắc.  
+
+    3. **Bố cục**:  
+    - Chủ thể chính rõ ràng, đặt ở vị trí thu hút (quy tắc 1/3 hoặc trung tâm).  
+    - Hậu cảnh phù hợp ngữ cảnh (vd: rừng cây, thành phố tương lai...).  
+
+    4. **Chi tiết cần nhấn mạnh**:  
+    - Liệt kê 3-5 yếu tố liên quan trực tiếp đến nội dung "${content}".  
+    - Thêm yếu tố "kỳ ảo" nếu phù hợp (vd: ánh sáng lấp lánh, đồ vật bay lơ lửng).  
+
+    5. **Cấm**:  
+    - Mô tả theo phong cách anime, tranh thực hoặc ảnh chụp.  
+    - Ngôn ngữ yêu cầu AI "tạo ảnh" (vd: "generate an image of...").  
+
+    **Định dạng đầu ra**:  
+    - 1 đoạn văn (5-8 câu) mô tả sinh động, tập trung vào:  
+    1. Chủ thể chính (ngoại hình, trang phục, hành động).  
+    2. Bối cảnh xung quanh.  
+    3. Cảm xúc tổng thể (vd: vui tươi, bí ẩn).  
+    4. Chi tiết đặc biệt cần lưu ý.`;  
+  return generateSEOContent(prompt, modelAi);  
+};

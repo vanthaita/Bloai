@@ -6,11 +6,12 @@ import { toast } from 'react-toastify';
 
 interface AIGenerationButtonProps {
     label: string;
-    action: (content: string) => Promise<string | null | undefined>;
+    action: (content: string, modelAi?: string) => Promise<string | null | undefined>;
     isGenerating: boolean;
     setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
     contentForAI: string; 
     disabled?: boolean;
+    modelAi?: string;
     requiresContent?: boolean; 
 }
 
@@ -20,6 +21,7 @@ const AIGenerationButtonComponent: React.FC<AIGenerationButtonProps> = ({
     isGenerating,
     setIsGenerating,
     contentForAI,
+    modelAi,
     disabled = false,
     requiresContent = true,
 }) => {
@@ -30,7 +32,7 @@ const AIGenerationButtonComponent: React.FC<AIGenerationButtonProps> = ({
         }
         setIsGenerating(true);
         try {
-            const generated = await action(contentForAI);
+            const generated = await action(contentForAI, modelAi);
             if (generated) {
                  if (label === "Từ khóa SEO") {
                     toast.success(`${label} đã được tạo thành công bằng AI.`);

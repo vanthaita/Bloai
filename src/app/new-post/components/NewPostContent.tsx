@@ -23,6 +23,8 @@ import { AdvancedSEOFormFields } from './AdvancedSEOFormFields';
 import { SubmissionArea } from './SubmissionArea';
 import { useCurrentUser } from '@/hook/use-current-user'
 import Loading from '@/components/loading'
+import { useAI } from '@/context/AIContext'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const NewPostContent = () => {
     const [tags, setTags] = useState<string[]>([])
@@ -38,6 +40,9 @@ const NewPostContent = () => {
     const [ogDescription, setOgDescription] = useState('')
     const [isGeneratingSlugManually, setIsGeneratingSlugManually] = useState(false);
     const [readTime, setReadTime] = useState(0)
+
+    const {selectedModel, setSelectedModel, availableModels, isModelLoading} = useAI();
+
 
     const [isGeneratingMetaDescription, setIsGeneratingMetaDescription] = useState(false);
     const [isGeneratingKeywords, setIsGeneratingKeywords] = useState(false);
@@ -294,21 +299,57 @@ const NewPostContent = () => {
             {isLoading ? (
                 <Loading />
             ) : ( 
-            <div className="bg-white min-h-screen p-1 md:p-4">
+            <div className="bg-white min-h-screen p-1 md:p-4 w-full">
                <div className="space-y-4 mb-6">
-                <div 
-                    onClick={() => router.back()} 
-                    className="cursor-pointer group"
-                    aria-label="Quay lại trang trước"
-                >
-                    <Button 
-                    variant="ghost" 
-                    className="flex items-center gap-2 px-3 py-2 transition-all hover:bg-accent hover:pl-2"
-                    >
-                    <ArrowLeft className="w-5 h-5 text-primary group-hover:-translate-x-1 transition-transform" />
-                    <span className="font-medium">Trở lại danh sách</span>
-                    </Button>
-                </div>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center p-3 rounded-lg">
+                        <div 
+                            onClick={() => router.back()} 
+                            className="cursor-pointer group"
+                            aria-label="Quay lại trang trước"
+                        >
+                            <Button 
+                            variant="ghost" 
+                            className="flex items-center gap-2 px-3 py-2 transition-all hover:bg-accent hover:pl-2"
+                            >
+                            <ArrowLeft className="w-5 h-5 text-primary group-hover:-translate-x-1 transition-transform" />
+                            <span className="font-medium">Trở lại danh sách</span>
+                            </Button>
+                        </div>
+                        
+                        <div className="w-full sm:w-auto min-w-[200px]">
+                            <Select 
+                            value={selectedModel} 
+                            onValueChange={setSelectedModel}
+                            disabled={isModelLoading}
+                            >
+                            <SelectTrigger className="w-full">
+                                <div className="flex items-center gap-2 truncate">
+                                <span className="font-medium">Model:</span>
+                                <SelectValue asChild>
+                                    <span className="truncate">
+                                    {availableModels.find(m => m.id === selectedModel)?.name || "Select"}
+                                    </span>
+                                </SelectValue>
+                                </div>
+                            </SelectTrigger>
+                            <SelectContent className="min-w-[280px]">
+                                {availableModels.map((model) => (
+                                <SelectItem key={model.id} value={model.id} className="py-2">
+                                    <div className="flex flex-col gap-1">
+                                    <div className="flex justify-between items-center cursor-pointer">
+                                        <span className="font-medium truncate max-w-[180px]">{model.name}</span>
+                                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                        {model.maxTokens.toLocaleString()} token
+                                        </span>
+                                    </div>
+                                    </div>
+                                </SelectItem>
+                                ))}
+                            </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+
                 <div className="bg-blue-50/80 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
                     <div className="flex items-start gap-3">
                     <Lightbulb className="w-5 h-5 mt-0.5 text-blue-600 dark:text-blue-300 flex-shrink-0" />
@@ -366,6 +407,7 @@ const NewPostContent = () => {
                                 isGeneratingTitle={isGeneratingTitle}
                                 setIsGeneratingTitle={setIsGeneratingTitle}
                                 contentForAI={content} 
+                                modelAi={selectedModel}
                             />
 
                             <DescriptionInputs
@@ -378,6 +420,8 @@ const NewPostContent = () => {
                                 setIsGeneratingMetaDesc={setIsGeneratingMetaDescription}
                                 isSEOValid={isSEOValid}
                                 contentForAI={content} 
+                                modelAi={selectedModel}
+
                             />
 
                             <ThumbnailUploader
@@ -387,6 +431,8 @@ const NewPostContent = () => {
                                 onImageAltChange={handleImageAltChange}
                                 isSEOValid={isSEOValid}
                                 existingThumbnailUrl={existingThumbnailUrl}
+                                content={content}
+                                modelAi={selectedModel}
                             />
 
                             <ContentEditorWithContext
@@ -395,6 +441,7 @@ const NewPostContent = () => {
                                 readTime={readTime}
                                 isGeneratingEnhanceContent={isGeneratingEnhanceContent}
                                 setIsGeneratingEnhanceContent={(setIsGeneratingEnhanceContent)}
+                                modelAi={selectedModel}
                             />
                         </div>
 
@@ -404,7 +451,6 @@ const NewPostContent = () => {
                                 slug={slug}
                                 metaDescription={metaDescription}
                             />
-
                             <AdvancedSEOFormFields
                                 canonicalUrl={canonicalUrl}
                                 onCanonicalUrlChange={handleCanonicalUrlChange}
@@ -422,6 +468,7 @@ const NewPostContent = () => {
                                 setIsGeneratingOgDescription={setIsGeneratingOgDescription}
                                 slug={slug} 
                                 contentForAI={content}
+                                modelAi={selectedModel}
                             />
 
                             <TagsManagementInput
@@ -430,8 +477,8 @@ const NewPostContent = () => {
                                 isGeneratingKeywords={isGeneratingKeywords}
                                 setIsGeneratingKeywords={setIsGeneratingKeywords}
                                 contentForAI={content}
+                                modelAi={selectedModel}
                             />
-
                             <Separator />
                         </div>
                     </CardContent>

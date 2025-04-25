@@ -16,6 +16,7 @@ interface TitleSlugInputProps {
     isGeneratingTitle: boolean;
     setIsGeneratingTitle: React.Dispatch<React.SetStateAction<boolean>>;
     contentForAI: string;
+    modelAi?: string;
 }
 
 export const TitleSlugInput: React.FC<TitleSlugInputProps> = ({
@@ -29,11 +30,12 @@ export const TitleSlugInput: React.FC<TitleSlugInputProps> = ({
     isGeneratingTitle,
     setIsGeneratingTitle,
     contentForAI,
+    modelAi,
 }) => {
 
     const handleGenerateTitle = async (content: string) => {
         try {
-            const generatedTitle = await generateTitleBlog(content);
+            const generatedTitle = await generateTitleBlog(content,modelAi);
             if (generatedTitle) setTitle(generatedTitle);
             return generatedTitle;
         } catch (error) {

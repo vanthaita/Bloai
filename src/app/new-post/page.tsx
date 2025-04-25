@@ -1,9 +1,12 @@
 import React from 'react'
 import NewPostContent from './components/NewPostContent'
+import { AIProvider } from '@/context/AIContext'
 
 const NewPostPage = () => {
   return (
-    <NewPostContent />
+    <AIProvider>
+      <NewPostContent />
+    </AIProvider>
   )
 }
 
