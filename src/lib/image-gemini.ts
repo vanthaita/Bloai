@@ -2,7 +2,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs");
 const path = require("path");
 const { Blob } = require('buffer'); 
-
+const os = require("os");
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API);
 import { uploadImageToCloudinary } from './uploadImageUrl';
 import { aiEnhanceContentBlogForSEO } from './gemini';
@@ -125,25 +125,19 @@ export async function aiGenerateImage(
       if (part.inlineData) {
         const imageData = part.inlineData.data;
         const buffer = Buffer.from(imageData, "base64");
+        
+        const tempDir = path.join(os.tmpdir(), 'bloai-images');
+        if (!fs.existsSync(tempDir)) {
+          fs.mkdirSync(tempDir, { recursive: true });
+        }
+        
         const fileName = `temp-image-${Date.now()}.png`;
-        tempFilePath = path.join(process.cwd(), fileName);
-        fs.writeFileSync(tempFilePath, buffer);
+        tempFilePath = path.join(tempDir, fileName);
         
-        const fileStats = fs.statSync(tempFilePath);
-        const fileLikeObject = {
-          name: fileName,
-          path: tempFilePath,
-          size: fileStats.size,
-          type: 'image/png',
-          lastModified: fileStats.mtimeMs,
-          stream: () => fs.createReadStream(tempFilePath),
-          arrayBuffer: async () => {
-            const data = await fs.promises.readFile(tempFilePath);
-            return data.buffer;
-          }
-        };
+        await fs.promises.writeFile(tempFilePath, buffer);
         
-        console.log(fileLikeObject);
+        // const fileStats = await fs.promises.stat(tempFilePath);
+        
         const blob = new Blob([buffer], { type: 'image/png' });
         const file = new File([blob], fileName, {
           type: 'image/png',
@@ -159,17 +153,18 @@ export async function aiGenerateImage(
     console.error("Error generating content:", error);
     throw error;
   } finally {
-    if (tempFilePath && fs.existsSync(tempFilePath)) {
+    if (tempFilePath) {
       try {
-        fs.unlinkSync(tempFilePath);
-        console.log(`Temporary file ${tempFilePath} deleted`);
+        if (fs.existsSync(tempFilePath)) {
+          await fs.promises.unlink(tempFilePath);
+          console.log(`Temporary file ${tempFilePath} deleted`);
+        }
       } catch (err) {
         console.error(`Error deleting temporary file: ${err}`);
       }
     }
   }
 }
-
 
 async function processImagePrompts(
   content: string,
