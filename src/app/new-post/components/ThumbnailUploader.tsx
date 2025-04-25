@@ -93,15 +93,17 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
             <div className="space-y-1.5">
-                <Label htmlFor="thumbnail-dropzone" className="text-base">Ảnh thu nhỏ *</Label>
-                <AIGenerationButton
-                    label="Tạo ảnh"
-                    action={handleGenerateImage}
-                    isGenerating={isGeneratingImage}
-                    setIsGenerating={setIsGeneratingImage}
-                    contentForAI={content as string}
-                    requiresContent={true}
-                />
+                <div className='flex gap-2 items-center'>
+                    <Label htmlFor="thumbnail-dropzone" className="text-base">Ảnh thu nhỏ *</Label>
+                    <AIGenerationButton
+                        label="Tạo ảnh"
+                        action={handleGenerateImage}
+                        isGenerating={isGeneratingImage}
+                        setIsGenerating={setIsGeneratingImage}
+                        contentForAI={content as string}
+                        requiresContent={true}
+                    />
+                </div>
                 <Dropzone
                     id="thumbnail-dropzone"
                     onDrop={handleFileDrop}

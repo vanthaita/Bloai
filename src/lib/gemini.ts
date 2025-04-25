@@ -461,36 +461,48 @@ export const aiGenerateFactAndknowledge = async (title: string, modelAi?: string
 }
 
 export const aiGeneratePromptForImage = async (content: string, modelAi?: string) => {
-  const prompt = `Tạo một bản mô tả hình ảnh chi tiết (KHÔNG PHẢI ẢNH THẬT) để minh họa phong cách hoạt hình phương Tây dựa trên nội dung: "${content}".  
+  const prompt = `Tạo một bản mô tả hình ảnh chi tiết (KHÔNG PHẢI ẢNH THẬT) để minh họa dựa trên nội dung: "${content}".  
     **LƯU Ý QUAN TRỌNG**:  
     - Đây chỉ là **MÔ TẢ VĂN BẢN**, không phải lệnh tạo ảnh trực tiếp.  
     - Mục đích: Cung cấp hướng dẫn chi tiết để họa sĩ hoặc AI khác vẽ sau này.  
-    **Yêu cầu mô tả**:  
-    1. **Phong cách**:  
-    - Hoạt hình tươi sáng (Pixar/Disney), không anime.  
-    - Đường nét mềm mại, tỷ lệ nhân vật cân đối (có thể phóng đại biểu cảm).  
 
-    2. **Màu sắc**:  
-    - Bảng màu rực rỡ, tương phản nhẹ (vd: xanh dương + cam, tím + vàng).  
-    - Tránh tông màu tối hoặc đơn sắc.  
+    **THÔNG SỐ NGHỆ THUẬT** (chọn 1 trong các phong cách sau):  
+    [1] Hoạt hình hiện đại (Pixar/Disney):  
+    - Đường nét mềm mại, tỷ lệ cân đối  
+    - Bảng màu rực rỡ, tương phản nhẹ  
+    - Hiệu ứng ánh sáng phức tạp  
 
-    3. **Bố cục**:  
-    - Chủ thể chính rõ ràng, đặt ở vị trí thu hút (quy tắc 1/3 hoặc trung tâm).  
-    - Hậu cảnh phù hợp ngữ cảnh (vd: rừng cây, thành phố tương lai...).  
+    [2] Hoạt hình giấy cổ điển (như Monty Python):  
+    - Nét vẽ thủ công, có thể thấy đường cắt giấy  
+    - Màu sắc phẳng, ít gradient  
+    - Bóng đổ đơn giản, dạng khối  
 
-    4. **Chi tiết cần nhấn mạnh**:  
-    - Liệt kê 3-5 yếu tố liên quan trực tiếp đến nội dung "${content}".  
-    - Thêm yếu tố "kỳ ảo" nếu phù hợp (vd: ánh sáng lấp lánh, đồ vật bay lơ lửng).  
+    [3] Tranh vẽ tay truyền thống:  
+    - Kết cấu giấy vẽ hoặc canvas  
+    - Nét bút chì/than có thể thấy  
+    - Màu nước hoặc sơn dầu  
 
-    5. **Cấm**:  
-    - Mô tả theo phong cách anime, tranh thực hoặc ảnh chụp.  
-    - Ngôn ngữ yêu cầu AI "tạo ảnh" (vd: "generate an image of...").  
+    [4] Phong cách minh họa sách thiếu nhi:  
+    - Đường viền đậm  
+    - Màu sắc tươi sáng  
+    - Chi tiết đơn giản hóa  
 
-    **Định dạng đầu ra**:  
-    - 1 đoạn văn (5-8 câu) mô tả sinh động, tập trung vào:  
-    1. Chủ thể chính (ngoại hình, trang phục, hành động).  
-    2. Bối cảnh xung quanh.  
-    3. Cảm xúc tổng thể (vd: vui tươi, bí ẩn).  
-    4. Chi tiết đặc biệt cần lưu ý.`;  
-  return generateSEOContent(prompt, modelAi);  
+    **YÊU CẦU MÔ TẢ**:  
+    1. Chọn và ghi rõ phong cách nghệ thuật từ các option trên  
+    2. Mô tả chi tiết:  
+       - Chủ thể chính (đặc điểm, trang phục, biểu cảm)  
+       - Bối cảnh (phù hợp nội dung, có yếu tố kỳ ảo nếu cần)  
+       - Đặc điểm phong cách đã chọn (vd: nếu giấy cổ thì mô tả hiệu ứng cắt dán)  
+    3. Khí quyển tổng thể (vui tươi, bí ẩn, cổ tích...)  
+
+    **QUY TẮC**:  
+    - Tập trung vào yếu tố thị giác thay vì cốt truyện  
+    - Mỗi mô tả dài 5-8 câu  
+    - Không dùng ngôn ngữ ra lệnh ("tạo ảnh...")  
+    - Tránh phong cách anime hoặc ảnh chụp  
+
+    **VÍ DỤ MẪU** (phong cách giấy cổ):  
+    "Nhân vật chính là chú gấu nâu được cắt từ giấy màu nâu đậm, các đường cắt có thể thấy rõ. Xung quanh là những cây dương xỉ bằng giấy xanh lá nhạt, đặt trên nền giấy màu kem có vân. Có vài mảnh giấy hình sao lấp lánh dán lỏng lẻo tạo hiệu ứng ma thuật. Toàn bộ khung cảnh nghiêng nhẹ như vừa được đặt lên bàn."`;
+
+  return generateSEOContent(prompt, modelAi);
 };
