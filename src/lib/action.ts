@@ -97,7 +97,7 @@ export async function generateImage(content: string, modelAi?: string): Promise<
         if (!promptContent) {
             throw new Error("Failed to generate image prompt");
         }
-        console.log("Prompt: ",promptContent);
+        console.log(promptContent);
         const { url } = await aiGenerateImage(promptContent, {
             quality: 'auto',
             format: 'webp',
