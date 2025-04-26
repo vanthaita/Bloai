@@ -7,7 +7,7 @@ const genAI = new GoogleGenAI({
 const generateSEOContent = async (prompt: string, modelAi: string = 'gemini-1.5-flash'): Promise<string | null> => {
   try {
     console.log('--- Sending Prompt to AI ---');
-    console.log(`--- IsUsing ${modelAi} model ---`);
+    console.log(`--- Is using ${modelAi} model ---`);
     const model = modelAi;
     const contents = [
       {
@@ -460,49 +460,62 @@ export const aiGenerateFactAndknowledge = async (title: string, modelAi?: string
   return generateSEOContent(prompt, modelAi);
 }
 
+// export const aiGeneratePromptForImage = async (content: string, modelAi?: string) => {
+//   const prompt = `Tạo bản mô tả hình ảnh thumbnail (tỷ lệ 16:9) minh họa nội dung: "${content}".  
+//     **ĐẶC ĐIỂM THUMBNAIL**:  
+//     - Thiết kế tập trung vào 1 điểm nhấn duy nhất  
+//     - Bố cục đơn giản nhưng ấn tượng  
+//     - Màu sắc tương phản cao để nổi bật khi thu nhỏ  
+//     - Chi tiết vừa đủ nhìn rõ ở kích thước nhỏ  
+
+//     **PHONG CÁCH (chọn 1)**:  
+//     [1] Flat Design  
+//     [2] Minimalist 3D  
+//     [3] Bold Illustration  
+
+//     **YÊU CẦU**:  
+//     - Mô tả ngắn gọn (3-5 câu) bằng tiếng Việt  
+//     - Bao gồm:  
+//        • Đối tượng chính (chiếm 60-70% không gian)  
+//        • Màu chủ đạo và accent màu  
+//        • Yếu tố hỗ trợ (nếu có)  
+//     - KHÔNG đề cập đến phong cách đã chọn  
+//     - KHÔNG sử dụng markdown hay định dạng  
+//     - KHÔNG thêm tiêu đề phụ  
+
+//     **VÍ DỤ**:  
+//     "Một chiếc microphone màu vàng neon nổi bật trên nền tím đậm, cách điệu với các sóng âm thanh dạng hình tròn đồng tâm màu trắng. Góc phải có icon tai nghe nhỏ cùng tông màu. Toàn bộ thiết kế sử dụng hình khối hình học đơn giản với đường viền đen mảnh."`;
+
+//   return generateSEOContent(prompt, modelAi);
+// };
+
 export const aiGeneratePromptForImage = async (content: string, modelAi?: string) => {
-  const prompt = `Tạo một bản mô tả hình ảnh chi tiết (KHÔNG PHẢI ẢNH THẬT) để minh họa dựa trên nội dung: "${content}".  
-    **LƯU Ý QUAN TRỌNG**:  
-    - Đây chỉ là **MÔ TẢ VĂN BẢN**, không phải lệnh tạo ảnh trực tiếp.  
-    - Mục đích: Cung cấp hướng dẫn chi tiết để họa sĩ hoặc AI khác vẽ sau này.  
+  const prompt = `Bạn là một chuyên gia tạo mô tả hình ảnh thumbnail (tỷ lệ 16:9) chất lượng cao dựa trên nội dung cho trước. Nhiệm vụ của bạn là tạo ra một bản mô tả ngắn gọn, chính xác và tuân thủ  nghiêm ngặt các yêu cầu dưới đây để công cụ tạo hình ảnh AI có thể hiểu và tạo ra thumbnail hiệu quả.
 
-    **THÔNG SỐ NGHỆ THUẬT** (chọn 1 trong các phong cách sau):  
-    [1] Hoạt hình hiện đại (Pixar/Disney):  
-    - Đường nét mềm mại, tỷ lệ cân đối  
-    - Bảng màu rực rỡ, tương phản nhẹ  
-    - Hiệu ứng ánh sáng phức tạp  
+    NỘI DUNG CẦN MINH HỌA: "${content}"
 
-    [2] Hoạt hình giấy cổ điển (như Monty Python):  
-    - Nét vẽ thủ công, có thể thấy đường cắt giấy  
-    - Màu sắc phẳng, ít gradient  
-    - Bóng đổ đơn giản, dạng khối  
+    HƯỚNG DẪN CHI TIẾT VÀ YÊU CẦU NGHIÊM NGẶT:
+    1.  **Định dạng & Độ dài:** Kết quả CHỈ là một đoạn văn mô tả duy nhất, gồm CHÍNH XÁC TỪ 3 ĐẾN 5 CÂU. KHÔNG có tiêu đề, dấu đầu dòng, hoặc bất kỳ ký tự định dạng nào (**, *, -, #, v.v.).
+    2.  **Thông số Hình ảnh (Ngầm định):**
+        *   **Tỷ lệ khung hình:** LUÔN LUÔN tuân thủ 16:9.
+        *   **Độ rõ nét:** Mô tả phải đảm bảo hình ảnh tạo ra sẽ RÕ RÀNG và dễ nhận biết ngay cả khi thu nhỏ ở kích thước thumbnail.
+        *   **Tập trung:** CHỈ tập trung vào MỘT điểm nhấn/đối tượng chính DUY NHẤT.
+        *   **Bố cục:** Đơn giản, trực quan, dễ hiểu ngay lập tức. Đối tượng chính chiếm khoảng 60-70% không gian khung hình để tạo sự nổi bật.
+    3.  **Nội dung Mô tả:**
+        *   Phải bao gồm mô tả chi tiết về đối tượng chính.
+        *   Nêu rõ màu sắc chủ đạo và màu sắc accent (tạo điểm nhấn tương phản cao). Màu sắc phải được lựa chọn để đảm bảo sự nổi bật khi hình ảnh bị thu nhỏ.
+        *   Mô tả các yếu tố hỗ trợ (nếu có) một cách đơn giản, không làm lu mờ đối tượng chính.
+    4.  **Phong cách (Áp dụng ngầm định, không đề cập trong mô tả):** Hãy hình dung hình ảnh theo MỘT trong các phong cách sau đây khi viết mô tả, nhưng TUYỆT ĐỐI KHÔNG GỌI TÊN hay nhắc đến phong cách đó trong kết quả cuối cùng:
+        *   [1] Flat Design (Thiết kế phẳng, sử dụng màu khối đơn giản, ít chi tiết)
+        *   [2] Minimalist 3D (Đồ họa 3D tối giản, khối hình học, ánh sáng nhẹ nhàng)
+        *   [3] Bold Illustration (Minh họa đậm nét, màu sắc mạnh, đường nét rõ ràng)
+    5.  **Ngôn ngữ:** Sử dụng tiếng Việt.
+    6.  **Hạn chế:** TUYỆT ĐỐI KHÔNG đề cập đến phong cách hình ảnh đã chọn ngầm định. TUYỆT ĐỐI KHÔNG sử dụng bất kỳ ký tự định dạng nào. TUYỆT ĐỐI KHÔNG thêm lời dẫn nhập hay kết luận. Kết quả CHỈ là đoạn văn mô tả.
 
-    [3] Tranh vẽ tay truyền thống:  
-    - Kết cấu giấy vẽ hoặc canvas  
-    - Nét bút chì/than có thể thấy  
-    - Màu nước hoặc sơn dầu  
+    VÍ DỤ VỀ KẾT QUẢ MONG MUỐN (dựa trên nội dung giả định):
+    "Một chiếc microphone màu vàng neon nổi bật trên nền tím đậm, cách điệu với các sóng âm thanh dạng hình tròn đồng tâm màu trắng. Góc phải có icon tai nghe nhỏ cùng tông màu. Toàn bộ thiết kế sử dụng hình khối hình học đơn giản với đường viền đen mảnh."
 
-    [4] Phong cách minh họa sách thiếu nhi:  
-    - Đường viền đậm  
-    - Màu sắc tươi sáng  
-    - Chi tiết đơn giản hóa  
-
-    **YÊU CẦU MÔ TẢ**:  
-    1. Chọn và ghi rõ phong cách nghệ thuật từ các option trên  
-    2. Mô tả chi tiết:  
-       - Chủ thể chính (đặc điểm, trang phục, biểu cảm)  
-       - Bối cảnh (phù hợp nội dung, có yếu tố kỳ ảo nếu cần)  
-       - Đặc điểm phong cách đã chọn (vd: nếu giấy cổ thì mô tả hiệu ứng cắt dán)  
-    3. Khí quyển tổng thể (vui tươi, bí ẩn, cổ tích...)  
-
-    **QUY TẮC**:  
-    - Tập trung vào yếu tố thị giác thay vì cốt truyện  
-    - Mỗi mô tả dài 5-8 câu  
-    - Không dùng ngôn ngữ ra lệnh ("tạo ảnh...")  
-    - Tránh phong cách anime hoặc ảnh chụp  
-
-    **VÍ DỤ MẪU** (phong cách giấy cổ):  
-    "Nhân vật chính là chú gấu nâu được cắt từ giấy màu nâu đậm, các đường cắt có thể thấy rõ. Xung quanh là những cây dương xỉ bằng giấy xanh lá nhạt, đặt trên nền giấy màu kem có vân. Có vài mảnh giấy hình sao lấp lánh dán lỏng lẻo tạo hiệu ứng ma thuật. Toàn bộ khung cảnh nghiêng nhẹ như vừa được đặt lên bàn."`;
+    Bây giờ, hãy tạo mô tả hình ảnh thumbnail (tỷ lệ 16:9) dựa trên nội dung đã cho, tuân thủ tất cả các yêu cầu nghiêm ngặt trên. Bắt đầu ngay với mô tả.`;
 
   return generateSEOContent(prompt, modelAi);
 };
