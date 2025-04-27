@@ -43,6 +43,7 @@ const NewPostContent = () => {
 
     const {selectedModel, setSelectedModel, availableModels, isModelLoading} = useAI();
 
+    const [checkIsImageGenerated, setCheckIsImageGenerated] = useState(false);
 
     const [isGeneratingMetaDescription, setIsGeneratingMetaDescription] = useState(false);
     const [isGeneratingKeywords, setIsGeneratingKeywords] = useState(false);
@@ -236,7 +237,7 @@ const NewPostContent = () => {
         try {
             let imageUrl = existingThumbnailUrl;
             
-            if (thumbnail) {
+            if (thumbnail && checkIsImageGenerated === false) {
                 const uploadedUrl = await uploadImageToCloudinary(thumbnail);
                 if (!uploadedUrl) {
                     setIsSubmitting(false); 
@@ -433,6 +434,8 @@ const NewPostContent = () => {
                                 existingThumbnailUrl={existingThumbnailUrl}
                                 content={content}
                                 modelAi={selectedModel}
+                                setCheckIsImageGenerated={setCheckIsImageGenerated}
+                                setExistingThumbnailUrl={setExistingThumbnailUrl}
                             />
 
                             <ContentEditorWithContext

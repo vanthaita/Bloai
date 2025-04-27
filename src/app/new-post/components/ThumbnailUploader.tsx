@@ -17,7 +17,9 @@ interface ThumbnailUploaderProps {
     existingThumbnailUrl: string; 
     content?: string;
     modelAi?: string;
-
+    checkIsImageGenerated?: boolean,
+    setCheckIsImageGenerated: (isGenerated: boolean) => void;
+    setExistingThumbnailUrl: (thumbnailUrl: string) => void
 }
 
 export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
@@ -29,6 +31,8 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
     existingThumbnailUrl,
     content,
     modelAi,
+    setCheckIsImageGenerated,
+    setExistingThumbnailUrl,
 }) => {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [isGeneratingImage, setIsGeneratingImage] = useState(false);
@@ -80,6 +84,8 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
                     lastModified: Date.now()
                 });
                 onThumbnailChange(file);
+                setCheckIsImageGenerated(true);
+                setExistingThumbnailUrl(url);
             }
             return url
         } catch (error) {
@@ -88,7 +94,7 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
         } finally {
             setIsGeneratingImage(false);
         }
-    }, [content, onThumbnailChange]);
+    }, [content, onThumbnailChange, modelAi]);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
