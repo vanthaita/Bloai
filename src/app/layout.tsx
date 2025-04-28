@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "Bloai Blog",
     images: [
       {
-        url: "https://www.bloai.blog/images/og-image.jpg",
+        url: "https://www.bloai.blog/images/Logo/web-app-manifest-512x512.png",
         width: 1200,
         height: 630,
         alt: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ Mới Nhất",
     description: "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",
-    images: ["https://www.bloai.blog/images/og-image.jpg"],
+    images: ["https://www.bloai.blog/images/Logo/web-app-manifest-512x512.png"],
     site: "@bloaiblog",
     creator: "@bloaiblog",
   },
@@ -81,7 +81,6 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
 });
-
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -113,6 +112,26 @@ const organizationSchema = {
     "contactType": "customer service",
     "areaServed": "VN",
     "availableLanguage": "Vietnamese"
+  }
+};
+
+const blogSchema = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Bloai Blog",
+  "url": "https://www.bloai.blog",
+  "description": "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Bloai Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.bloai.blog/images/Logo/favicon-32x32.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.bloai.blog"
   }
 };
 
@@ -177,6 +196,10 @@ export default async function RootLayout({
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }}
+          />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema).replace(/</g, '\\u003c') }}
           />
           <script
             type="application/ld+json"

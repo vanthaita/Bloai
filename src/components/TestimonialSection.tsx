@@ -158,8 +158,10 @@ const TestimonialSection = () => {
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#2B463C] mb-4">Người dùng CNTT nói gì về Bloai?</h2>
+        <div className="text-center mb-12" itemScope itemType="https://schema.org/Product">
+          <meta itemProp="name" content="Bloai Blog" />
+          <meta itemProp="description" content="Nền tảng chia sẻ kiến thức AI/ML cho sinh viên CNTT" />
+          <h2 className="text-3xl font-bold text-[#2B463C] mb-4">Sinh viên CNTT nói gì về Bloai?</h2>
           <p className="text-lg text-[#554640]/80 max-w-2xl mx-auto">
             Phản hồi từ cộng đồng người dùng yêu thích công nghệ và trí tuệ nhân tạo
           </p>
@@ -199,15 +201,6 @@ const TestimonialSection = () => {
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <button className="bg-[#3A6B4C] hover:bg-[#2B463C] text-white font-medium py-3 px-6 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg">
-            Xem thêm đánh giá
-          </button>
-          <p className="text-sm text-[#554640]/60 mt-6">
-            Bloai - Nền tảng chia sẻ kiến thức AI/ML cho sinh viên CNTT, cập nhật xu hướng công nghệ mới nhất.
-          </p>
         </div>
       </div>
     </section>
