@@ -490,32 +490,36 @@ export const aiGenerateFactAndknowledge = async (title: string, modelAi?: string
 // };
 
 export const aiGeneratePromptForImage = async (content: string, modelAi?: string) => {
-  const prompt = `Bạn là một chuyên gia tạo mô tả hình ảnh thumbnail (tỷ lệ 16:9) chất lượng cao dựa trên nội dung cho trước. Nhiệm vụ của bạn là tạo ra một bản mô tả ngắn gọn, chính xác và tuân thủ  nghiêm ngặt các yêu cầu dưới đây để công cụ tạo hình ảnh AI có thể hiểu và tạo ra thumbnail hiệu quả.
+  const prompt = `Bạn là một chuyên gia tạo mô tả hình ảnh thumbnail (tỷ lệ 16:9) chất lượng cao dựa trên nội dung cho trước. Nhiệm vụ của bạn là tạo ra một bản mô tả ngắn gọn, chính xác và tuân thủ nghiêm ngặt các yêu cầu dưới đây để công cụ tạo hình ảnh AI có thể hiểu và tạo ra thumbnail hiệu quả.
 
     NỘI DUNG CẦN MINH HỌA: "${content}"
 
     HƯỚNG DẪN CHI TIẾT VÀ YÊU CẦU NGHIÊM NGẶT:
     1.  **Định dạng & Độ dài:** Kết quả CHỈ là một đoạn văn mô tả duy nhất, gồm CHÍNH XÁC TỪ 3 ĐẾN 5 CÂU. KHÔNG có tiêu đề, dấu đầu dòng, hoặc bất kỳ ký tự định dạng nào (**, *, -, #, v.v.).
-    2.  **Thông số Hình ảnh (Ngầm định):**
-        *   **Tỷ lệ khung hình:** LUÔN LUÔN tuân thủ 16:9.
-        *   **Độ rõ nét:** Mô tả phải đảm bảo hình ảnh tạo ra sẽ RÕ RÀNG và dễ nhận biết ngay cả khi thu nhỏ ở kích thước thumbnail.
-        *   **Tập trung:** CHỈ tập trung vào MỘT điểm nhấn/đối tượng chính DUY NHẤT.
-        *   **Bố cục:** Đơn giản, trực quan, dễ hiểu ngay lập tức. Đối tượng chính chiếm khoảng 60-70% không gian khung hình để tạo sự nổi bật.
+    2.  **Thông số Hình ảnh (Bắt buộc):**
+        *   **Tỷ lệ khung hình:** 16:9
+        *   **Độ phân giải:** 1920x1080px 
+        *   **Độ rõ nét:** Ultra HD, chi tiết sắc nét
+        *   **Độ sâu trường ảnh:** Nông (shallow depth of field)
+        *   **Tập trung:** CHỈ tập trung vào MỘT điểm nhấn/đối tượng chính DUY NHẤT
+        *   **Bố cục:** Đối tượng chính chiếm 60-70% không gian, căn giữa hoặc theo quy tắc 1/3
     3.  **Nội dung Mô tả:**
-        *   Phải bao gồm mô tả chi tiết về đối tượng chính.
-        *   Nêu rõ màu sắc chủ đạo và màu sắc accent (tạo điểm nhấn tương phản cao). Màu sắc phải được lựa chọn để đảm bảo sự nổi bật khi hình ảnh bị thu nhỏ.
-        *   Mô tả các yếu tố hỗ trợ (nếu có) một cách đơn giản, không làm lu mờ đối tượng chính.
-    4.  **Phong cách (Áp dụng ngầm định, không đề cập trong mô tả):** Hãy hình dung hình ảnh theo MỘT trong các phong cách sau đây khi viết mô tả, nhưng TUYỆT ĐỐI KHÔNG GỌI TÊN hay nhắc đến phong cách đó trong kết quả cuối cùng:
-        *   [1] Flat Design (Thiết kế phẳng, sử dụng màu khối đơn giản, ít chi tiết)
-        *   [2] Minimalist 3D (Đồ họa 3D tối giản, khối hình học, ánh sáng nhẹ nhàng)
-        *   [3] Bold Illustration (Minh họa đậm nét, màu sắc mạnh, đường nét rõ ràng)
-    5.  **Ngôn ngữ:** Sử dụng tiếng Việt.
-    6.  **Hạn chế:** TUYỆT ĐỐI KHÔNG đề cập đến phong cách hình ảnh đã chọn ngầm định. TUYỆT ĐỐI KHÔNG sử dụng bất kỳ ký tự định dạng nào. TUYỆT ĐỐI KHÔNG thêm lời dẫn nhập hay kết luận. Kết quả CHỈ là đoạn văn mô tả.
+        *   Mô tả chi tiết đối tượng chính với phong cách hoạt hình hoặc đồ họa vector
+        *   Nêu rõ màu sắc chủ đạo (2-3 màu) và màu accent tương phản (1-2 màu)
+        *   Mô tả hiệu ứng đặc biệt: bóng đổ, viền nét, gradient, ánh sáng
+        *   Nền đơn giản, có thể là gradient hoặc pattern tối giản
+    4.  **Phong cách (Áp dụng ngầm định):** Hình dung theo MỘT trong các phong cách sau nhưng KHÔNG đề cập tên phong cách:
+        *   [1] Hoạt hình 2D (đường nét mềm mại, màu sắc tươi sáng, hiệu ứng bóng đổ nhẹ)
+        *   [2] Đồ họa vector (hình khối rõ ràng, màu phẳng, viền đen đậm)
+        *   [3] Phong cách anime (đôi mắt to, biểu cảm phóng đại, highlights rõ)
+        *   [4] Low-poly 3D (các mặt hình học, màu sắc block)
+    5.  **Ngôn ngữ:** Tiếng Việt
+    6.  **Hạn chế:** KHÔNG đề cập phong cách cụ thể. KHÔNG dùng ký tự định dạng. KHÔNG thêm lời dẫn.
 
-    VÍ DỤ VỀ KẾT QUẢ MONG MUỐN (dựa trên nội dung giả định):
-    "Một chiếc microphone màu vàng neon nổi bật trên nền tím đậm, cách điệu với các sóng âm thanh dạng hình tròn đồng tâm màu trắng. Góc phải có icon tai nghe nhỏ cùng tông màu. Toàn bộ thiết kế sử dụng hình khối hình học đơn giản với đường viền đen mảnh."
+    VÍ DỤ:
+    "Nhân vật robot màu xanh dương neon với viền đen đậm, đang cầm bóng đèn vàng phát sáng. Nền gradient từ tím đậm sang xanh đen với các hạt ánh sáng lấp lánh. Hiệu ứng ánh sáng phát ra từ bóng đèn tạo vệt sáng mờ. Thiết kế dạng vector với các góc bo tròn và bóng đổ nhẹ."
 
-    Bây giờ, hãy tạo mô tả hình ảnh thumbnail (tỷ lệ 16:9) dựa trên nội dung đã cho, tuân thủ tất cả các yêu cầu nghiêm ngặt trên. Bắt đầu ngay với mô tả.`;
+    Bây giờ, hãy tạo mô tả hình ảnh thumbnail theo yêu cầu trên. Bắt đầu ngay với mô tả.`;
 
   return generateSEOContent(prompt, modelAi);
 };
