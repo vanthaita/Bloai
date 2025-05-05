@@ -81,7 +81,8 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
 });
-const jsonLd = {
+
+const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "Bloai Blog",
@@ -115,59 +116,6 @@ const organizationSchema = {
   }
 };
 
-const blogSchema = {
-  "@context": "https://schema.org",
-  "@type": "Blog",
-  "name": "Bloai Blog",
-  "url": "https://www.bloai.blog",
-  "description": "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Bloai Blog",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://www.bloai.blog/images/Logo/favicon-32x32.png"
-    }
-  },
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://www.bloai.blog"
-  }
-};
-
-const navigationSchema = {
-  "@context": "https://schema.org",
-  "@type": "SiteNavigationElement",
-  "name": "Main Navigation",
-  "description": "Primary navigation for Bloai Blog",
-  "url": "https://www.bloai.blog",
-  "potentialAction": {
-    "@type": "NavigateAction",
-    "target": [
-      {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://www.bloai.blog/landing"
-      },
-      {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://www.bloai.blog/"
-      },
-      {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://www.bloai.blog/about"
-      },
-      {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://www.bloai.blog/tags"
-      },
-      {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://www.bloai.blog/contact"
-      }
-    ]
-  }
-};
-
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -191,19 +139,11 @@ export default async function RootLayout({
         <head>
           <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
           />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }}
-          />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema).replace(/</g, '\\u003c') }}
-          />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(navigationSchema).replace(/</g, '\\u003c') }}
           />
           <script
             type="application/ld+json"

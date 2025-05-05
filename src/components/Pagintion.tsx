@@ -1,59 +1,58 @@
-import React from 'react'; // No 'use client' needed here
+import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button'; // Assuming this component exists
-import { cn } from '@/lib/utils'; // Assuming this utility exists
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
- 
 }
 
 const Pagination: React.FC<PaginationProps> = ({
-  currentPage = 1, 
+  currentPage = 1,
   totalPages = 1,
   onPageChange,
 }) => {
-
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
-    const maxVisiblePages = 5; 
-    const halfVisible = Math.floor(maxVisiblePages / 2);
-
+    const maxVisiblePages = 3;
+    const boundaryPages = 1; 
+  
     if (totalPages <= maxVisiblePages + 2) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
       pages.push(1);
-
-      if (currentPage > halfVisible + 2) {
+  
+      const leftRange = boundaryPages + 1;
+      const rightRange = totalPages - boundaryPages;
+  
+      if (currentPage <= leftRange) {
+        for (let i = 2; i <= leftRange + 1; i++) {
+          pages.push(i);
+        }
+        if (totalPages > leftRange + 2) {
+          pages.push('...');
+        }
+        pages.push(totalPages);
+      } else if (currentPage >= rightRange) {
         pages.push('...');
-      }
-
-      let startPage = Math.max(2, currentPage - halfVisible);
-      let endPage = Math.min(totalPages - 1, currentPage + halfVisible);
-
-      if (currentPage <= halfVisible + 1) {
-         endPage = Math.min(totalPages - 1, maxVisiblePages);
-      }
-      if (currentPage >= totalPages - halfVisible) {
-         startPage = Math.max(2, totalPages - maxVisiblePages + 1);
-      }
-
-
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-
-      if (currentPage < totalPages - halfVisible - 1) {
+        for (let i = rightRange; i < totalPages; i++) {
+          pages.push(i);
+        }
+        pages.push(totalPages);
+      } else {
         pages.push('...');
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
       }
-
-      pages.push(totalPages);
     }
-
+  
     return pages;
   };
 
@@ -66,7 +65,7 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <nav aria-label="Pagination" className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
       <div className="text-sm text-gray-600 dark:text-gray-400 hidden md:block">
-        Page {currentPage} of {totalPages}
+       Trang {currentPage} / {totalPages}
       </div>
 
       <div className="flex items-center gap-1">
@@ -83,26 +82,32 @@ const Pagination: React.FC<PaginationProps> = ({
 
         {pageNumbers.map((page, index) => (
           page === '...' ? (
-            <span key={`ellipsis-${index}`} className="px-2 py-1 text-sm text-gray-500 dark:text-gray-400">
+            <Button
+              key={`ellipsis-${index}`}
+              variant="outline"
+              size="icon"
+              className="h-9 w-9 p-0 border-[#e4d9c8] text-[#554640] hover:bg-[#3A6B4C]/10 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 cursor-default"
+              disabled
+            >
               ...
-            </span>
+            </Button>
           ) : (
-          <Button
-            key={page}
-            variant={page === currentPage ? 'default' : 'outline'}
-            size="icon" 
-            onClick={() => onPageChange(page as number)}
-            className={cn(
-              'h-9 w-9 p-0',
-              page === currentPage
-                ? 'bg-[#3A6B4C] text-white hover:bg-[#2E5540] dark:bg-[#4F7359] dark:hover:bg-[#3A6B4C]' 
-                : 'border-[#e4d9c8] text-[#554640] hover:bg-[#3A6B4C]/10 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700' // Inactive styles
-            )}
-            aria-current={page === currentPage ? 'page' : undefined}
-            aria-label={page === currentPage ? `Current page, Page ${page}` : `Go to page ${page}`}
-          >
-            {page}
-          </Button>
+            <Button
+              key={page}
+              variant={page === currentPage ? 'default' : 'outline'}
+              size="icon" 
+              onClick={() => onPageChange(page as number)}
+              className={cn(
+                'h-9 w-9 p-0',
+                page === currentPage
+                  ? 'bg-[#3A6B4C] text-white hover:bg-[#2E5540] dark:bg-[#4F7359] dark:hover:bg-[#3A6B4C]' 
+                  : 'border-[#e4d9c8] text-[#554640] hover:bg-[#3A6B4C]/10 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700'
+              )}
+              aria-current={page === currentPage ? 'page' : undefined}
+              aria-label={page === currentPage ? `Current page, Page ${page}` : `Go to page ${page}`}
+            >
+              {page}
+            </Button>
           )
         ))}
 
@@ -118,9 +123,8 @@ const Pagination: React.FC<PaginationProps> = ({
         </Button>
       </div>
 
-    
-       <div className="text-sm text-gray-600 dark:text-gray-400 hidden md:block">
-       </div>
+      <div className="text-sm text-gray-600 dark:text-gray-400 hidden md:block">
+      </div>
     </nav>
   );
 };

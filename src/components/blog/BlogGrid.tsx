@@ -80,8 +80,13 @@ export function BlogGrid() {
             moreTagsLink="/tags" 
           />
       </div>
-      {isFetching && !isLoading && (
-        <div className="text-center py-4 text-gray-500">Updating Blog...</div>
+      {isFetching && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="bg-background/90 border rounded-lg shadow-lg px-4 py-2 flex items-center gap-2">
+            <div className="h-4 w-4 border-2 border-primary border-t-transparent rounded-full animate-spin"> </div>
+            <span className="text-sm font-medium">Updating content...</span>
+          </div>
+        </div>
       )}
       <BentoGrid className="px-4 pb-16">
         {filteredBlogs.length > 0 ? (
