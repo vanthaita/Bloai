@@ -70,66 +70,63 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const blogSchema = {
+  const websiteSchema = {
     "@context": "https://schema.org",
-    "@type": "Blog",
-    "headline": "Bloai Blog - Kiến thức AI từ cơ bản đến nâng cao",
-    "description": "Tổng hợp các bài viết mới nhất về trí tuệ nhân tạo và công nghệ",
-    "url": "https://www.bloai.blog/",
-    "image": "https://www.bloai.blog/images/og-blog.jpg",
-    "publisher": {
-      "@type": "Organization",
-      "name": "Bloai Blog",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://www.bloai.blog/images/Logo/web-app-manifest-512x512.png",
-        "width": 300,
-        "height": 60
-      }
-    },
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": "https://www.bloai.blog/"
-    },
-    "blogPost": [
-      {
-        "@type": "BlogPosting",
-        "headline": "Bắt Trend Mạng Xã Hội: Cách tạo Vỉ Đồ Chơi Giới Thiệu Bản Thân Với GPT",
-        "url": "https://www.bloai.blog/blog/bat-trend-mang-xa-hoi-cach-tao-vi-djo-choi-gioi-thieu-ban-than-voi-gpt",
-        "datePublished": "2024-06-15T08:00:00+07:00",
-        "dateModified": "2024-06-15T08:00:00+07:00",
-        "author": {
-          "@type": "Person",
-          "name": "IE204SEO",
-        },
-      },
-      {
-        "@type": "BlogPosting",
-        "headline": "Tìm hiểu sâu về Amazon Kendra GenAI Index (2025) [Hướng dẫn Chi Tiết]",
-        "url": "https://www.bloai.blog/blog/tim-hieu-sau-ve-amazon-kendra-genai-index-2025-huong-dan-chi-tiet",
-        "datePublished": "2024-06-10T08:00:00+07:00",
-        "dateModified": "2024-06-12T08:00:00+07:00",
-        "author": {
-          "@type": "Person",
-          "name": "IE204SEO",
-        },
-      },
-      {
-        "@type": "BlogPosting",
-        "headline": "Xây dựng AI Assistant: Bí mật Tạo Trợ Lý Thông Minh Từ Notion",
-        "url": "https://www.bloai.blog/blog/xay-dung-ai-assistant-bi-mat-tao-tro-ly-thong-minh-tu-notion-huong-dan-day-du-2025",
-        "datePublished": "2024-06-05T08:00:00+07:00",
-        "dateModified": "2024-06-07T08:00:00+07:00",
-        "author": {
-          "@type": "Person",
-          "name": "IE204SEO",
-        },
-      }
-    ],
+    "@type": "WebSite",
+    "name": "Bloai Blog",
+    "url": "https://www.bloai.blog",
+    "description": "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://www.bloai.blog/search?q={search_term_string}",
       "query-input": "required name=search_term_string"
+    }
+  };
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Bloai Blog",
+    "url": "https://www.bloai.blog",
+    "logo": "https://www.bloai.blog/images/Logo/favicon-32x32.png",
+    "sameAs": [
+      "https://www.facebook.com/bloaiblog",
+      "https://twitter.com/bloaiblog",
+      "https://www.linkedin.com/company/bloaiblog",
+      "https://www.youtube.com/@bloaiblog"
+    ]
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [{
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Trang chủ",
+      "item": "https://www.bloai.blog"
+    }]
+  };
+
+  const testimonialSchema = {
+    "@context": "https://schema.org",
+    "@type": "Review",
+    "itemReviewed": {
+      "@type": "Organization",
+      "name": "Bloai Blog"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Người dùng ẩn danh"
+    },
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": "5",
+      "bestRating": "5"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Bloai Blog"
     }
   };
   
@@ -137,18 +134,29 @@ export default async function Home() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
       />
-      <main className="flex flex-col" itemScope itemType="https://schema.org/Blog">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(testimonialSchema).replace(/</g, '\\u003c') }}
+      />
+
+      <main className="flex flex-col">
         <section className="px-4 min-[375px]:px-6 md:px-8 lg:px-10 xl:px-12 py-6 min-[375px]:py-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200 text-center underline decoration-[#3A6B4C] decoration-4 underline-offset-4" itemProp="headline">
+          <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200 text-center underline decoration-[#3A6B4C] decoration-4 underline-offset-4">
             BÀI VIẾT NỔI BẬT
           </h1>
           
           <Suspense fallback={<Loading />}>
-            <div itemScope itemType="https://schema.org/ItemList">
-              <BlogGrid />
-            </div>
+            <BlogGrid />
           </Suspense>
         </section>
 
@@ -156,14 +164,14 @@ export default async function Home() {
           <LeaderBoard />
         </section>
 
-        <section className="w-full bg-gray-50 dark:bg-gray-800 py-12" itemScope itemType="https://schema.org/SubscribeAction">
+        <section className="w-full bg-gray-50 dark:bg-gray-800 py-12">
           <EmailSubscribeSection 
             title="Đừng bỏ lỡ kiến thức AI mới nhất"
             description="Đăng ký nhận bản tin để cập nhật các bài viết mới, thủ thuật AI và tin tức công nghệ mỗi tuần."
           />
         </section>
 
-        <section itemScope itemType="https://schema.org/Review">
+        <section>
           <TestimonialSection />
         </section>
       </main>

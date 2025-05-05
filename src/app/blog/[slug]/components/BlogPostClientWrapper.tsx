@@ -154,6 +154,7 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
                             <BlogComments slug={blog.slug}/>
                         </article>
                     </main>
+                    <div className='mt-8'></div>
                     <BlogSuggestedPosts author={author} suggestedBlogs={suggestedBlogs} />
                 </div>
 
