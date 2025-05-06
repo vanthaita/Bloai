@@ -40,7 +40,7 @@ export function AuthBackground() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <Card className="bg-background/80 backdrop-blur-md border-border/20 shadow-lg overflow-hidden relative max-w-md w-full">
+        <Card className="overflow-hidden relative max-w-md w-full bg-transparent shadow-none border-none">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/30" />
           
           <CardContent className="flex flex-col gap-6 p-8 items-center text-center">
