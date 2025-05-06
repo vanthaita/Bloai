@@ -156,7 +156,7 @@ const TestimonialSection = () => {
   };
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 ">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12" itemScope itemType="https://schema.org/Product">
           <meta itemProp="name" content="Bloai Blog" />

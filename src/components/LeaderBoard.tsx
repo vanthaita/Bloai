@@ -57,14 +57,14 @@ const LeaderBoard = async () => {
     };
 
     return (
-        <Card className="w-full border border-slate-200 shadow-sm rounded-lg sm:rounded-xl overflow-hidden">
-          <CardHeader className="border-b border-slate-100 bg-gradient-to-r from-slate-50 to-slate-100 p-4 sm:p-6">
+        <Card className="w-full overflow-hidden bg-transparent border-none shadow-none">
+          <CardHeader className=" p-4 sm:p-6">
             <CardTitle className="text-xl sm:text-2xl flex items-center gap-3 text-slate-800">
               <span>Bảng xếp hạng Blog</span>
             </CardTitle>
           </CardHeader>
           
-          <CardContent className="bg-slate-50 p-3 sm:p-6">
+          <CardContent className=" p-3 sm:p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <Card className="relative overflow-hidden border border-slate-200 bg-white shadow-sm">
                 <div className="absolute top-0 right-0 bg-gradient-to-r from-amber-400 to-amber-500 text-white px-2 py-0.5 sm:px-3 sm:py-1 text-xs font-semibold rounded-bl-lg shadow-sm">

@@ -71,7 +71,7 @@ const EmailSubscribeSection = ({
   };
 
   return (
-    <section className={`bg-[#F8F5F2] rounded-lg p-8 ${className}`}>
+    <section className={` p-8 ${className}`}>
       <div className="max-w-2xl mx-auto text-center">
         <h3 className="text-2xl font-bold text-[#2B463C] mb-3">{title}</h3>
         <p className="text-[#554640]/90 mb-6">{description}</p>
