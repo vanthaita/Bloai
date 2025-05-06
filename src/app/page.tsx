@@ -154,7 +154,6 @@ export default async function Home() {
           <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200 text-center underline decoration-[#3A6B4C] decoration-4 underline-offset-4">
             BÀI VIẾT NỔI BẬT
           </h1>
-          
           <Suspense fallback={<Loading />}>
             <BlogGrid />
           </Suspense>
@@ -164,7 +163,7 @@ export default async function Home() {
           <LeaderBoard />
         </section>
 
-        <section className="w-full bg-gray-50 dark:bg-gray-800 py-12">
+        <section className="w-full py-12">
           <EmailSubscribeSection 
             title="Đừng bỏ lỡ kiến thức AI mới nhất"
             description="Đăng ký nhận bản tin để cập nhật các bài viết mới, thủ thuật AI và tin tức công nghệ mỗi tuần."
