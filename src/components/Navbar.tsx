@@ -2,7 +2,7 @@
 
 import { useCurrentUser } from '@/hook/use-current-user';
 import Link from 'next/link';
-import { FaSearch, FaBell, FaUser, FaSignOutAlt, FaPenAlt, FaRobot } from 'react-icons/fa';
+import { FaSearch, FaBell, FaUser, FaSignOutAlt, FaPenAlt, FaRobot, FaHome } from 'react-icons/fa';
 import { signOut } from 'next-auth/react';
 import { useState, useEffect, useRef } from 'react';
 import { useIsMobile } from '@/hook/use-mobile';
@@ -38,33 +38,54 @@ const Navbar = () => {
       aria-label="Main navigation"
     >
       <div className="flex items-center flex-shrink-0 md:max-w-6xl md:w-full">
-          <Logo />
+        <Logo />
+        
+        {!isMobile && (
+          <div className="hidden md:flex items-center ml-8 space-x-6">
+            <Link 
+              href="/" 
+              className="text-gray-600 hover:text-[#3A6B4C] transition-colors flex items-center gap-1"
+            >
+              <FaHome className="w-4 h-4" />
+              <span>Trang chủ</span>
+            </Link>
+            <Link
+              href="/tags"
+              className="text-gray-600 hover:text-[#3A6B4C] transition-colors"
+            >
+              Danh Mục
+            </Link>
+            <Link
+              href="/about"
+              className="text-gray-600 hover:text-[#3A6B4C] transition-colors"
+            >
+              Về chúng tôi
+            </Link>
+          </div>
+        )}
+
         {!isMobile && (
           <div className="flex-1 max-w-2xl mx-4">
             <Search />
           </div>
-      )}
+        )}
       </div>
       
       <div className="flex items-center justify-end gap-2 min-[375px]:gap-4 flex-shrink-0">
-        {/* <Link href="/ai-tools" className="p-1.5 min-[375px]:p-2 text-gray-600 hover:text-purple-600 transition-colors">
-          <FaRobot className="w-4 h-4 min-[375px]:w-5 min-[375px]:h-5" aria-label="AI Tools" />
-        </Link> */}
-        <button
-          className="hidden sm:flex p-1.5 min-[375px]:p-2 text-gray-600 hover:text-blue-600 transition-colors"
-          aria-label="Notifications"
-        >
-          <FaBell className="w-4 h-4 min-[375px]:w-5 min-[375px]:h-5" />
-        </button>
+        {isMobile && (
+          <Link href="/search" className="p-1.5 text-gray-600 hover:text-[#3A6B4C] transition-colors">
+            <FaSearch className="w-4 h-4" aria-label="Search" />
+          </Link>
+        )}
 
         {user ? (
           <div className="relative flex gap-x-4" ref={dropdownRef}>
-            <Link href='/new-post'>
-              <Button className='bg-[#3A6B4C] text-white hover:bg-[#3A6B4C]/90 flex items-center gap-2 px-4 py-2 rounded-sm transition-all duration-200 shadow-md hover:shadow-lg'>
-              <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" fill="none" viewBox="0 0 24 24" aria-label="Write"><path fill="currentColor" d="M14 4a.5.5 0 0 0 0-1zm7 6a.5.5 0 0 0-1 0zm-7-7H4v1h10zM3 4v16h1V4zm1 17h16v-1H4zm17-1V10h-1v10zm-1 1a1 1 0 0 0 1-1h-1zM3 20a1 1 0 0 0 1 1v-1zM4 3a1 1 0 0 0-1 1h1z"></path><path stroke="currentColor" d="m17.5 4.5-8.458 8.458a.25.25 0 0 0-.06.098l-.824 2.47a.25.25 0 0 0 .316.316l2.47-.823a.25.25 0 0 0 .098-.06L19.5 6.5m-2-2 2.323-2.323a.25.25 0 0 1 .354 0l1.646 1.646a.25.25 0 0 1 0 .354L19.5 6.5m-2-2 2 2"></path></svg>
-                <span>Viết Blog</span>
-              </Button>
-            </Link>
+            <Button asChild className='bg-[#3A6B4C] text-white hover:bg-[#3A6B4C]/90 ...'>
+              <Link href='/new-post'>
+                <FaPenAlt className="w-4 h-4" />
+                <span className="hidden sm:inline">Viết Blog</span>
+              </Link>
+            </Button>
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
@@ -94,14 +115,13 @@ const Navbar = () => {
                 role="menu"
               >
                 <div className="px-4 py-3">
-                  <p className="text-sm font-semibold text-gray-900 truncate" role="none">{user.name}</p>
-                  <p className="text-xs text-gray-500 truncate" role="none">{user.email}</p>
+                  <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
+                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
                 </div>
-                <div className="py-1" role="none">
+                <div className="py-1">
                   <button
                     onClick={() => signOut()}
-                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600 transition-colors duration-150" 
-                    role="menuitem"
+                    className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600 transition-colors" 
                   >
                     <FaSignOutAlt className="w-4 h-4 mr-3 text-gray-400" />
                     Sign out
@@ -114,8 +134,7 @@ const Navbar = () => {
           <Link
             href="/auth/signin"
             className="px-3 py-1.5 min-[375px]:px-4 min-[375px]:py-2 text-sm min-[375px]:text-base text-gray-800 hover:text-blue-600 hover:bg-blue-50 transition-colors border-2 border-black rounded-sm"
-            aria-label="Sign in"
-            >
+          >
             <span className='font-medium'>Đăng Nhập</span>
           </Link>
         )}
