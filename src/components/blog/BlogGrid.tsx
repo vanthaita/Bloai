@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
 import { BlogFilterBar } from './BlogFilterBar';
 import { BlogCard } from './BlogCard';
+import Link from 'next/link';
 
 const LIMIT = 9;
 
@@ -25,7 +26,6 @@ export function BlogGrid() {
 
   const handleCardClick = (slug: string) => {
     setNavigatingTo(slug);
-    router.push(`/blog/${slug}`);
   };
 
   const filterTags = useMemo(() => {
@@ -91,13 +91,18 @@ export function BlogGrid() {
       <BentoGrid className="px-4 pb-16">
         {filteredBlogs.length > 0 ? (
           filteredBlogs.map((blog) => (
-            <Suspense key={blog.id} fallback={<Loading />}>
-              <BlogCard 
-                blog={blog} 
-                onClick={() => handleCardClick(blog.slug)}
-                isNavigating={navigatingTo === blog.slug}
-              />
-            </Suspense>
+              <div 
+                key={blog.id}
+              >
+                <Link 
+                  href={`/blog/${blog.slug}`} 
+                  onClick={() => {handleCardClick(blog.slug);}}>
+                    <BlogCard 
+                      blog={blog} 
+                      isNavigating={navigatingTo === blog.slug}
+                    />
+                </Link>
+              </div>
           ))
         ) : (
           <div className="col-span-full text-center py-10 text-gray-500">
