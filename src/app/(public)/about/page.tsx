@@ -1,9 +1,9 @@
 "use client"
-import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Bot, Brain, Code, TrendingUp, Users, BookOpen, Mail } from "lucide-react"
+import { Bot, Brain, Code, TrendingUp, Users, BookOpen, Mail } from "lucide-react"
 import { FaGithub, FaLinkedin } from "react-icons/fa"
+import Head from "next/head"
 interface TeamMember {
   name: string
   role: string
@@ -89,6 +89,10 @@ const AboutPage = () => {
   }
 
   return (
+    <>
+    <Head>
+      <link rel="canonical" href="https://www.bloai.blog/about" />
+    </Head>
     <div className="min-h-screen bg-white text-gray-800">
       <section className="bg-white-50 py-20">
         <div className="container mx-auto px-8">
@@ -294,6 +298,7 @@ const AboutPage = () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
       />
     </div>
+    </>
   );
 }
 
