@@ -173,7 +173,7 @@ const TestimonialSection = () => {
               key={testimonial.id}
               className={`${getItemSpanClasses(index)} transition-all duration-300 hover:scale-[1.02] hover:shadow-lg`}
             >
-              <div className="bg-[#F8F5F2] rounded-xl p-6 h-full flex flex-col border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className=" rounded-xl p-6 h-full flex flex-col border border-gray-300 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <Quote className="text-[#3A6B4C] w-8 h-8 mb-4 opacity-80" />
                 <p className="text-[#554640] italic mb-6 flex-grow text-base leading-relaxed">"{testimonial.quote}"</p>
 

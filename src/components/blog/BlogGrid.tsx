@@ -91,18 +91,15 @@ export function BlogGrid() {
       <BentoGrid className="px-4 pb-16">
         {filteredBlogs.length > 0 ? (
           filteredBlogs.map((blog) => (
-              <div 
-                key={blog.id}
-              >
                 <Link 
                   href={`/blog/${blog.slug}`} 
+                  key={blog.id}
                   onClick={() => {handleCardClick(blog.slug);}}>
                     <BlogCard 
                       blog={blog} 
                       isNavigating={navigatingTo === blog.slug}
                     />
                 </Link>
-              </div>
           ))
         ) : (
           <div className="col-span-full text-center py-10 text-gray-500">

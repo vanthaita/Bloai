@@ -61,8 +61,8 @@ export function BlogFilterBar({
           </Button>
         ))}
         {hasMoreTags && (
-          <Link href={moreTagsLink} passHref legacyBehavior>
             <Button
+              asChild
               variant={'outline'}
               size="sm"
               className={cn(
@@ -71,9 +71,11 @@ export function BlogFilterBar({
                 "shadow-sm hover:shadow-md"
               )}
             >
+              <Link href={moreTagsLink} >
               View all tags →
+              </Link>
+
             </Button>
-          </Link>
         )}
       </div>
     </div>

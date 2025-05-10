@@ -124,13 +124,13 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
             </div>
             <div className="space-y-4">
                 {previewUrl ? (
-                    <div className="relative space-y-2">
+                    <div className="relative space-y-2 ">
                         <p className="text-sm font-medium text-muted-foreground">Xem trước:</p>
                         <div className="relative aspect-video rounded-lg overflow-hidden border border-dashed border-muted">
                             <img 
                                 src={previewUrl} 
                                 alt="Xem trước ảnh thu nhỏ" 
-                                className="object-cover w-full h-full" 
+                                className="object-cover w-full h-full " 
                             />
                             {thumbnail && (
                                 <Button 
@@ -161,7 +161,7 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
                         </div>
                     </div>
                 ) : (
-                    <div className="flex items-center justify-center h-full min-h-[150px] border border-dashed rounded-lg text-muted-foreground text-sm bg-muted/40">
+                    <div className="flex items-center justify-center h-full min-h-[150px] border border-dashed rounded-lg text-muted-foreground text-sm bg-muted/40 md:min-h-[200px] md:mt-8">
                         Xem trước ảnh thu nhỏ
                     </div>
                 )}
