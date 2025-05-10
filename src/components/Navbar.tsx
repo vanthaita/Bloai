@@ -2,21 +2,23 @@
 
 import { useCurrentUser } from '@/hook/use-current-user';
 import Link from 'next/link';
-import { FaSearch, FaBell, FaUser, FaSignOutAlt, FaPenAlt, FaRobot, FaHome } from 'react-icons/fa';
+import { FaSearch, FaUser, FaSignOutAlt, FaPenAlt, FaHome } from 'react-icons/fa';
 import { signOut } from 'next-auth/react';
 import { useState, useEffect, useRef } from 'react';
 import { useIsMobile } from '@/hook/use-mobile';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
 import Logo from '@/components/logo'; 
 import { Button } from './ui/button';
 import Search from './Search';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
   const user = useCurrentUser();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -44,20 +46,29 @@ const Navbar = () => {
           <div className="hidden md:flex items-center ml-8 space-x-6">
             <Link 
               href="/" 
-              className="text-gray-600 hover:text-[#3A6B4C] transition-colors flex items-center gap-1"
+              className={cn(
+                "text-gray-600 hover:text-[#3A6B4C] transition-colors flex items-center gap-1",
+                pathname === "/" && "text-[#3A6B4C] font-medium"
+              )}
             >
               <FaHome className="w-4 h-4" />
               <span>Trang chủ</span>
             </Link>
             <Link
               href="/tags"
-              className="text-gray-600 hover:text-[#3A6B4C] transition-colors"
+              className={cn(
+                "text-gray-600 hover:text-[#3A6B4C] transition-colors",
+                pathname === "/tags" && "text-[#3A6B4C] font-medium"
+              )}
             >
               Danh Mục
             </Link>
             <Link
               href="/about"
-              className="text-gray-600 hover:text-[#3A6B4C] transition-colors"
+              className={cn(
+                "text-gray-600 hover:text-[#3A6B4C] transition-colors",
+                pathname === "/about" && "text-[#3A6B4C] font-medium"
+              )}
             >
               Về chúng tôi
             </Link>
@@ -73,14 +84,26 @@ const Navbar = () => {
       
       <div className="flex items-center justify-end gap-2 min-[375px]:gap-4 flex-shrink-0">
         {isMobile && (
-          <Link href="/search" className="p-1.5 text-gray-600 hover:text-[#3A6B4C] transition-colors">
+          <Link 
+            href="/search" 
+            className={cn(
+              "p-1.5 text-gray-600 hover:text-[#3A6B4C] transition-colors",
+              pathname === "/search" && "text-[#3A6B4C]"
+            )}
+          >
             <FaSearch className="w-4 h-4" aria-label="Search" />
           </Link>
         )}
 
         {user ? (
           <div className="relative flex gap-x-4" ref={dropdownRef}>
-            <Button asChild className='bg-[#3A6B4C] text-white hover:bg-[#3A6B4C]/90 ...'>
+            <Button 
+              asChild 
+              className={cn(
+                'bg-[#3A6B4C] text-white hover:bg-[#3A6B4C]/90',
+                pathname === "/new-post" && "bg-[#3A6B4C]/80"
+              )}
+            >
               <Link href='/new-post'>
                 <FaPenAlt className="w-4 h-4" />
                 <span className="hidden sm:inline">Viết Blog</span>
@@ -93,20 +116,22 @@ const Navbar = () => {
               aria-haspopup="true"
               aria-expanded={isOpen}
             >
-              {user.image ? (
-                <Image
-                  src={user.image}
-                  alt={`${user.name}'s avatar`}
-                  width={32}
-                  height={32}
-                  className="w-8 h-8 rounded-full border border-gray-300" 
-                  priority
+              <Avatar>
+                <AvatarImage 
+                  src={user.image || 'https://res.cloudinary.com/dq2z27agv/image/upload/q_auto,f_webp,w_auto/v1746885273/y3hpblcst5qn3j5aah1l.svg'} 
+                  alt={user.name || 'User avatar'}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
-              ) : (
-                <div className="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full border border-gray-300">
-                  <FaUser className="w-4 h-4 text-gray-600" />
-                </div>
-              )}
+                <AvatarFallback className="bg-gray-200">
+                  {user.name ? (
+                    user.name.split(' ').map(n => n[0]).join('')
+                  ) : (
+                    <FaUser className="w-4 h-4 text-gray-600" />
+                  )}
+                </AvatarFallback>
+              </Avatar>
             </button>
 
             {isOpen && (
@@ -133,7 +158,10 @@ const Navbar = () => {
         ) : (
           <Link
             href="/auth/signin"
-            className="px-3 py-1.5 min-[375px]:px-4 min-[375px]:py-2 text-sm min-[375px]:text-base text-gray-800 hover:text-blue-600 hover:bg-blue-50 transition-colors border-2 border-black rounded-sm"
+            className={cn(
+              "px-3 py-1.5 min-[375px]:px-4 min-[375px]:py-2 text-sm min-[375px]:text-base text-gray-800 hover:text-blue-600 hover:bg-blue-50 transition-colors border-2 border-black rounded-sm",
+              pathname === "/auth/signin" && "bg-blue-50 text-blue-600"
+            )}
           >
             <span className='font-medium'>Đăng Nhập</span>
           </Link>
