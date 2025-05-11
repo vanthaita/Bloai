@@ -650,7 +650,8 @@ export const blogRouter = createTRPCRouter({
           select: {
             name: true,
           }
-        }
+        },
+        publishDate: true,
       }
     })
 
@@ -666,7 +667,8 @@ export const blogRouter = createTRPCRouter({
       title: blog.title,
       views: blog.views,
       author: blog.author.name || 'Ẩn danh',
-      slug: blog.slug
+      slug: blog.slug,
+      publish_day: blog.publishDate
     }));
     return {
       topAuthors: formattedAuthors,

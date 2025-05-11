@@ -2,23 +2,24 @@ import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Eye, Medal, Trophy, Star, Zap } from 'lucide-react';
 import { api } from '@/trpc/server';
-import Image from 'next/image';
 import { FaUser } from 'react-icons/fa';
 import Link from 'next/link';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 interface Author {
-    id: string;
-    name: string;
-    blogCount: number;
-    avatar: string | null; 
+  id: string;
+  name: string;
+  blogCount: number;
+  avatar: string | null; 
 }
 
 interface Blog {
-    id: string;
-    title: string;
-    views: number;
-    author: string; 
-    slug: string;
+  id: string;
+  title: string;
+  views: number;
+  author: string; 
+  slug: string;
+  publish_day: Date
 }
 
 
@@ -93,14 +94,19 @@ const LeaderBoard = async () => {
                       
                       <div className="flex items-center flex-1 min-w-0 gap-x-2 sm:gap-x-3">
                         {author.avatar ? (
-                          <Image
-                            src={author.avatar}
-                            alt={`${author.avatar}'s avatar`}
-                            width={40}
-                            height={40}
-                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow-sm flex-shrink-0"
-                            priority
-                          />
+                          <Avatar>
+                            <AvatarImage 
+                              src={author.avatar || 'https://res.cloudinary.com/dq2z27agv/image/upload/q_auto,f_webp,w_auto/v1746885273/y3hpblcst5qn3j5aah1l.svg'} 
+                              alt={`${author.avatar}'s avatar`}
+                            />
+                            <AvatarFallback className="bg-gray-200">
+                              {author.name ? (
+                                author.name.split(' ').map(n => n[0]).join('')
+                              ) : (
+                                <FaUser className="w-4 h-4 text-gray-600" />
+                              )}
+                            </AvatarFallback>
+                          </Avatar>
                         ) : (
                           <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-100 rounded-full border-2 border-white shadow-sm flex-shrink-0">
                             <FaUser className="w-3 h-3 sm:w-4 sm:h-4 text-slate-500" />
@@ -161,7 +167,19 @@ const LeaderBoard = async () => {
                               </span>
                             )}
                           </h4>
-                          <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">bởi {blog.author}</p>
+                          <div className='flex gap-2 items-center mt-0.5'>
+                            <p className="text-xs text-slate-500">bởi {blog.author}</p>
+                            <time dateTime={new Date(blog.publish_day).toISOString()} className="flex items-center gap-1.5 text-slate-500">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                              </svg>
+                              {new Date(blog.publish_day).toLocaleDateString('vi-VN', {
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric'
+                              })}
+                            </time>
+                          </div>
                         </div>
                         
                         <div className="flex items-center ml-2 text-xs sm:text-sm font-semibold group-hover:text-purple-600 transition-colors flex-shrink-0">
