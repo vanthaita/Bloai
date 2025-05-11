@@ -120,9 +120,6 @@ const Navbar = () => {
                 <AvatarImage 
                   src={user.image || 'https://res.cloudinary.com/dq2z27agv/image/upload/q_auto,f_webp,w_auto/v1746885273/y3hpblcst5qn3j5aah1l.svg'} 
                   alt={user.name || 'User avatar'}
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
                 />
                 <AvatarFallback className="bg-gray-200">
                   {user.name ? (
