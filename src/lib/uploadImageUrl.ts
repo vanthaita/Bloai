@@ -9,7 +9,7 @@ function isValidImageUrl(url: string): boolean {
          (/\.(png|jpg|jpeg|gif|webp|svg)(\?.*)?$/i.test(url) || 
           /\/image\/|\.(jpg|png|gif)(\?|$)|%2F(image|img)/i.test(url));
 }
-function transformCloudinaryUrl(url: string, options: {
+export function transformCloudinaryUrl(url: string, options: {
     quality?: number | 'auto';
     width?: number;
     format?: 'webp' | 'auto';

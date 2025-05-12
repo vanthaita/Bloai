@@ -84,19 +84,18 @@ const Navbar = () => {
       
       <div className="flex items-center justify-end gap-2 min-[375px]:gap-4 flex-shrink-0">
         {isMobile && (
-          <Link 
-            href="/search" 
+          <Button 
             className={cn(
               "p-1.5 text-gray-600 hover:text-[#3A6B4C] transition-colors",
               pathname === "/search" && "text-[#3A6B4C]"
             )}
           >
             <FaSearch className="w-4 h-4" aria-label="Search" />
-          </Link>
+          </Button>
         )}
 
         {user ? (
-          <div className="relative flex gap-x-4" ref={dropdownRef}>
+          <div className="relative flex gap-x-4 justify-center items-center" ref={dropdownRef}>
             <Button 
               asChild 
               className={cn(
@@ -111,12 +110,12 @@ const Navbar = () => {
             </Button>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+              className="flex items-center rounded-full hover:bg-gray-100 transition-colors"
               aria-label="User menu"
               aria-haspopup="true"
               aria-expanded={isOpen}
             >
-              <Avatar>
+              <Avatar className='h-8 w-8'>
                 <AvatarImage 
                   src={user.image || 'https://res.cloudinary.com/dq2z27agv/image/upload/q_auto,f_webp,w_auto/v1746885273/y3hpblcst5qn3j5aah1l.svg'} 
                   alt={user.name || 'User avatar'}
@@ -133,7 +132,7 @@ const Navbar = () => {
 
             {isOpen && (
               <div
-                className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 divide-y divide-gray-100"
+                className="absolute right-0 top-10 w-64 bg-white rounded-lg shadow-xl border border-gray-200 divide-y divide-gray-100"
                 role="menu"
               >
                 <div className="px-4 py-3">
