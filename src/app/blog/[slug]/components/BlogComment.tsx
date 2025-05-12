@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { api } from '@/trpc/react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { FaUser } from 'react-icons/fa'
 
 interface BlogCommentProps {
   slug: string
@@ -156,13 +158,19 @@ const BlogComments = ({ slug }: BlogCommentProps) => {
                         <div key={comment.id} className="flex gap-4 items-start"> 
                             <div className="flex-shrink-0">
                                 {comment.author?.image ? (
-                                    <Image
-                                        src={comment.author.image}
-                                        alt={comment.author.name || 'Ảnh đại diện'}
-                                        width={40}
-                                        height={40}
-                                        className="rounded-full object-cover" 
-                                    />
+                                    <Avatar className='h-8 w-8'>
+                                        <AvatarImage 
+                                            src={comment.author.image || 'https://res.cloudinary.com/dq2z27agv/image/upload/q_auto,f_webp,w_auto/v1746885273/y3hpblcst5qn3j5aah1l.svg'} 
+                                            alt={comment.author.name || 'User avatar'}
+                                        />
+                                        <AvatarFallback className="bg-gray-200">
+                                            {comment.author.name ? (
+                                            comment.author.name.split(' ').map(n => n[0]).join('')
+                                            ) : (
+                                            <FaUser className="w-4 h-4 text-gray-600" />
+                                            )}
+                                        </AvatarFallback>
+                                        </Avatar>
                                 ) : (
                                     <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-[#3A6B4C]/70 font-semibold"> 
                                         <span className="text-lg">

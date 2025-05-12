@@ -25,6 +25,7 @@ import { useCurrentUser } from '@/hook/use-current-user'
 import Loading from '@/components/loading'
 import { useAI } from '@/context/AIContext'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { transformCloudinaryUrl } from '@/lib/uploadImageUrl'
 
 const NewPostContent = () => {
     const [tags, setTags] = useState<string[]>([])
@@ -207,7 +208,12 @@ const NewPostContent = () => {
         try {
             const response = await axios.post(`https://api.cloudinary.com/v1_1/${env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, formData);
             if (response?.data?.secure_url) {
-                return response.data.secure_url;
+                const transformedUrl = transformCloudinaryUrl(response.data.secure_url, {
+                    quality: 'auto',
+                    format: 'webp',
+                    width: 1200,
+                });
+                return transformedUrl;
             } else {
                 console.error('Cloudinary upload failed: No secure_url found', response);
                 toast.error('Lỗi tải ảnh lên Cloudinary: Không nhận được URL.');
