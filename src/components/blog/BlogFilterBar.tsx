@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ArrowRight } from 'lucide-react';
 
 interface FilterTag {
   label: string;
@@ -42,7 +43,6 @@ export function BlogFilterBar({
         <h3 className="text-lg font-semibold text-gray-800">#Tags</h3>
         <div className="h-px flex-1 bg-gradient-to-r from-gray-200 via-gray-400 to-gray-200 opacity-50"></div>
       </div>
-      
       <div className="flex flex-wrap justify-start gap-3">
         {visibleTags.map((tag) => (
           <Button
@@ -50,7 +50,7 @@ export function BlogFilterBar({
             variant={'outline'}
             size="sm"
             className={cn(
-              "rounded-full h-auto py-1.5 px-4 font-medium transition-all",
+              "rounded-lg h-auto py-1.5 px-4 font-medium transition-all",
               "border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900",
               "shadow-sm hover:shadow-md hover:scale-105 active:scale-95",
               "group relative overflow-hidden",
@@ -78,16 +78,17 @@ export function BlogFilterBar({
             variant={'outline'}
             size="sm"
             className={cn(
-              "rounded-full h-auto py-1.5 px-4 font-medium",
+              "rounded-lg h-auto py-1.5 px-4 font-medium",
               "border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900",
               "shadow-sm hover:shadow-md hover:scale-105 active:scale-95",
               "transition-all hover:border-gray-300"
             )}
           >
-            <Link href={moreTagsLink}>
+            <Link href={moreTagsLink} className='flex'>
               <span className="flex items-center gap-1">
-                More <span className="text-lg">→</span>
+                See More 
               </span>
+              <ArrowRight />
             </Link>
           </Button>
         )}

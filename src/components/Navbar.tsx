@@ -81,14 +81,13 @@ const Navbar = () => {
               </Link>
             </div>
           )}
-        </div>
-        
-        {!isMobile && (
-          <div className="flex-1 max-w-2xl mx-4">
+           {!isMobile && (
+          <div className="flex-1 max-w-2xl mx-4 ">
             <Search />
           </div>
         )}
-        
+        </div>
+       
         <div className="flex items-center justify-end gap-2 min-[375px]:gap-4 flex-shrink-0">
           {isMobile && (
             <>
