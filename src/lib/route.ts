@@ -22,7 +22,7 @@ export const PUBLIC_ROUTES = [
 
 // For protected routes configuration
 export const PROTECTED_ROUTES = [
-  "/dashboard",
+  "/admin"   
 ];
 
 // Optional: API auth prefix for NextAuth
