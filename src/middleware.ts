@@ -15,7 +15,6 @@ export default auth(async function middleware(req) {
   if (isApiAuthRoute) {
     return NextResponse.next();
   }
-
   if (isAuthRoute) {
     if (isLoggedIn) {
       return NextResponse.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, nextUrl));
