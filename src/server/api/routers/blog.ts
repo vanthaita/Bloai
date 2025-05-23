@@ -360,7 +360,58 @@ export const blogRouter = createTRPCRouter({
             currentPage: input.page,
             limit: input.limit
           };
-        }),
+    }),
+
+    getBlogByTags: publicProcedure
+      .input(z.object({
+        page: z.number().int().positive().optional().default(1),
+        limit: z.number().int().positive().optional().default(10),
+        tag: z.string(),
+      }))
+      .query(async ({ctx, input}) => {
+        const skip = (input.page - 1) * input.limit;
+        const [blogs, totalBlogs] = await Promise.all([
+          ctx.db.blog.findMany({
+            skip: skip,
+            take: input.limit,
+            orderBy: { publishDate: 'desc' },
+            where: {
+              tags: {
+                some: {
+                  name: {
+                    equals: input.tag,
+                    mode: 'insensitive' 
+                  }
+                }
+              }
+            },
+            include: {
+              tags: true,
+              author: true,
+            },
+          }),
+          ctx.db.blog.count({
+            where: {
+              tags: {
+                some: {
+                  name: {
+                    equals: input.tag,
+                    mode: 'insensitive' 
+                  }
+                }
+              }
+            }
+          }) 
+        ]);
+
+        return {
+          blogs,
+          total: totalBlogs,
+          totalPages: Math.ceil(totalBlogs / input.limit),
+          currentPage: input.page
+        };
+    }),
+
     getAllTags: publicProcedure
       .input(z.object({
         page: z.number().int().positive().optional().default(1),
@@ -650,7 +701,8 @@ export const blogRouter = createTRPCRouter({
           select: {
             name: true,
           }
-        }
+        },
+        publishDate: true,
       }
     })
 
@@ -666,7 +718,8 @@ export const blogRouter = createTRPCRouter({
       title: blog.title,
       views: blog.views,
       author: blog.author.name || 'Ẩn danh',
-      slug: blog.slug
+      slug: blog.slug,
+      publish_day: blog.publishDate
     }));
     return {
       topAuthors: formattedAuthors,

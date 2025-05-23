@@ -6,6 +6,7 @@ import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import { getNodeText, Heading } from '@/types/helper.type';
 import Image from 'next/image';
+import { CldImage } from 'next-cloudinary';
 
 const DynamicReactMarkdown = dynamic(
     () => import('react-markdown').then(mod => mod.default),
@@ -65,9 +66,6 @@ const BlogContentRenderer: React.FC<BlogContentRendererProps> = ({ content, head
                     h1: (props) => <CustomHeadingRenderer level={1} {...props} />,
                     h2: (props) => <CustomHeadingRenderer level={2} {...props} />,
                     h3: (props) => <CustomHeadingRenderer level={3} {...props} />,
-                    img: (props) => (
-                        <Image src={props.src as string} alt={props.alt as string} width={1200} height={200} />
-                    ),
                 }}
             >
                 {content}

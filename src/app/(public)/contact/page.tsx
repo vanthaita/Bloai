@@ -3,11 +3,14 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { contactPageSchemaLd, safeJsonLdStringify } from "@/config/seo"
+import Head from "next/head"
 
 const ContactPage = () => {
   return (
     <>
+      <Head>
+        <link rel="canonical" href="https://www.bloai.blog/contact" />
+      </Head>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(contactPageSchemaLd)}}

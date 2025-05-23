@@ -12,6 +12,8 @@ interface TagsManagementInputProps {
     isGeneratingKeywords: boolean;
     setIsGeneratingKeywords: React.Dispatch<React.SetStateAction<boolean>>;
     contentForAI: string;
+    modelAi?: string;
+
 }
 
 export const TagsManagementInput: React.FC<TagsManagementInputProps> = ({
@@ -20,6 +22,7 @@ export const TagsManagementInput: React.FC<TagsManagementInputProps> = ({
     isGeneratingKeywords,
     setIsGeneratingKeywords,
     contentForAI,
+    modelAi
 }) => {
     const [tagInput, setTagInput] = useState('');
 
@@ -44,7 +47,7 @@ export const TagsManagementInput: React.FC<TagsManagementInputProps> = ({
 
     const handleGenerateKeywords = async () => {
         try {
-            const generatedString = await generateSEOKeywords(contentForAI);
+            const generatedString = await generateSEOKeywords(contentForAI,modelAi);
             if (generatedString) {
                 const generatedTags = generatedString.split(/,\s*/).map(tag => tag.trim()).filter(Boolean);
                 setTags(prevTags => {

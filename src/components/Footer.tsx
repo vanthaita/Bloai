@@ -1,8 +1,8 @@
-'use client'
+'use client';
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Mail, ArrowRight } from 'lucide-react'; 
+import { Mail, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 <<<<<<< HEAD
 import { FaTwitter, FaGithub, FaLinkedinIn, FaFacebook } from 'react-icons/fa';
@@ -39,152 +39,99 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Footer = () => {
-  const [email, setEmail] = useState<string>('');
+  const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const subscribeMutation = api.blog.subscribeToNewsletter.useMutation({
-    onMutate: () => {
-      setIsLoading(true);
->>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
-    },
+    onMutate: () => setIsLoading(true),
     onSuccess: () => {
-      toast.success('Đăng ký nhận bản tin thành công! Cảm ơn bạn.', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.success('Đăng ký nhận bản tin thành công! Cảm ơn bạn.');
       setEmail('');
     },
     onError: (error) => {
-      toast.error(`Đăng ký thất bại: ${error.message}`, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.error(`Đăng ký thất bại: ${error.message}`);
     },
-    onSettled: () => {
-      setIsLoading(false);
-    },
+    onSettled: () => setIsLoading(false),
   });
 
-<<<<<<< HEAD
-  return (
-    <>
-      <footer className="">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12 mb-10 md:mb-12">
-=======
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
-      toast.warning('Vui lòng nhập địa chỉ email', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      toast.warning('Vui lòng nhập địa chỉ email');
       return;
     }
     subscribeMutation.mutate({ email });
   };
 
+  const socialIcons = {
+    X: <FaXTwitter className="h-5 w-5" />,
+    Facebook: <FaFacebook className="h-5 w-5" />,
+    GitHub: <FaGithub className="h-5 w-5" />,
+    Youtube: <FaYoutube className="h-5 w-5" />,
+  };
+
   const footerContent = {
     tagline: 'Bài viết sâu sắc về công nghệ, thiết kế và phát triển. Khám phá tương lai AI cùng Bloai.',
-    links1_title: 'Liên kết', 
-    links1: [ 
+    links1: [
       { name: 'Trang chủ', href: '/landing' },
       { name: 'Danh mục', href: '/tags' },
       { name: 'Về chúng tôi', href: '/about' },
     ],
-    links2_title: '\u00A0', 
-    links2: [ 
+    links2: [
       { name: 'Liên hệ', href: '/contact' },
       { name: 'FAQs', href: '/faqs' },
       { name: 'Điều khoản & Bảo mật', href: '/privacy' },
     ],
-    socials_title: 'Kết nối',
     socials: [
-      { name: 'X', href: 'https://x.com/Bloai_Team', icon: 'FaXTwitter' }, 
-      { name: 'GitHub', href: 'https://github.com/TDevUIT/Bloai', icon: 'FaGithub' },
-      { name: 'Facebook', href: 'https://web.facebook.com/bloai/', icon: 'FaFacebook' },
-      { name: 'Youtube', href: 'https://www.youtube.com/channel/UCi396lyYi5FURzdp-W93lHg', icon: 'FaYoutube' },
+      { name: 'X', href: 'https://x.com/Bloai_Team' },
+      { name: 'GitHub', href: 'https://github.com/TDevUIT/Bloai' },
+      { name: 'Facebook', href: 'https://web.facebook.com/bloai/' },
+      { name: 'Youtube', href: 'https://www.youtube.com/channel/UCi396lyYi5FURzdp-W93lHg' },
     ],
-    copyright: 'Bloai Team. Đã đăng ký bản quyền.', 
+    copyright: 'Bloai Team. Đã đăng ký bản quyền.',
   };
-
-  const joinProfessionalsText = "Nhận thông tin cập nhật mới nhất."; 
-  const privacyPolicyText = "Chính sách Bảo mật"; 
-  const termsOfServiceText = "Điều khoản Dịch vụ"; 
 
   return (
     <footer className="">
       <div className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col items-center mb-12">
-            <div className="flex items-center gap-2 mb-4">
-              <Logo />
-            </div>
-            <p className="text-center text-[#554640]/90 max-w-md">
-              {footerContent.tagline}
-            </p>
+          <div className="flex flex-col items-center mb-12 text-center">
+            <Logo />
+            <p className="text-[#554640]/90 max-w-md mt-4">{footerContent.tagline}</p>
           </div>
 >>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             <div className="md:col-span-2">
-              <form className="flex gap-3" onSubmit={handleSubmit}>
+              <form className="flex gap-3" onSubmit={handleSubmit} aria-label="Subscribe to newsletter">
                 <div className="relative flex-grow">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#554640]" />
                   <Input
                     type="email"
-                    placeholder='Email'
+                    placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10 focus:ring-2 focus:ring-[#3A6B4C] rounded-lg"
-                    aria-label="Email for newsletter" 
                     disabled={isLoading}
                   />
                 </div>
-                <Button 
-                  type="submit" 
-                  className="bg-[#3A6B4C] border-[#3A6B4C] hover:bg-[#2E5540] text-white"
+                <Button
+                  type="submit"
+                  className="bg-[#3A6B4C] hover:bg-[#2E5540] text-white"
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    'Đang gửi...'
-                  ) : (
-                    <>
-                      Đăng ký 
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
-                  )}
+                  {isLoading ? 'Đang gửi...' : <>Đăng ký <ArrowRight className="ml-2 h-4 w-4" /></>}
                 </Button>
               </form>
-              <p className="text-sm text-[#554640]/80 mt-3">
-                {joinProfessionalsText}
-              </p>
+              <p className="text-sm text-[#554640]/80 mt-3">Nhận thông tin cập nhật mới nhất.</p>
             </div>
 
             <div>
-              <h4 className="text-[#2B463C] font-medium mb-4">{footerContent.links1_title}</h4>
+              <h4 className="text-[#2B463C] font-medium mb-4">Liên kết</h4>
               <ul className="space-y-2">
                 {footerContent.links1.map((link) => (
                   <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-[#554640]/90 hover:text-[#3A6B4C] transition-colors"
-                    >
+                    <Link href={link.href} className="text-[#554640]/90 hover:text-[#3A6B4C] transition-colors">
                       {link.name}
                     </Link>
                   </li>
@@ -193,14 +140,11 @@ const Footer = () => {
             </div>
 
             <div>
-              <h4 className="text-[#2B463C] font-medium mb-4">{footerContent.links2_title}</h4>
+              <h4 className="text-[#2B463C] font-medium mb-4">&nbsp;</h4>
               <ul className="space-y-2">
                 {footerContent.links2.map((link) => (
                   <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-[#554640]/90 hover:text-[#3A6B4C] transition-colors"
-                    >
+                    <Link href={link.href} className="text-[#554640]/90 hover:text-[#3A6B4C] transition-colors">
                       {link.name}
                     </Link>
                   </li>
@@ -211,40 +155,18 @@ const Footer = () => {
 
           <div className="border-t border-[#3A6B4C] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex space-x-4">
-              <Link
-                href={footerContent.socials.find(s => s.name === 'X')?.href || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#554640]/80 hover:text-[#3A6B4C]"
-                aria-label="XTwitter"
-              >
-                <FaXTwitter className="h-5 w-5" />
-              </Link>
-              <Link
-                href={footerContent.socials.find(s => s.name === 'Facebook')?.href || '#'}
-                className="text-[#554640]/80 hover:text-[#3A6B4C]"
-                aria-label="Facebook"
-              >
-                <FaFacebook className="h-5 w-5" />
-              </Link>
-              <Link
-                href={footerContent.socials.find(s => s.name === 'GitHub')?.href || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#554640]/80 hover:text-[#3A6B4C]"
-                aria-label="GitHub"
-              >
-                <FaGithub className="h-5 w-5" />
-              </Link>
-              <Link
-                href={footerContent.socials.find(s => s.name === 'Youtube')?.href || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#554640]/80 hover:text-[#3A6B4C]"
-                aria-label="Youtube"
-              >
-                <FaYoutube className="h-5 w-5" />
-              </Link>
+              {footerContent.socials.map((social) => (
+                <Link
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.name}
+                  className="text-[#554640]/80 hover:text-[#3A6B4C]"
+                >
+                  {socialIcons[social.name as keyof typeof socialIcons]}
+                </Link>
+              ))}
             </div>
 
             <div className="text-center md:text-right">
@@ -252,17 +174,11 @@ const Footer = () => {
                 © {new Date().getFullYear()} {footerContent.copyright}
               </p>
               <div className="mt-1 space-x-4">
-                <Link
-                  href="/privacy"
-                  className="text-sm text-[#554640]/80 hover:text-[#3A6B4C]"
-                >
-                  {privacyPolicyText}
+                <Link href="/privacy" className="text-sm text-[#554640]/80 hover:text-[#3A6B4C]">
+                  Chính sách Bảo mật
                 </Link>
-                <Link
-                  href="/terms"
-                  className="text-sm text-[#554640]/80 hover:text-[#3A6B4C]"
-                >
-                  {termsOfServiceText}
+                <Link href="/terms" className="text-sm text-[#554640]/80 hover:text-[#3A6B4C]">
+                  Điều khoản Dịch vụ
                 </Link>
               </div>
             </div>

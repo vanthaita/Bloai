@@ -43,8 +43,6 @@ export function BlogCard({ blog, onClick, isNavigating }: BlogCardProps) {
             dpr="auto" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-transparent to-transparent" />
-
-          
         </div>
 
         <div className="p-5 space-y-3 flex-grow flex flex-col justify-between">
@@ -69,10 +67,10 @@ export function BlogCard({ blog, onClick, isNavigating }: BlogCardProps) {
                   <FaEye className="w-4 h-4 text-[#3A6B4C]" />
                   <span>{blog.views >= 1000 ? `${(blog.views / 1000).toFixed(1)}k` : blog.views ?? 0}</span>
                 </div>
-                <div className="flex items-center gap-1" title="Likes">
+                {/* <div className="flex items-center gap-1" title="Likes">
                   <FaHeart className="w-4 h-4 text-[#3A6B4C]" />
                   <span>{blog.likes ?? 0}</span>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className='flex justify-between items-center'>

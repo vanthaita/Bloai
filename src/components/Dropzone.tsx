@@ -3,13 +3,15 @@
 import React, { useState, useCallback, useRef } from 'react'
 import { UploadIcon } from 'lucide-react' 
 
-interface DropzoneProps {
-  onDrop: (files: File[]) => void
-  accept?: string
-  maxFiles?: number
-  maxSize?: number
-}
 
+interface DropzoneProps {
+  onDrop: (files: File[]) => void;
+  accept?: string; 
+  maxFiles?: number;
+  maxSize?: number;
+  id?: string;
+  'aria-label'?: string; 
+}
 export const Dropzone = ({ onDrop, accept, maxFiles, maxSize }: DropzoneProps) => {
   const [isDragActive, setIsDragActive] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -89,7 +91,7 @@ export const Dropzone = ({ onDrop, accept, maxFiles, maxSize }: DropzoneProps) =
 
   return (
     <div
-      className={`border-2 border-dashed rounded-lg p-6 md:p-8 text-center transition-colors duration-200 ease-in-out cursor-pointer flex flex-col justify-center items-center min-h-[150px] md:min-h-[200px] ${ // Adjusted padding and min-height
+      className={`border-2 border-dashed rounded-lg p-6 md:p-8 text-center transition-colors duration-200 ease-in-out cursor-pointer flex flex-col justify-center items-center min-h-[150px] md:min-h-[200px] ${ 
         isDragActive
           ? 'border-primary bg-primary/10 ring-2 ring-primary ring-offset-2'
           : 'border-muted-foreground/30 hover:border-muted-foreground/50 hover:bg-muted/10' 
@@ -128,11 +130,3 @@ export const Dropzone = ({ onDrop, accept, maxFiles, maxSize }: DropzoneProps) =
   )
 }
 
-interface DropzoneProps {
-  onDrop: (files: File[]) => void;
-  accept?: string; 
-  maxFiles?: number;
-  maxSize?: number;
-  id?: string;
-  'aria-label'?: string; 
-}

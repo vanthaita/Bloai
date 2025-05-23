@@ -2,9 +2,10 @@
 
 import React, { useMemo } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useIsMobile } from '@/hook/use-mobile';
 import { BlogCore } from '@/types/helper.type';
+import { Avatar, AvatarFallback, AvatarImage } from '../../../../components/ui/avatar';
+import { FaUser } from 'react-icons/fa';
 
 interface BlogHeaderProps {
     blog: BlogCore | null;
@@ -37,13 +38,13 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
     return (
         <>
             <div className="mb-6">
-                <Link href="/" passHref legacyBehavior>
-                    <a className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+                <Link href="/">
+                    <span className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
                         Về trang chủ
-                    </a>
+                    </span>
                 </Link>
             </div>
             <div className="flex flex-wrap gap-2 mb-4">
@@ -64,17 +65,21 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-500 mb-8 text-sm md:text-base">
                 {blog.author?.name && (
                     <div className="flex items-center gap-2">
-                         {blog.author.image && (
-                             <Image
-                                src={blog.author.image}
-                                alt={`${blog.author.name}'s avatar`}
-                                width={24}
-                                height={24}
-                                className="rounded-full object-cover"
-                                quality={75}
-                                unoptimized={blog.author.image.startsWith('/')}
-                            />
-                         )}
+                        {blog.author.image && (
+                             <Avatar className='h-6 w-6'>
+                                <AvatarImage 
+                                    src={blog.author.image || 'https://res.cloudinary.com/dq2z27agv/image/upload/q_auto,f_webp,w_auto/v1746885273/y3hpblcst5qn3j5aah1l.svg'} 
+                                    alt={`${blog.author.name}'s avatar`}
+                                />
+                                <AvatarFallback className="bg-gray-200">
+                                {blog.author.name ? (
+                                    blog.author.name.split(' ').map(n => n[0]).join('')
+                                ) : (
+                                    <FaUser className="w-4 h-4 text-gray-600" />
+                                )}
+                                </AvatarFallback>
+                            </Avatar>
+                        )}
                         <span>By {blog.author.name}</span>
                         <span className="h-1 w-1 bg-gray-400 rounded-full" />
                     </div>

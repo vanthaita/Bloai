@@ -18,6 +18,7 @@ import ScrollToTopButton from './ScrollToTopButton';
 import { Author, Blog, Heading, slugify, SuggestedBlog } from '@/types/helper.type';
 import { useCurrentUser } from '@/hook/use-current-user';
 import BlogComments from './BlogComment';
+import Link from 'next/link';
 
 
 interface BlogPostClientWrapperProps {
@@ -114,17 +115,17 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
                  <p className="max-w-md text-gray-700">
                      We couldn't load the author details for this post right now.
                  </p>
-                 <Button
-                     variant="outline"
-                     className="text-blue-600 hover:text-blue-700 border-blue-500 hover:bg-blue-50 mt-4"
-                     onClick={() => router.back()}
-                 >
-                     ← Go Back
-                 </Button>
+                    <Button asChild
+                        variant="outline"
+                        className="text-blue-600 hover:text-blue-700 border-blue-500 hover:bg-blue-50 mt-4"
+                    >
+                        <Link href='/'>
+                            ← Go Back
+                        </Link>
+                    </Button>
              </div>
          );
-     }
-
+    }
 
     return (
         <>
@@ -154,6 +155,7 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
                             <BlogComments slug={blog.slug}/>
                         </article>
                     </main>
+                    <div className='mt-8'></div>
                     <BlogSuggestedPosts author={author} suggestedBlogs={suggestedBlogs} />
                 </div>
 

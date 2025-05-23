@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaArrowRight, FaRobot, FaBrain, FaCode, FaChartLine, FaTwitter, FaLinkedin, FaGithub } from 'react-icons/fa';
-import { homePageSchemaLd, safeJsonLdStringify } from '@/config/seo';
+import Head from 'next/head';
 
 const LandingPage = () => {
   const [heroImage] = useState('https://images.unsplash.com/photo-1507146426996-ef05306b995a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
@@ -22,46 +22,9 @@ const LandingPage = () => {
   ];
   return (
     <>
-<<<<<<< HEAD
-     <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(homePageSchemaLd) }}
-      />
-        <div className="min-h-screen bg-white text-gray-800">
-        <section className="container mx-auto px-4 py-16">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
-            <div className="lg:w-1/2 mb-12 lg:mb-0">
-              <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-                Khám phá thế giới 
-                <span className="text-blue-600"> AI</span> cùng BloAI
-              </h1>
-              <p className="text-lg text-gray-600 mb-8">
-                Nền tảng kiến thức AI hàng đầu - Kết nối lý thuyết với thực hành
-              </p>
-              <div className="flex gap-4">
-                <Link href="/auth/signin" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg text-white font-medium transition-colors">
-                  Bắt đầu ngay
-                  <FaArrowRight className="mt-1" />
-                </Link>
-                <Link href="/about" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium">
-                  Tìm hiểu thêm
-                </Link>
-              </div>
-            </div>
-            <div className="lg:w-1/2 relative">
-              <Image
-                src={heroImage}
-                alt="AI Visualization"
-                width={600}
-                height={400}
-                className="rounded-xl shadow-xl border-4 border-blue-100"
-                priority
-              />
-              <div className="absolute -bottom-4 left-4 bg-white p-4 rounded-xl shadow-lg">
-                <span className="text-xl font-bold text-blue-600">100K+</span>
-                <p className="text-sm text-gray-600">Developers tham gia</p>
-              </div>
-=======
+      <Head>
+        <link rel="canonical" href="https://www.bloai.blog/landing" />
+      </Head>
       <script
          type="application/ld+json"
          dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema).replace(/</g, '\\u003c') }}

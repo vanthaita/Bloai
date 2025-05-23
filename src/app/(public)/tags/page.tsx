@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import React from 'react'
 import TagsContent from './TagsContent'
+import Head from 'next/head'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -17,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: "Hướng dẫn toàn diện về Trí tuệ Nhân tạo từ cơ bản đến nâng cao. Cập nhật xu hướng AI mới nhất và ứng dụng thực tiễn trong mọi lĩnh vực đời sống.",
       images: [
         {
-          url: 'https://www.bloai.blog/images/og-image.jpg',
+          url: 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png',
           width: 1200,
           height: 630,
           alt: 'Bloai Blog - Kiến Thức AI',
@@ -28,13 +29,18 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: "Bloai Blog - Hướng Dẫn AI Từ Cơ Bản Đến Nâng Cao",
       description: "Khám phá thế giới AI với hướng dẫn chi tiết và case study thực tế. Cộng đồng AI lớn nhất Việt Nam",
-      images: ['https://www.bloai.blog/images/twitter-card.jpg'],
+      images: ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
     },
   }
 }
 const TagPage = () => {
   return (
-    <TagsContent />
+    <>
+      <Head>
+        <link rel="canonical" href="https://www.bloai.blog/tags" />
+      </Head>
+      <TagsContent />
+    </>
   )
 }
 

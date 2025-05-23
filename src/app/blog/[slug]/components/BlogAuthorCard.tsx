@@ -28,7 +28,7 @@ const AuthorCard: React.FC<AuthorCardProps> = ({
     return (
         <div className={`flex flex-col items-center text-center ${className}`}>
             <Image
-                src={author.image || '/fallback-avatar.png'}
+                src={author.image || '/images/fallback-avatar.png'}
                 alt={author.name ? `${author.name}'s Avatar` : 'Author Avatar'}
                 width={imageSize}
                 height={imageSize}
@@ -39,7 +39,7 @@ const AuthorCard: React.FC<AuthorCardProps> = ({
             />
             <h3 className="text-xl font-bold text-gray-900 mb-2">{author.name || 'Unknown Author'}</h3>
             <p className="text-gray-600 mb-6 leading-relaxed max-w-md">
-                {author.bio || 'No bio available.'}
+                {author.bio || 'The author shares insights on AI, machine learning, and tech.'}
             </p>
             {showSocials && socialLinks.length > 0 && (
                  <div className="flex gap-3 w-full items-center justify-center">
