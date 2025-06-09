@@ -138,7 +138,10 @@ export default async function RootLayout({
     <SessionProvider session={session}>
       <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
         <head>
-          <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1872574461230356"
+          <Script 
+            async 
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1872574461230356"
+            strategy="afterInteractive"
             crossOrigin="anonymous"
           ></Script>
           <script
