@@ -68,6 +68,7 @@ const NewPostContent = () => {
     const currentUser = useCurrentUser();
     const searchParams = useSearchParams();
     const blogSlug = searchParams.get('blogSlug') as string;
+    
     const { data: blogData, isLoading: isBlogLoading } = api.blog.getBlog.useQuery({ slug: blogSlug }, {
         enabled: !!blogSlug,
         select: (data) => ({

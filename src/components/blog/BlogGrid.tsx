@@ -9,13 +9,16 @@ import { BlogFilterBar } from './BlogFilterBar';
 import { BlogCard } from './BlogCard';
 import Link from 'next/link';
 import Pagination from '../Pagintion';
-
+import { useSearchParams, useRouter } from 'next/navigation';
 const LIMIT = 9;
 
 export function BlogGrid() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [activeFilter, setActiveFilter] = useState('');
   const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
+
+  const currentPage = parseInt(searchParams.get('page') || '1');
 
   const { 
     data: tagsData, 
@@ -61,18 +64,24 @@ export function BlogGrid() {
   const totalPages = Math.ceil(currentTotal / LIMIT);
 
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
+    const params = new URLSearchParams(searchParams);
+    params.set('page', newPage.toString());
+    router.push(`?${params.toString()}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleFilterChange = (newFilter: string) => {
     setActiveFilter(newFilter);
-    setCurrentPage(1); 
+    const params = new URLSearchParams(searchParams);
+    params.set('page', '1');
+    router.push(`?${params.toString()}`);
   };
 
   const clearFilter = () => {
     setActiveFilter('');
-    setCurrentPage(1);
+    const params = new URLSearchParams(searchParams);
+    params.set('page', '1');
+    router.push(`?${params.toString()}`);
   };
 
   if (isTagsLoading || (!currentQuery.data && currentQuery.isLoading)) {

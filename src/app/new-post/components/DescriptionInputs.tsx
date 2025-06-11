@@ -47,7 +47,7 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
 =======
 >>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
 
-     const handleGenerateMetaDesc = async () => {
+    const handleGenerateMetaDesc = async () => {
         try {
             const generated = await generateMetaDescription(contentForAI,modelAi);
             if (generated) {

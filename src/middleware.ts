@@ -6,8 +6,14 @@ import { NextResponse } from "next/server"
 const { auth } = NextAuth(authConfig)
 
 export default auth(async function middleware(req) {
-  const isLoggedIn = !!req.auth;
   const { nextUrl } = req;
+  
+  if (nextUrl.pathname === "/" && !nextUrl.searchParams.has('page')) {
+    nextUrl.searchParams.set('page', '1');
+    return NextResponse.redirect(nextUrl);
+  }
+
+  const isLoggedIn = !!req.auth;
   const isApiAuthRoute = nextUrl.pathname.startsWith(API_AUTH_PREFIX);
   const isPublicRoute = PUBLIC_ROUTES.includes(nextUrl.pathname) || nextUrl.pathname.startsWith('/blog');
   const isAuthRoute = AUTH_ROUTES.includes(nextUrl.pathname);

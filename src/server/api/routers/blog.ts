@@ -4,7 +4,6 @@ import { TRPCError } from "@trpc/server";
 import { Prisma } from "@prisma/client";
 import { Resend } from "resend";
 import { sendBlogNotifications, sendConfirmationEmail } from "@/lib/notifySubscribers";
-import { connect } from "http2";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
