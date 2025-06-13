@@ -17,27 +17,37 @@ const Pagination: React.FC<PaginationProps> = ({
   className,
 }) => {
   const getPageNumbers = (): (number | '...')[] => {
+    const visiblePages: (number | '...')[] = [];
+    
+    visiblePages.push(1);
+    
     if (totalPages <= 7) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
+      for (let i = 2; i <= totalPages; i++) {
+        visiblePages.push(i);
+      }
+      return visiblePages;
     }
-
-    if (currentPage <= 3) {
-      return [1, 2, 3, 4, '...', totalPages];
+    
+    const leftBound = Math.max(2, currentPage - 1);
+    const rightBound = Math.min(totalPages - 1, currentPage + 1);
+    
+    if (leftBound > 2) {
+      visiblePages.push('...');
     }
-
-    if (currentPage >= totalPages - 2) {
-      return [1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    
+    for (let i = leftBound; i <= rightBound; i++) {
+      visiblePages.push(i);
     }
-
-    return [
-      1,
-      '...',
-      currentPage - 1,
-      currentPage,
-      currentPage + 1,
-      '...',
-      totalPages,
-    ];
+    
+    if (rightBound < totalPages - 1) {
+      visiblePages.push('...');
+    }
+    
+    if (totalPages > 1) {
+      visiblePages.push(totalPages);
+    }
+    
+    return visiblePages;
   };
 
   const handlePageChange = (page: number) => {
