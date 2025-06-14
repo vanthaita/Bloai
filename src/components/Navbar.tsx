@@ -1,272 +1,195 @@
-'use client';
-
-import { useCurrentUser } from '@/hook/use-current-user';
+'use client'
 import Link from 'next/link';
-import { FaSearch, FaUser, FaSignOutAlt, FaPenAlt, FaHome, FaBars, FaTimes } from 'react-icons/fa';
-import { signOut } from 'next-auth/react';
-import { useState, useEffect, useRef } from 'react';
-import { useIsMobile } from '@/hook/use-mobile';
-import { cn } from '@/lib/utils';
-import Logo from '@/components/logo'; 
-import { Button } from './ui/button';
-import Search from './Search';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { usePathname } from 'next/navigation';
-import { Home, Tags, Info, PenLine } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { Menu, X, ChevronDown, LogIn, Rocket } from 'lucide-react';
+import Logo from './logo';
 
-const Navbar = () => {
-  const user = useCurrentUser();
+interface NavLink {
+  href: string;
+  label: string;
+  subLinks?: NavLink[]; 
+}
+
+const navLinks: NavLink[] = [
+  { href: '/product', label: 'Sản phẩm' },
+  { 
+    href: '/solutions', 
+    label: 'Giải pháp',
+    subLinks: [
+      { href: '/solutions/seo', label: 'SEO Content' },
+      { href: '/solutions/marketing', label: 'Marketing' },
+      { href: '/solutions/agency', label: 'Cơ quan' }
+    ]
+  },
+  { href: '/resources', label: 'Tài nguyên' },
+  { href: '/pricing', label: 'Giá' },
+];
+
+const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
-  const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node) && 
-          !(event.target as HTMLElement).closest('.mobile-menu-button')) {
-        setIsMobileMenuOpen(false);
-      }
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+    if (isOpen) setOpenSubMenu(null);
+  };
+
+  const toggleSubMenu = (label: string) => {
+    setOpenSubMenu(openSubMenu === label ? null : label);
+  };
+
   return (
-    <>
-      <nav
-        className={cn(
-          "h-14 min-[375px]:h-16 bg-white border-b border-black/10 flex items-center justify-between",
-          "px-2 min-[375px]:px-4 md:px-6 lg:px-8 shadow-sm",
-          "fixed top-0 left-0 w-full z-30" 
-        )}
-        aria-label="Main navigation"
-      >
-        <div className="flex items-center flex-shrink-0 md:max-w-6xl md:w-full">
+    <nav
+      className={`sticky top-0 z-50 bg-white shadow-sm transition-all duration-300 ${
+        isScrolled ? 'shadow-md' : ''
+      }`}
+    >
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
           <Logo />
-          {!isMobile && (
-            <div className="hidden md:flex items-center ml-8 space-x-6">
-              <Link 
-                href="/" 
-                className={cn(
-                  "text-gray-600 hover:text-[#3A6B4C] transition-colors flex items-center gap-1",
-                  pathname === "/" && "text-[#3A6B4C] font-medium"
-                )}
-              >
-                <FaHome className="w-4 h-4" />
-                <span>Trang chủ</span>
-              </Link>
-              <Link
-                href="/tags"
-                className={cn(
-                  "text-gray-600 hover:text-[#3A6B4C] transition-colors",
-                  pathname === "/tags" && "text-[#3A6B4C] font-medium"
-                )}
-              >
-                Danh Mục
-              </Link>
-              <Link
-                href="/about"
-                className={cn(
-                  "text-gray-600 hover:text-[#3A6B4C] transition-colors",
-                  pathname === "/about" && "text-[#3A6B4C] font-medium"
-                )}
-              >
-                Về chúng tôi
-              </Link>
-            </div>
-          )}
-           {!isMobile && (
-          <div className="flex-1 max-w-2xl mx-4 ">
-            <Search />
-          </div>
-        )}
-        </div>
-       
-        <div className="flex items-center justify-end gap-2 min-[375px]:gap-4 flex-shrink-0">
-          {isMobile && (
-            <>
-              {/* <Button 
-                variant="ghost"
-                className={cn(
-                  "p-1.5 text-gray-600 hover:text-[#3A6B4C] transition-colors",
-                  pathname === "/search" && "text-[#3A6B4C]"
-                )}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <Link href="/search">
-                  <FaSearch className="w-4 h-4" aria-label="Search" />
-                </Link>
-              </Button> */}
-              
-              <Button 
-                variant="ghost"
-                className="p-1.5 text-gray-600 hover:text-[#3A6B4C] transition-colors mobile-menu-button"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                aria-label="Toggle menu"
-              >
-                {isMobileMenuOpen ? (
-                  <FaTimes className="w-4 h-4" />
-                ) : (
-                  <FaBars className="w-4 h-4" />
-                )}
-              </Button>
-            </>
-          )}
-
-          {user ? (
-            <div className="relative flex gap-x-4 justify-center items-center" ref={dropdownRef}>
-              {!isMobile && (
-                <Button 
-                  asChild 
-                  className={cn(
-                    'bg-[#3A6B4C] text-white hover:bg-[#3A6B4C]/90',
-                    pathname === "/new-post" && "bg-[#3A6B4C]/80"
-                  )}
-                >
-                  <Link href='/new-post'>
-                    <FaPenAlt className="w-4 h-4" />
-                    <span className="hidden sm:inline">Viết Blog</span>
+          <div className="hidden md:flex md:items-center md:space-x-6">
+            {navLinks.map((link) => (
+              <div key={link.label} className="relative group">
+                <div className="flex items-center">
+                  <Link
+                    href={link.href}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-green-700 transition-colors flex items-center"
+                  >
+                    {link.label}
+                    {link.subLinks && (
+                      <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
+                    )}
                   </Link>
-                </Button>
-              )}
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center rounded-full hover:bg-gray-100 transition-colors"
-                aria-label="User menu"
-                aria-haspopup="true"
-                aria-expanded={isOpen}
-              >
-                <Avatar className='h-8 w-8'>
-                  <AvatarImage 
-                    src={user.image || 'https://res.cloudinary.com/dq2z27agv/image/upload/q_auto,f_webp,w_auto/v1746885273/y3hpblcst5qn3j5aah1l.svg'} 
-                    alt={user.name || 'User avatar'}
-                  />
-                  <AvatarFallback className="bg-gray-200">
-                    {user.name ? (
-                      user.name.split(' ').map(n => n[0]).join('')
-                    ) : (
-                      <FaUser className="w-4 h-4 text-gray-600" />
-                    )}
-                  </AvatarFallback>
-                </Avatar>
-              </button>
-
-              {isOpen && (
-                <div
-                  className="absolute right-0 top-10 w-64 bg-white rounded-lg shadow-xl border border-gray-200 divide-y divide-gray-100 z-40"
-                  role="menu"
-                >
-                  <div className="px-4 py-3">
-                    <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
-                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
-                  </div>
-                  <div className="py-1">
-                    {/* <Link
-                      href="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#3A6B4C] transition-colors"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <FaUser className="w-4 h-4 mr-3 text-gray-400 inline" />
-                      Profile
-                    </Link> */}
-                    {isMobile && (
-                      <Link
-                        href="/new-post"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#3A6B4C] transition-colors"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <FaPenAlt className="w-4 h-4 mr-3 text-gray-400 inline" />
-                        Viết Blog
-                      </Link>
-                    )}
-                    <button
-                      onClick={() => signOut()}
-                      className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600 transition-colors" 
-                    >
-                      <FaSignOutAlt className="w-4 h-4 mr-3 text-gray-400" />
-                      Sign out
-                    </button>
-                  </div>
                 </div>
-              )}
-            </div>
-          ) : (
-            <Link
-              href="/auth/signin"
-              className={cn(
-                "px-3 py-1.5 min-[375px]:px-4 min-[375px]:py-2 text-sm min-[375px]:text-base text-gray-800 hover:text-blue-600 hover:bg-blue-50 transition-colors border-2 border-black rounded-sm",
-                pathname === "/auth/signin" && "bg-blue-50 text-blue-600"
-              )}
-            >
-              <span className='font-medium'>Đăng Nhập</span>
-            </Link>
-          )}
-        </div>
-      </nav>
-
-      {isMobile && isMobileMenuOpen && (
-        <div 
-          ref={mobileMenuRef}
-          className="fixed top-16 left-0 w-full bg-white shadow-lg z-20 border-t border-gray-200 animate-in slide-in-from-top-2"
-        >
-          <div className="px-4 py-3 space-y-4">
-            <Link 
-              href="/" 
-              className={cn(
-                "flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-[#3A6B4C] transition-colors",
-                pathname === "/" && "text-[#3A6B4C] font-medium"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <Home size={18} />
-              Trang chủ
-            </Link>
-            <Link
-              href="/tags"
-              className={cn(
-                "flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-[#3A6B4C] transition-colors",
-                pathname === "/tags" && "text-[#3A6B4C] font-medium"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <Tags size={18} />
-              Danh Mục
-            </Link>
-            <Link
-              href="/about"
-              className={cn(
-                "flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-[#3A6B4C] transition-colors",
-                pathname === "/about" && "text-[#3A6B4C] font-medium"
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <Info size={18} />
-              Về chúng tôi
-            </Link>
-            {user && (
-              <Link
-                href="/new-post"
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-[#3A6B4C] transition-colors",
-                  pathname === "/new-post" && "text-[#3A6B4C] font-medium"
+                
+                {link.subLinks && (
+                  <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white border border-gray-100 text-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top">
+                    <div className="py-1">
+                      {link.subLinks.map((subLink) => (
+                        <Link
+                          key={subLink.label}
+                          href={subLink.href}
+                          className="block px-4 py-2 text-sm hover:bg-green-50 hover:text-green-700 transition-colors"
+                        >
+                          {subLink.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
                 )}
-                onClick={() => setIsMobileMenuOpen(false)}
+              </div>
+            ))}
+          </div>
+
+          <div className="hidden md:flex md:items-center md:space-x-4">
+            <Link
+              href="/login"
+              className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-green-700 transition-colors flex items-center"
+            >
+              <LogIn className="mr-2 h-4 w-4" />
+              Đăng nhập
+            </Link>
+            <Link
+              href="/get-started"
+              className="px-4 py-2 rounded-md text-sm font-semibold text-white bg-green-700 hover:bg-green-800 transition-colors shadow flex items-center"
+            >
+              <Rocket className="mr-2 h-4 w-4" />
+              Bắt đầu ngay
+            </Link>
+          </div>
+
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={toggleMenu}
+              type="button"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-green-700 hover:bg-gray-100 focus:outline-none"
+              aria-controls="mobile-menu"
+              aria-expanded={isOpen}
+            >
+              <span className="sr-only">Open main menu</span>
+              {isOpen ? (
+                <X className="block h-6 w-6" />
+              ) : (
+                <Menu className="block h-6 w-6" />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {isOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200" id="mobile-menu">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {navLinks.map((link) => (
+              <div key={link.label}>
+                <div className="flex items-center justify-between">
+                  <Link
+                    href={link.href}
+                    onClick={() => !link.subLinks && setIsOpen(false)}
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-700 hover:bg-gray-50 transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                  {link.subLinks && (
+                    <button 
+                      onClick={() => toggleSubMenu(link.label)}
+                      className="p-2"
+                    >
+                      <ChevronDown 
+                        className={`h-5 w-5 transition-transform ${openSubMenu === link.label ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+                  )}
+                </div>
+                
+                {link.subLinks && openSubMenu === link.label && (
+                  <div className="ml-4 mt-1 space-y-1">
+                    {link.subLinks.map((subLink) => (
+                      <Link
+                        key={subLink.label}
+                        href={subLink.href}
+                        onClick={() => setIsOpen(false)}
+                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-green-700 hover:bg-gray-50 transition-colors"
+                      >
+                        {subLink.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+            
+            <div className="pt-4 pb-2 border-t border-gray-200 space-y-2">
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-700 hover:bg-gray-50 transition-colors"
               >
-                <PenLine size={18} />
-                Viết Blog
+                <LogIn className="mr-2 h-5 w-5" />
+                Đăng nhập
               </Link>
-            )}
+              <Link
+                href="/get-started"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center justify-center px-3 py-2 rounded-md text-base font-semibold text-white bg-green-700 hover:bg-green-800 transition-colors shadow"
+              >
+                <Rocket className="mr-2 h-5 w-5" />
+                Bắt đầu ngay
+              </Link>
+            </div>
           </div>
         </div>
       )}
-
-    </>
+    </nav>
   );
 };
 
