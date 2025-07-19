@@ -30,22 +30,6 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
     modelAi,
 }) => {
 
-<<<<<<< HEAD
-    const handleGenerateExcerpt = async () => {
-      
-        try {
-            const generated = await generateExcerpt(contentForAI);
-            if (generated) {
-                setDescription(generated);
-            } 
-            return generated;
-        } catch (error) {
-            console.error(`Error generating Mô tả ngắn:`, error);
-            return null;
-        }
-    };
-=======
->>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
 
     const handleGenerateMetaDesc = async () => {
         try {
@@ -64,32 +48,6 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
     return (
         <>
             <div className="space-y-1.5">
-<<<<<<< HEAD
-                <Label htmlFor="description" className="flex items-center gap-2 text-base">
-                    Mô tả ngắn (Excerpt)
-                    <AIGenerationButton
-                        label="Mô tả ngắn"
-                        action={handleGenerateExcerpt}
-                        isGenerating={isGeneratingExcerpt}
-                        setIsGenerating={setIsGeneratingExcerpt}
-                        contentForAI={contentForAI}
-                        requiresContent={true}
-                    />
-                </Label>
-                <Textarea
-                    id="description"
-                    placeholder="Viết một đoạn mô tả ngắn gọn, hấp dẫn về bài viết..."
-                    rows={3}
-                    value={description}
-                    onChange={onDescriptionChange}
-                    maxLength={300}
-                />
-                <p className="text-xs text-muted-foreground">Còn lại {300 - description.length} ký tự</p>
-            </div>
-
-            <div className="space-y-1.5">
-=======
->>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
                 <Label htmlFor="metaDescription" className="flex items-center gap-2 text-base">
                     Meta Mô tả *
                     <span className={`text-xs ${metaDescription.length >= 120 && metaDescription.length <= 165 ? 'text-green-600' : 'text-yellow-600'}`}>

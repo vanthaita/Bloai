@@ -4,33 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Mail, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-<<<<<<< HEAD
-import { FaTwitter, FaGithub, FaLinkedinIn, FaFacebook } from 'react-icons/fa';
-import Logo from './logo'; 
-
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
-  const links = [
-    { name: 'Trang chủ', href: '/landing' },
-    { name: 'Danh mục', href: '/tags' },
-    { name: 'Về chúng tôi', href: '/about' },
-    { name: 'Liên hệ', href: '/contact' },
-    { name: 'FAQs', href: '/faqs' },
-    { name: 'Điều khoản & Chính sách bảo mật', href: '/privacy' },
-  ];
-
-  const socials = [
-    { name: 'Twitter', href: 'https://x.com/Bloai_Team', icon: <FaTwitter /> },
-    { name: 'GitHub', href: 'https://github.com/TDevUIT/Bloai', icon: <FaGithub /> },
-    { name: 'Facebook', href: 'https://www.youtube.com/channel/UCi396lyYi5FURzdp-W93lHg', icon: <FaFacebook /> }, 
-  ];
-  const recommendedTools = [
-    {
-      name: 'CopyAI',
-      href: 'https://www.copy.ai/',
-      description: 'Công cụ viết content AI cho marketing'
-=======
 import Logo from './logo';
 import { FaFacebook, FaGithub, FaYoutube } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6';
@@ -99,7 +72,6 @@ const Footer = () => {
             <Logo />
             <p className="text-[#554640]/90 max-w-md mt-4">{footerContent.tagline}</p>
           </div>
->>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             <div className="md:col-span-2">

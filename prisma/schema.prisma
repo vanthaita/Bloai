@@ -2,131 +2,178 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
-    // directUrl = env("DIRECT_URL")
+  provider  = "postgresql"
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+  createdById String
 
-    @@index([name])
+  @@index([name])
 }
 
 model Account {
-    id                       String  @id @default(cuid())
-    userId                   String
-    type                     String
-    provider                 String
-    providerAccountId        String
-    refresh_token            String? 
-    access_token             String? 
-    expires_at               Int?
-    token_type               String?
-    scope                    String?
-    id_token                 String?
-    session_state            String?
-    user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    refresh_token_expires_in Int?
+  id                       String  @id @default(cuid())
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String?
+  access_token             String?
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String?
+  session_state            String?
+  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refresh_token_expires_in Int?
 
-    @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    bio           String?   @db.Text  
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
-    blogs         Blog[]    @relation("UserBlogs")
-    comments      Comment[] @relation("UserComments")
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  bio           String?   @db.Text
+  accounts      Account[]
+  sessions      Session[]
+  posts         Post[]
+  blogs         Blog[]    @relation("UserBlogs")
+  comments      Comment[] @relation("UserComments")
 }
 
-
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-    @@unique([identifier, token])
+  @@unique([identifier, token])
 }
 
 model Blog {
-    id               String     @id @default(cuid())
-    title            String
-    slug             String     @unique
-    metaDescription  String     @db.VarChar(160)
-    content          String     @db.Text
-    imageUrl         String
-    imageAlt         String?
-    author           User       @relation("UserBlogs", fields: [authorId], references: [id])
-    authorId         String
-    publishDate      DateTime   @default(now())
-    updatedAt        DateTime   @updatedAt
-    readTime         Int
-    views            Int        @default(0)
-    likes            Int        @default(0)
-    tags             Tag[]     
-    comments         Comment[]
-    keywords         String[]
-    canonicalUrl     String?
-    structuredData   Json?
-    ogTitle          String?
-    ogDescription    String?
-    ogImageUrl       String?
-    twitterCard      String?
-    featured         Boolean    @default(false)
+  id              String    @id @default(cuid())
+  title           String
+  slug            String    @unique
+  metaDescription String    @db.VarChar(160)
+  content         String    @db.Text
+  imageUrl        String
+  imageAlt        String?
+  author          User      @relation("UserBlogs", fields: [authorId], references: [id])
+  authorId        String
+  publishDate     DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  readTime        Int
+  views           Int       @default(0)
+  likes           Int       @default(0)
+  tags            Tag[]
+  comments        Comment[]
+  keywords        String[]
+  canonicalUrl    String?
+  structuredData  Json?
+  ogTitle         String?
+  ogDescription   String?
+  ogImageUrl      String?
+  twitterCard     String?
+  featured        Boolean   @default(false)
 
-    @@index([title])
-    @@index([slug])
-    @@index([publishDate])
+  @@index([title])
+  @@index([slug])
+  @@index([publishDate])
 }
+
 model Tag {
-    id          String   @id @default(cuid())
-    name        String   
-    description String?  @db.Text 
-    blogs       Blog[]
-    @@index([name])
+  id          String  @id @default(cuid())
+  name        String
+  description String? @db.Text
+  blogs       Blog[]
+
+  @@index([name])
 }
+
 model Comment {
-    id        String   @id @default(cuid())
-    content   String
-    blog      Blog     @relation(fields: [blogId], references: [id])
-    blogId    String
-    author    User     @relation("UserComments", fields: [authorId], references: [id])
-    authorId  String
-    createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  content   String
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  blogId    String
+  author    User     @relation("UserComments", fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now())
 }
+
 model NewsletterSubscription {
-  id          String   @id @default(cuid())
-  email       String   @unique
-  subscribedAt DateTime @default(now())
+  id             String    @id @default(cuid())
+  email          String    @unique
+  subscribedAt   DateTime  @default(now())
   unsubscribedAt DateTime?
-  active      Boolean  @default(true)
+  active         Boolean   @default(true)
+}
+
+model CrawlSource {
+  id           String        @id @default(cuid())
+  name         String
+  url          String
+  type         String
+  active       Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  crawledBlogs CrawledBlog[]
+  maxPages     Int           @default(5)
+}
+
+model CrawledBlog {
+  id          String    @id @default(cuid())
+  title       String
+  content     String
+  sourceUrl   String
+  author      String?
+  publishedAt DateTime?
+  status      String    @default("pending") // pending, processed, translated, approved, published, failed
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  crawlSource       CrawlSource?            @relation(fields: [crawlSourceId], references: [id])
+  crawlSourceId     String?
+  processLogs       CrawledBlogProcessLog[]
+  language          String?
+  translatedContent String?
+  improvedContent   String?
+  tags              String[]
+  priority          String?
+  topic             String?
+}
+
+model CrawledBlogProcessLog {
+  id            String      @id @default(cuid())
+  crawledBlog   CrawledBlog @relation(fields: [crawledBlogId], references: [id])
+  crawledBlogId String
+  step          String // crawl, improve, translate, approve, publish
+  status        String // success, failed, pending
+  message       String?
+  createdAt     DateTime    @default(now())
 }

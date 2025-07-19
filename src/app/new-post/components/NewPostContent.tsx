@@ -387,7 +387,6 @@ const NewPostContent = () => {
                     </div>
                 </div>
                 </div>
->>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-xl md:text-2xl flex items-center gap-2">

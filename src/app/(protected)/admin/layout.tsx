@@ -1,14 +1,14 @@
+import AdminSidebar from '@/provider/admin.appsidebar';
 import React from 'react'
 
-interface Props {
-    children: React.ReactNode
+export default function AdminLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <>
+      <AdminSidebar>
+        {children}
+      </AdminSidebar>
+    </>
+  );
 }
-
-const AdminLayout = async ({children}: Props) => {
-    return (
-        <div>
-            {children}
-        </div>
-    )
-}
-export default AdminLayout

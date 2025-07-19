@@ -1,12 +1,10 @@
 import { BlogGrid } from "@/components/blog/BlogGrid";
 import Loading from "@/components/loading"; 
 import { Suspense } from "react";
-<<<<<<< HEAD
-import { blogPageMetadata, blogSchema, safeJsonLdStringify } from "@/config/seo";
-=======
 import LeaderBoard from "@/components/LeaderBoard";
 import EmailSubscribeSection from "@/components/EmailSubscribe";
 import TestimonialSection from "@/components/TestimonialSection";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Bloai Blog - Hướng Dẫn AI Từ Cơ Bản Đến Nâng Cao | Kiến Thức Công Nghệ Mới Nhất",
@@ -153,7 +151,6 @@ export default async function Home() {
 
       <main className="flex flex-col">
         <section className="px-4 min-[375px]:px-6 md:px-8 lg:px-10 xl:px-12 py-6 min-[375px]:py-8">
->>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
           <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-800 dark:text-gray-200 text-center underline decoration-[#3A6B4C] decoration-4 underline-offset-4">
             BÀI VIẾT NỔI BẬT
           </h1>

@@ -523,3 +523,152 @@ export const aiGeneratePromptForImage = async (content: string, modelAi?: string
 
   return generateSEOContent(prompt, modelAi);
 };
+
+export async function aiAnalyzeBlogContent(title: string, content: string): Promise<{ tags: string[]; topic: string; priority: string }> {
+  const prompt = `Bạn là AI chuyên phân tích nội dung blog. Hãy phân tích bài viết sau (có tiêu đề và nội dung) và trả về kết quả dưới dạng JSON với các trường:
+- tags: mảng các tag liên quan (ví dụ: ["AI", "Tech", "Social Good"])
+- topic: chủ đề chính (ví dụ: "AI", "Tech", "Other")
+- priority: mức độ ưu tiên đăng ("high", "medium", "low") dựa trên độ hấp dẫn, mới mẻ, liên quan đến AI/Tech.
+Chỉ trả về JSON, không giải thích. Dữ liệu:
+Tiêu đề: "${title}"
+Nội dung: "${content.slice(0, 2000)}"
+`;
+  const raw = await generateSEOContent(prompt);
+  try {
+    const json = JSON.parse(raw || '{}');
+    return {
+      tags: Array.isArray(json.tags) ? json.tags : [],
+      topic: typeof json.topic === 'string' ? json.topic : '',
+      priority: typeof json.priority === 'string' ? json.priority : '',
+    };
+  } catch {
+    return { tags: [], topic: '', priority: '' };
+  }
+}
+
+export const aiGenerateHTMLToMarkdown = async (content: string, modelAi?: string, baseUrl?: string) => {
+  const prompt = `
+    HÃY CHUYỂN ĐỔI HTML SANG MARKDOWN VỚI ĐỘ CHÍNH XÁC CAO (KÈM VÍ DỤ CỤ THỂ)
+
+    ### 1. PHÂN TÍCH & LỌC NỘI DUNG BLOG:
+    - TÌM VÀ CHỈ GIỮ LẠI PHẦN NỘI DUNG CHÍNH:
+      * Ví dụ: 
+        - Giữ: <div class="post-content">...</div>
+        - Loại bỏ: <div class="sidebar">...</div>, <footer>...</footer>
+
+    ### 2. QUY TẮC CHUYỂN ĐỔI CHI TIẾT (KÈM VÍ DỤ):
+    
+    [A] TIÊU ĐỀ:
+    • <h1>Tiêu đề</h1> → # Tiêu đề
+    • <h2>Phụ đề</h2> → ## Phụ đề
+    • <h3 class="sub">Nhỏ</h3> → ### Nhỏ
+
+    [B] ĐOẠN VĂN:
+    • <p>Đoạn văn bản.</p> → Đoạn văn bản.\n\n
+    • <p align="center">Căn giữa</p> → <!-- CENTER -->\nCăn giữa\n<!-- /CENTER -->
+
+    [C] ẢNH (XỬ LÝ URL TỪNG LOẠI):
+    • Case 1: Link tuyệt đối
+      <img src="https://example.com/img.jpg" alt="Mô tả"> 
+      → ![Mô tả](https://example.com/img.jpg)
+    
+    • Case 2: Link tương đối (có baseUrl)
+      <img src="/uploads/img.png" alt="Demo"> 
+      → ![Demo](${baseUrl ? `${baseUrl}/uploads/img.png` : 'ERROR_MISSING_BASE_URL'})
+
+    • Case 3: Link protocol-relative
+      <img src="//cdn.domain.com/1.jpg"> 
+      → ![](https://cdn.domain.com/1.jpg)
+
+    [D] LIÊN KẾT:
+    • <a href="/blog" title="Blog">Đi tới Blog</a> 
+      → [Đi tới Blog](${baseUrl ? `${baseUrl}/blog` : '/blog'})
+    
+    • <a class="external" href="https://external.com">Liên kết</a> 
+      → [Liên kết](https://external.com){:target="_blank"}
+
+    [E] ĐỊNH DẠNG VĂN BẢN:
+    • <strong>Quan trọng</strong> → **Quan trọng**
+    • <em>Nghiêng</em> → *Nghiêng*
+    • <u>Gạch chân</u> → <u>Gạch chân</u>
+
+    [F] DANH SÁCH:
+    • <ul><li>Mục 1</li><li>Mục 2</li></ul> 
+      → - Mục 1\n- Mục 2
+    
+    • <ol start="3"><li>Thứ 3</li></ol> 
+      → 3. Thứ 3
+
+    [G] BẢNG:
+    <table>
+      <tr><th>Tiêu đề</th></tr>
+      <tr><td>Nội dung</td></tr>
+    </table>
+    → 
+    | Tiêu đề |
+    |---------|
+    | Nội dung |
+
+    [H] CODE:
+    • <code>console.log()</code> → \`console.log()\`
+    • <pre><code class="language-js">...</code></pre> 
+      → \`\`\`js\n...\n\`\`\`
+
+    ### 3. KIỂM TRA SAU CHUYỂN ĐỔI:
+    - ĐẢM BẢO KHÔNG CÓ:
+      * Thẻ HTML sót lại (ví dụ: <span>, <div>)
+      * Link ảnh bị hỏng (kiểm tra các trường hợp)
+      * Mất nội dung quan trọng
+
+    ### 4. VÍ DỤ ĐẦU VÀO/ĐẦU RA:
+    [INPUT]:
+    <article>
+      <h1>Cách sử dụng React</h1>
+      <div class="ads">...</div>
+      <p>React là thư viện JavaScript phổ biến.</p>
+      <img src="/static/react-logo.png" alt="React Logo">
+    </article>
+
+    [OUTPUT]:
+    # Cách sử dụng React
+    
+    React là thư viện JavaScript phổ biến.
+    
+    ![React Logo](${baseUrl ? `${baseUrl}/static/react-logo.png` : '/static/react-logo.png'})
+
+    ### 5. NỘI DUNG CẦN XỬ LÝ:
+    ${content}
+
+    [YÊU CẦU CUỐI]:
+    - CHỈ trả về markdown đã được xử lý
+    - KHÔNG thêm bất kỳ giải thích nào
+  `;
+
+
+  try {
+    const raw = await generateSEOContent(prompt, modelAi);
+    if (!raw) {
+      return {
+        markdownContent: '',
+        success: false,
+        language: 'vi'
+      };
+    }
+    const cleanMarkdown = raw
+      .replace(/<!--[\s\S]*?-->/g, '') 
+      .replace(/<[^>]*>?/gm, '') 
+      .replace(/^[ \t]*\n+/gm, '\n') 
+      .trim();
+    return {
+      markdownContent: cleanMarkdown,
+      success: true,
+      language: 'vi'
+    };
+  } catch {
+    return {
+      markdownContent: '',
+      success: false,
+      language: 'vi'
+    };
+  }
+}
