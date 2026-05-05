@@ -7,6 +7,8 @@ import { api, HydrateClient } from "@/trpc/server";
 
 import { Sidebar } from "@/components/blog/Sidebar";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
     // Fetch data for Featured Posts (Top 3)
     const featuredData = await api.blog.getAllBlog({
