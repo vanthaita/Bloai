@@ -21,41 +21,36 @@ const BlogTableOfContents: React.FC<BlogTableOfContentsProps> = ({ headings }) =
     }
 
     return (
-        <div className="mb-10 p-2 border-2 md:block hidden">
-            <Label className="text-xl font-bold mb-4 text-orange-700 flex items-center gap-2 pb-2 border-b-2 border-orange-100">
-                <span className="p-2 bg-orange-100 rounded-full">📦</span>
+        <div className="mb-10 p-6 border-[1.5px] border-black rounded-none md:block hidden bg-white">
+            <Label className="text-sm font-bold uppercase tracking-widest text-black mb-6 flex items-center gap-2 pb-4 border-b-[1.5px] border-black">
                 Mục lục
             </Label>
-            <nav aria-label="Table of contents ">
-                <ul className="space-y-1.5 text-sm max-h-auto overflow-auto scroll-custom pr-3">
+            <nav aria-label="Table of contents">
+                <ul className="space-y-0 text-sm max-h-auto overflow-auto scroll-custom pr-3">
                     {headings.map((heading) => (
                         <li
                             key={heading.id}
-                            className="relative transition-transform hover:translate-x-1"
+                            className="relative"
                         >
                             <Link
                                 href={`#${heading.id}`}
                                 className={`
-                                    flex items-center text-gray-700 hover:text-orange-600
-                                    transition-all duration-200 px-3 py-2 rounded-xl
-                                    focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2
+                                    block text-black hover:bg-black hover:text-white
+                                    transition-all duration-200 px-3 py-2.5 rounded-none
+                                    focus:outline-none focus:bg-black focus:text-white
                                     ${heading.level === 1 ?
-                                        'font-bold text-base bg-orange-100/50 hover:bg-orange-100' :
-                                        'hover:bg-orange-50'
+                                        'font-bold text-xs uppercase tracking-widest border-b border-gray-200 last:border-b-0' :
+                                        ''
                                     }
-                                    ${heading.level === 2 ? 'pl-6 text-sm border-l-4 border-orange-200' : ''}
-                                    ${heading.level === 3 ? 'pl-10 text-sm text-gray-600' : ''}
+                                    ${heading.level === 2 ? 'pl-6 text-xs font-bold border-l-2 border-black ml-3' : ''}
+                                    ${heading.level === 3 ? 'pl-10 text-xs font-medium border-l-2 border-gray-300 ml-3 text-gray-600 hover:text-white' : ''}
                                 `}
                                 >
-                                <>
-                                    {heading.level > 1 && (
-                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-orange-300 rounded-full" />
-                                    )}
-
+                                <span className="flex items-center">
                                     <DynamicReactMarkdown components={{ p: React.Fragment }}>
-                                        {heading.level === 3 ? `↳ ${heading.text}` : heading.text}
+                                        {heading.level === 3 ? `— ${heading.text}` : heading.text}
                                     </DynamicReactMarkdown>
-                                </>
+                                </span>
                             </Link>
                         </li>
                     ))}

@@ -1,195 +1,171 @@
-'use client'
+'use client';
+
+import { useCurrentUser } from '@/hook/use-current-user';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown, LogIn, Rocket } from 'lucide-react';
-import Logo from './logo';
+import { FaSearch, FaUser, FaSignOutAlt, FaPenAlt, FaHome } from 'react-icons/fa';
+import { signOut } from 'next-auth/react';
+import { useState, useEffect, useRef } from 'react';
+import { useIsMobile } from '@/hook/use-mobile';
+import { cn } from '@/lib/utils';
+import Logo from '@/components/logo';
+import { Button } from './ui/button';
+import Search from './Search';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { usePathname } from 'next/navigation';
+import { NewsTicker } from './blog/NewsTicker';
 
-interface NavLink {
-  href: string;
-  label: string;
-  subLinks?: NavLink[]; 
-}
-
-const navLinks: NavLink[] = [
-  { href: '/product', label: 'Sản phẩm' },
-  { 
-    href: '/solutions', 
-    label: 'Giải pháp',
-    subLinks: [
-      { href: '/solutions/seo', label: 'SEO Content' },
-      { href: '/solutions/marketing', label: 'Marketing' },
-      { href: '/solutions/agency', label: 'Cơ quan' }
-    ]
-  },
-  { href: '/resources', label: 'Tài nguyên' },
-  { href: '/pricing', label: 'Giá' },
-];
-
-const Navbar: React.FC = () => {
+const Navbar = () => {
+  const user = useCurrentUser();
   const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-    if (isOpen) setOpenSubMenu(null);
-  };
-
-  const toggleSubMenu = (label: string) => {
-    setOpenSubMenu(openSubMenu === label ? null : label);
-  };
-
   return (
-    <nav
-      className={`sticky top-0 z-50 bg-white shadow-sm transition-all duration-300 ${
-        isScrolled ? 'shadow-md' : ''
-      }`}
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Logo />
-          <div className="hidden md:flex md:items-center md:space-x-6">
-            {navLinks.map((link) => (
-              <div key={link.label} className="relative group">
-                <div className="flex items-center">
-                  <Link
-                    href={link.href}
-                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-green-700 transition-colors flex items-center"
-                  >
-                    {link.label}
-                    {link.subLinks && (
-                      <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
-                    )}
+    <header className="bg-white w-full sticky top-0 z-50 transition-all duration-300 border-b-2 border-black max-w-[100vw]">
+      {/* Top Tier */}
+      <div className="border-b border-black">
+        <div className="max-w-7xl mx-auto px-4 min-[375px]:px-6 md:px-8 w-full flex items-center justify-between h-14 md:h-16">
+          
+          {/* Left: Search */}
+          <div className="flex-1 flex items-center justify-start">
+            {!isMobile ? (
+              <div className="w-56">
+                <Search />
+              </div>
+            ) : (
+              <Link
+                href="/search"
+                className={cn(
+                  "flex items-center justify-center w-8 h-8 border border-black hover:bg-black hover:text-white transition-colors",
+                  pathname === "/search" && "bg-black text-white"
+                )}
+              >
+                <FaSearch className="w-3.5 h-3.5" aria-label="Search" />
+              </Link>
+            )}
+          </div>
+          
+          {/* Center: Logo */}
+          <div className="flex-shrink-0 flex items-center justify-center">
+            <Logo />
+          </div>
+
+          {/* Right: User / Auth */}
+          <div className="flex-1 flex items-center justify-end gap-2 md:gap-3">
+            {user ? (
+              <div className="relative flex gap-x-2 items-center" ref={dropdownRef}>
+                <Button
+                  asChild
+                  className={cn(
+                    'bg-white text-black border border-black hover:bg-black hover:text-white rounded-none transition-all shadow-none h-8 px-4 font-bold uppercase tracking-wider text-[10px] md:text-xs',
+                    pathname === "/new-post" && "bg-black text-white"
+                  )}
+                >
+                  <Link href='/new-post'>
+                    <FaPenAlt className="w-3 h-3" />
+                    <span className="hidden sm:inline ml-2">Viết Bài</span>
                   </Link>
-                </div>
-                
-                {link.subLinks && (
-                  <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white border border-gray-100 text-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top">
-                    <div className="py-1">
-                      {link.subLinks.map((subLink) => (
-                        <Link
-                          key={subLink.label}
-                          href={subLink.href}
-                          className="block px-4 py-2 text-sm hover:bg-green-50 hover:text-green-700 transition-colors"
-                        >
-                          {subLink.label}
-                        </Link>
-                      ))}
+                </Button>
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="flex items-center justify-center w-8 h-8 border border-black rounded-none hover:bg-black hover:text-white transition-all group p-0"
+                  aria-label="User menu"
+                  aria-haspopup="true"
+                  aria-expanded={isOpen}
+                >
+                  <Avatar className="w-full h-full rounded-none">
+                    <AvatarImage
+                      src={user.image || 'https://res.cloudinary.com/dq2z27agv/image/upload/q_auto,f_webp,w_auto/v1746885273/y3hpblcst5qn3j5aah1l.svg'}
+                      alt={user.name || 'User avatar'}
+                      className="object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                    <AvatarFallback className="bg-transparent rounded-none text-black font-bold group-hover:text-white transition-colors flex items-center justify-center w-full h-full text-[10px]">
+                      {user.name ? (
+                        user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+                      ) : (
+                        <FaUser className="w-3 h-3" />
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+
+                {isOpen && (
+                  <div
+                    className="absolute top-full right-0 mt-2 w-48 bg-white shadow-none border border-black divide-y divide-black"
+                    role="menu"
+                  >
+                    <div className="px-3 py-2 bg-black text-white">
+                      <p className="text-[11px] font-bold uppercase tracking-wider truncate">{user.name}</p>
+                      <p className="text-[10px] text-gray-400 truncate mt-0.5">{user.email}</p>
+                    </div>
+                    <div>
+                      <button
+                        onClick={() => signOut()}
+                        className="flex w-full items-center px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-black hover:bg-gray-100 transition-colors"
+                      >
+                        <FaSignOutAlt className="w-3 h-3 mr-2" />
+                        Đăng xuất
+                      </button>
                     </div>
                   </div>
                 )}
               </div>
-            ))}
-          </div>
-
-          <div className="hidden md:flex md:items-center md:space-x-4">
-            <Link
-              href="/login"
-              className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-green-700 transition-colors flex items-center"
-            >
-              <LogIn className="mr-2 h-4 w-4" />
-              Đăng nhập
-            </Link>
-            <Link
-              href="/get-started"
-              className="px-4 py-2 rounded-md text-sm font-semibold text-white bg-green-700 hover:bg-green-800 transition-colors shadow flex items-center"
-            >
-              <Rocket className="mr-2 h-4 w-4" />
-              Bắt đầu ngay
-            </Link>
-          </div>
-
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={toggleMenu}
-              type="button"
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-green-700 hover:bg-gray-100 focus:outline-none"
-              aria-controls="mobile-menu"
-              aria-expanded={isOpen}
-            >
-              <span className="sr-only">Open main menu</span>
-              {isOpen ? (
-                <X className="block h-6 w-6" />
-              ) : (
-                <Menu className="block h-6 w-6" />
-              )}
-            </button>
+            ) : (
+              <Link
+                href="/auth/signin"
+                className={cn(
+                  "px-4 py-1.5 text-[10px] md:text-xs font-bold uppercase tracking-wider text-black border border-black rounded-none hover:bg-black hover:text-white transition-colors h-8 flex items-center justify-center",
+                  pathname === "/auth/signin" && "bg-black text-white"
+                )}
+              >
+                Đăng Nhập
+              </Link>
+            )}
           </div>
         </div>
       </div>
 
-      {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200" id="mobile-menu">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navLinks.map((link) => (
-              <div key={link.label}>
-                <div className="flex items-center justify-between">
-                  <Link
-                    href={link.href}
-                    onClick={() => !link.subLinks && setIsOpen(false)}
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-700 hover:bg-gray-50 transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                  {link.subLinks && (
-                    <button 
-                      onClick={() => toggleSubMenu(link.label)}
-                      className="p-2"
-                    >
-                      <ChevronDown 
-                        className={`h-5 w-5 transition-transform ${openSubMenu === link.label ? 'rotate-180' : ''}`}
-                      />
-                    </button>
-                  )}
-                </div>
-                
-                {link.subLinks && openSubMenu === link.label && (
-                  <div className="ml-4 mt-1 space-y-1">
-                    {link.subLinks.map((subLink) => (
-                      <Link
-                        key={subLink.label}
-                        href={subLink.href}
-                        onClick={() => setIsOpen(false)}
-                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-green-700 hover:bg-gray-50 transition-colors"
-                      >
-                        {subLink.label}
-                      </Link>
-                    ))}
-                  </div>
+      {/* Bottom Tier: Category Navigation (Desktop) */}
+      {!isMobile && (
+        <div className="bg-white border-b border-black">
+          <nav className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-center space-x-12 py-2.5" aria-label="Category navigation">
+            {[
+              { name: 'Trang chủ', path: '/' },
+              { name: 'Danh Mục', path: '/tags' },
+              { name: 'Về chúng tôi', path: '/about' }
+            ].map((item) => (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={cn(
+                  "text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-black hover:underline underline-offset-[4px] decoration-1 transition-all",
+                  pathname === item.path && "underline"
                 )}
-              </div>
+              >
+                {item.name}
+              </Link>
             ))}
-            
-            <div className="pt-4 pb-2 border-t border-gray-200 space-y-2">
-              <Link
-                href="/login"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-700 hover:bg-gray-50 transition-colors"
-              >
-                <LogIn className="mr-2 h-5 w-5" />
-                Đăng nhập
-              </Link>
-              <Link
-                href="/get-started"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center justify-center px-3 py-2 rounded-md text-base font-semibold text-white bg-green-700 hover:bg-green-800 transition-colors shadow"
-              >
-                <Rocket className="mr-2 h-5 w-5" />
-                Bắt đầu ngay
-              </Link>
-            </div>
-          </div>
+          </nav>
         </div>
       )}
-    </nav>
+
+      {/* News Ticker */}
+      <NewsTicker />
+    </header>
   );
 };
 

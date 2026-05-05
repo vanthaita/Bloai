@@ -36,73 +36,69 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
     if (!blog) return null;
 
     return (
-        <>
-            <div className="mb-6">
+        <div className="pb-8 mb-10 border-b-[3px] border-black">
+            <div className="mb-8">
                 <Link href="/">
-                    <span className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-black hover:text-gray-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
-                        Về trang chủ
+                        VỀ TRANG CHỦ
                     </span>
                 </Link>
             </div>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-2 mb-6">
                 {blogTagsMemo}
                 {remainingTagsCount > 0 && (
                     <Link
                         href="/tags"
-                        className="text-xs text-gray-500 self-center underline hover:text-gray-700"
+                        className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest border-[1.5px] border-black bg-white text-black hover:bg-black hover:text-white transition-colors"
                         title="View all tags"
                         >
-                        + {remainingTagsCount} more
+                        + {remainingTagsCount}
                     </Link>
                 )}
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight blog-title">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-black mb-6 leading-[1.1] tracking-tight uppercase">
                 {blog.title}
             </h1>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-gray-500 mb-8 text-sm md:text-base">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-3 text-black mb-8 text-[10px] md:text-xs font-bold uppercase tracking-widest">
                 {blog.author?.name && (
                     <div className="flex items-center gap-2">
                         {blog.author.image && (
-                             <Avatar className='h-6 w-6'>
+                             <Avatar className='h-6 w-6 rounded-none border border-black'>
                                 <AvatarImage 
                                     src={blog.author.image || 'https://res.cloudinary.com/dq2z27agv/image/upload/q_auto,f_webp,w_auto/v1746885273/y3hpblcst5qn3j5aah1l.svg'} 
                                     alt={`${blog.author.name}'s avatar`}
+                                    className="object-cover rounded-none"
                                 />
-                                <AvatarFallback className="bg-gray-200">
+                                <AvatarFallback className="bg-white text-black rounded-none">
                                 {blog.author.name ? (
-                                    blog.author.name.split(' ').map(n => n[0]).join('')
+                                    blog.author.name.split(' ').map(n => n[0]).join('').substring(0, 2)
                                 ) : (
-                                    <FaUser className="w-4 h-4 text-gray-600" />
+                                    <FaUser className="w-3 h-3 text-black" />
                                 )}
                                 </AvatarFallback>
                             </Avatar>
                         )}
-                        <span>By {blog.author.name}</span>
-                        <span className="h-1 w-1 bg-gray-400 rounded-full" />
+                        <span>{blog.author.name}</span>
+                        <span className="h-1 w-1 bg-black rounded-none" />
                     </div>
                 )}
                 <time dateTime={new Date(blog.publishDate).toISOString()} className="flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                    </svg>
-                    {new Date(blog.publishDate).toLocaleDateString('vi-VN', {
-                        year: 'numeric', month: 'long', day: 'numeric'
-                    })}
+                    {new Date(blog.publishDate).toLocaleDateString('vi-VN')}
                 </time>
                 {blog.readTime && (
                     <>
-                      <span className="h-1 w-1 bg-gray-400 rounded-full" />
-                      <span>{blog.readTime} phút đọc</span>
+                      <span className="h-1 w-1 bg-black rounded-none" />
+                      <span>{blog.readTime} PHÚT ĐỌC</span>
                     </>
                 )}
             </div>
-            <p className="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed border-l-4 border-gray-200 pl-4 italic blog-meta-description">
+            <p className="text-lg md:text-xl text-black font-medium leading-relaxed border-l-[3px] border-black pl-5 italic">
                 {blog.metaDescription}
             </p>
-        </>
+        </div>
     );
 };
 

@@ -9,7 +9,7 @@ import {
     aiEnhanceContentBlogForSEO,
     aiGenerateFactAndknowledge,
     aiGeneratePromptForImage,
-} from '@/lib/gemini'
+} from '@/lib/cerebras'
 import { db } from '@/server/db'
 import { aiGenerateImage } from './image-gemini';
 

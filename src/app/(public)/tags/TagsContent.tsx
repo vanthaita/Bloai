@@ -65,20 +65,19 @@ const TagsContent = () => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(tagsSchema).replace(/</g, '\\u003c') }}
       />
-      <div className="min-h-screen p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto max-w-9xl">
-          <header className="mb-10 border-b border-gray-200 pb-8 text-center md:mb-14">
-            <h1 className="mb-3 flex items-center justify-center gap-3 text-3xl font-bold text-[#333] font-serif sm:mb-4 sm:text-4xl lg:text-5xl">
-              <FolderOpen className="h-8 w-8 flex-shrink-0 text-[#3A6B4C] sm:h-10 sm:w-10" />
-              Khám phá Chuyên mục
+      <div className="min-h-screen pt-32 pb-8 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <header className="mb-12 text-center">
+            <h1 className="inline-block border-b-[3px] border-black pb-2 text-3xl font-extrabold uppercase tracking-widest text-black sm:text-4xl lg:text-5xl">
+              CHUYÊN MỤC TỪ KHÓA
             </h1>
-            <p className="mx-auto max-w-2xl text-base text-gray-600 sm:text-lg">
-              Duyệt qua các chủ đề AI được phân loại. Nhấp vào một chuyên mục để xem tất cả bài viết liên quan.
+            <p className="mx-auto mt-6 max-w-2xl text-sm font-medium text-black uppercase tracking-widest">
+              Duyệt qua các chủ đề AI. Nhấp vào chuyên mục để xem tất cả bài viết liên quan.
             </p>
           </header>
 
           {data && data.tags.length > 0 ? (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-6"> 
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"> 
               {data.tags.map((tag) => {
                 const tagSlug = slugify(tag.name); 
                 const tagUrl = `/tags/${tagSlug}`; 
@@ -87,33 +86,25 @@ const TagsContent = () => {
                   <Link
                     href={'/tags'}
                     key={tag.id}
-                    className="group flex h-full transform md:flex-col rounded-lg border border-gray-200/90 bg-white shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-lg hover:border-[#3A6B4C]/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3A6B4C] focus-visible:ring-offset-2"
+                    className="group flex h-full transform md:flex-col rounded-none border-[1.5px] border-black bg-white transition-all duration-300 ease-in-out hover:bg-black hover:text-white focus:outline-none"
                     legacyBehavior>
-                    <div className="flex h-full flex-col p-5">
-                      <div className="mb-3 flex md:flex-row sm:flex-col items-start justify-between gap-3">
-                        <h2 className="flex items-center gap-2.5 pr-2 text-lg font-semibold text-gray-800 transition-colors group-hover:text-[#3A6B4C] sm:text-xl">
-                          <Tag className="h-5 w-5 flex-shrink-0 text-gray-400 transition-colors group-hover:text-[#3A6B4C]" />
+                    <div className="flex h-full flex-col p-6">
+                      <div className="mb-4 flex md:flex-row sm:flex-col items-start justify-between gap-3">
+                        <h2 className="flex items-center gap-2.5 pr-2 text-lg font-bold uppercase tracking-widest text-black group-hover:text-white sm:text-xl">
                           <span className="break-words">{tag.name}</span>
                         </h2>
-                        <span className="flex-shrink-0 whitespace-nowrap rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800 ring-1 ring-inset ring-green-600/20 sm:text-sm">
-                          {tag._count?.blogs ?? 0} bài
+                        <span className="flex-shrink-0 whitespace-nowrap rounded-none bg-black px-3 py-1 text-xs font-bold uppercase tracking-widest text-white border border-black group-hover:bg-white group-hover:text-black">
+                          {tag._count?.blogs ?? 0} BÀI
                         </span>
                       </div>
 
                       {tag.description ? (
-                        <p className="mb-4 flex-grow text-sm leading-relaxed text-gray-600 line-clamp-3">
+                        <p className="mb-4 flex-grow text-sm font-medium leading-relaxed text-black group-hover:text-white line-clamp-3">
                           {tag.description}
                         </p>
                       ) : (
                         <div className="mb-4 h-[3.75rem] flex-grow"></div> 
                       )}
-
-                      {/* <div className="mt-auto pt-2">
-                        <div className="inline-flex items-center text-sm font-medium text-[#3A6B4C] transition-colors group-hover:text-[#2a553b]">
-                          Xem bài viết
-                          <ArrowRight className="ml-1.5 h-4 w-4 transition-transform duration-200 ease-in-out group-hover:translate-x-1" aria-hidden="true" />
-                        </div>
-                      </div> */}
                     </div>
                   </Link>
                 );
@@ -138,29 +129,25 @@ const TagsContent = () => {
 
 
 const CategoriesLoadingSkeleton = () => (
-  <div className="min-h-screen animate-pulse bg-gray-50/50 p-4 sm:p-6 lg:p-8">
+  <div className="min-h-screen bg-white pt-32 pb-8 px-4 sm:px-6 lg:px-8">
     <div className="mx-auto max-w-7xl">
-      <div className="mb-10 border-b border-gray-200 pb-8 text-center md:mb-14">
-        <Skeleton className="mx-auto mb-4 h-9 w-3/5 max-w-md rounded-lg bg-gray-300 sm:h-10 lg:h-12" />
-        <Skeleton className="mx-auto h-5 w-4/5 max-w-xl rounded-lg bg-gray-200 sm:h-6" />
+      <div className="mb-12 border-b-[3px] border-black pb-8 text-center">
+        <Skeleton className="mx-auto mb-4 h-10 w-3/5 max-w-md rounded-none bg-gray-200" />
+        <Skeleton className="mx-auto h-6 w-4/5 max-w-xl rounded-none bg-gray-100" />
       </div>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {[...Array(8)].map((_, i) => ( 
-          <div key={i} className="flex h-full flex-col rounded-lg border border-gray-200/90 bg-white p-5 shadow-sm">
-            <div className="mb-3 flex items-start justify-between gap-3">
-              <div className="flex items-center gap-2.5 pr-2 flex-1">
-                 <Skeleton className="h-5 w-5 flex-shrink-0 rounded bg-gray-300"/>
-                 <Skeleton className="h-6 w-3/5 rounded bg-gray-300 sm:h-7" />
+          <div key={i} className="flex h-full flex-col rounded-none border-[1.5px] border-black bg-white p-6">
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div className="flex-1">
+                 <Skeleton className="h-6 w-3/5 rounded-none bg-gray-200" />
               </div>
-              <Skeleton className="h-6 w-[70px] flex-shrink-0 rounded-full bg-gray-200 sm:h-7 sm:w-[80px]" />
+              <Skeleton className="h-6 w-[60px] flex-shrink-0 rounded-none bg-gray-200" />
             </div>
-            <div className="mb-4 flex-grow space-y-2">
-                 <Skeleton className="h-4 w-full rounded bg-gray-200" />
-                 <Skeleton className="h-4 w-full rounded bg-gray-200" />
-                 <Skeleton className="h-4 w-4/5 rounded bg-gray-200" />
-            </div>
-            <div className="mt-auto pt-2">
-              <Skeleton className="h-5 w-28 rounded bg-gray-300" />
+            <div className="mb-4 flex-grow space-y-3">
+                 <Skeleton className="h-4 w-full rounded-none bg-gray-100" />
+                 <Skeleton className="h-4 w-full rounded-none bg-gray-100" />
+                 <Skeleton className="h-4 w-4/5 rounded-none bg-gray-100" />
             </div>
           </div>
         ))}

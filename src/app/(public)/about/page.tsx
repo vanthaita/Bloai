@@ -1,10 +1,11 @@
 "use client"
 import Link from "next/link"
-import Image from "next/image"
 import { Bot, Brain, Code, TrendingUp, Users, BookOpen, Mail } from "lucide-react"
 import { FaGithub, FaLinkedin } from "react-icons/fa"
 import Head from "next/head"
 import { aboutPageSchemaLd, safeJsonLdStringify } from "@/config/seo"
+import React from "react"
+
 interface TeamMember {
   name: string
   role: string
@@ -17,249 +18,249 @@ interface Feature {
   title: string
   desc: string
 }
+
 const AboutPage = () => {
   const teamMembers: TeamMember[] = [
     {
-      name: "Nhóm BloAI",
-      role: "Nhà phát triển & Content Creator",
-      bio: "Nhóm sinh viên nhiệt huyết với AI",
+      name: "TÒA SOẠN BLOAI",
+      role: "Tổng Biên Tập & Chuyên gia AI",
+      bio: "Nhóm chuyên gia định hướng nội dung và phát triển nền tảng",
       avatar: "/images/Logo/web-app-manifest-512x512.png",
     },
   ];
-  
 
-  const features:Feature[] = [
+  const features: Feature[] = [
     {
-      icon: <Bot className="text-blue-600 h-6 w-6" />,
-      title: "Kiến thức AI từ cơ bản đến nâng cao",
-      desc: "Các bài viết dễ hiểu về học AI cho người mới bắt đầu, giúp bạn tiếp cận công nghệ này mà không cần kiến thức chuyên sâu.",
+      icon: <Bot className="text-black h-6 w-6" />,
+      title: "KIẾN THỨC CỐT LÕI",
+      desc: "Các bài viết phân tích chuyên sâu về công nghệ AI, từ thuật toán cơ sở đến các mô hình ngôn ngữ lớn (LLMs).",
     },
     {
-      icon: <Brain className="text-blue-600 h-6 w-6" />,
-      title: "Hướng dẫn ứng dụng AI vào thực tế",
-      desc: "Học cách sử dụng AI trong cuộc sống, từ công nghệ chatbot, tạo nội dung bằng AI, đến lập trình AI cơ bản.",
+      icon: <Brain className="text-black h-6 w-6" />,
+      title: "ỨNG DỤNG THỰC TẾ",
+      desc: "Phân tích và mổ xẻ cách AI đang tái định hình các ngành công nghiệp, y tế, giáo dục và sáng tạo nghệ thuật.",
     },
     {
-      icon: <Code className="text-blue-600 h-6 w-6" />,
-      title: "Cập nhật xu hướng AI mới nhất",
-      desc: "Blog cung cấp thông tin mới về công nghệ AI, giúp bạn không bỏ lỡ bất kỳ đổi mới nào trong lĩnh vực này.",
+      icon: <Code className="text-black h-6 w-6" />,
+      title: "BẢN TIN CÔNG NGHỆ",
+      desc: "Cập nhật liên tục 24/7 về các nghiên cứu đột phá, các thương vụ sáp nhập và tin tức độc quyền từ Thung lũng Silicon.",
     },
     {
-      icon: <TrendingUp className="text-blue-600 h-6 w-6" />,
-      title: "Tài nguyên và công cụ AI hữu ích",
-      desc: "Chúng tôi giới thiệu các nền tảng AI miễn phí, khóa học AI online, cùng với mẹo tối ưu hóa AI cho công việc và học tập.",
+      icon: <TrendingUp className="text-black h-6 w-6" />,
+      title: "CÔNG CỤ TỐI ƯU",
+      desc: "Đánh giá khách quan và thử nghiệm thực tế các công cụ AI mới nhất trên thị trường để tối ưu hóa năng suất làm việc.",
     },
   ]
+
   return (
     <>
-    <Head>
-      <link rel="canonical" href="https://www.bloai.blog/about" />
-    </Head>
-    <div className="min-h-screen bg-white text-gray-800">
-      <section className="bg-white-50 py-20">
-        <div className="container mx-auto px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">Chúng tôi mang đến điều gì</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <div key={index} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      <section id="why-us" className="w-full py-16 md:py-10px-6">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
-            💡 Tại sao bạn nên theo dõi blog này?
-          </h2>
+      <Head>
+        <link rel="canonical" href="https://www.bloai.blog/about" />
+      </Head>
+      <div className="min-h-screen bg-white text-black font-sans">
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="bg-white p-8 rounded-lg shadow-sm text-center border border-gray-100">
-              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-blue-600 text-2xl">✅</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">Dành cho mọi cấp độ</h3>
-              <p className="text-gray-600">
-                Dù bạn là người mới hay đã có nền tảng, blog đều có nội dung phù hợp với bạn.
-              </p>
+        {/* SỨ MỆNH */}
+        <section className="bg-white pt-32 pb-20 border-b-2 border-black">
+          <div className="container mx-auto px-6 max-w-7xl">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-widest text-black inline-block border-b-[3px] border-black pb-2">
+                TỪ SỨ MỆNH ĐẾN TẦM NHÌN
+              </h2>
             </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-sm text-center border border-gray-100">
-              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-blue-600 text-2xl">✅</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">Nội dung dễ đọc, dễ hiểu</h3>
-              <p className="text-gray-600">Chúng tôi giúp bạn học AI mà không cảm thấy quá tải.</p>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-sm text-center border border-gray-100">
-              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-blue-600 text-2xl">✅</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-4 text-gray-900">Cộng đồng hỗ trợ</h3>
-              <p className="text-gray-600">
-                Bạn có thể đặt câu hỏi, thảo luận và học hỏi cùng những người đam mê AI khác.
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {features.map((feature, index) => (
+                <div key={index} className="bg-white p-8 rounded-none border-[1.5px] border-black group hover:bg-black transition-colors duration-300">
+                  <div className="w-14 h-14 border-[1.5px] border-black flex items-center justify-center bg-white mb-6 group-hover:border-white">
+                    {React.cloneElement(feature.icon, { className: 'text-black group-hover:text-white' })}
+                  </div>
+                  <h3 className="text-lg font-bold uppercase tracking-widest mb-4 text-black group-hover:text-white">{feature.title}</h3>
+                  <p className="text-black group-hover:text-white text-sm font-medium leading-relaxed">{feature.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
-      <section className=" py-12">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
-            <h2 className="text-2xl font-bold text-gray-900 bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-              Đội ngũ phát triển
+        </section>
+
+        {/* WHY US */}
+        <section id="why-us" className="w-full py-20 border-b-2 border-black bg-gray-50">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-widest text-black inline-block border-b-[3px] border-black pb-2">
+                GIÁ TRỊ TÒA SOẠN
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {[
+                {
+                  title: "KHÁCH QUAN & ĐỘC LẬP",
+                  desc: "Thông tin được kiểm chứng đa chiều, không thiên vị, mang đến góc nhìn trung thực nhất về bức tranh AI toàn cầu."
+                },
+                {
+                  title: "CHUYÊN SÂU & ĐẮT GIÁ",
+                  desc: "Không chỉ đưa tin, chúng tôi phân tích tác động sâu rộng của từng dòng code đến kinh tế và xã hội."
+                },
+                {
+                  title: "CỘNG ĐỒNG TINH HOA",
+                  desc: "Nơi quy tụ các chuyên gia, nhà nghiên cứu và những cá nhân đam mê công nghệ hàng đầu."
+                }
+              ].map((val, idx) => (
+                <div key={idx} className="bg-white p-8 rounded-none border-[1.5px] border-black text-center relative">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black text-white px-4 py-1 text-sm font-bold uppercase tracking-widest border-[1.5px] border-black">
+                    TIÊU CHUẨN {idx + 1}
+                  </div>
+                  <h3 className="text-xl font-bold uppercase tracking-widest mt-4 mb-4 text-black">{val.title}</h3>
+                  <p className="text-black font-medium text-sm leading-relaxed">{val.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* TEAM */}
+        <section className="py-20 border-b-2 border-black">
+          <div className="container mx-auto px-6 max-w-5xl">
+            <div className="mb-12">
+              <h2 className="text-3xl font-extrabold uppercase tracking-widest text-black inline-block border-b-[3px] border-black pb-2">
+                HỘI ĐỒNG BIÊN TẬP
+              </h2>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <h3 className="text-2xl font-bold uppercase tracking-widest text-black">BLOAI NEWS TEAM</h3>
+                <p className="text-black font-medium leading-relaxed">
+                  Được vận hành bởi hội đồng biên tập giàu kinh nghiệm, xuất thân từ các khối ngành kỹ thuật phần mềm và khoa học máy tính (UIT). Chúng tôi áp dụng quy trình kiểm duyệt nội dung khắt khe chuẩn báo chí:
+                </p>
+                <ul className="grid grid-cols-2 gap-4">
+                  {["XÁC THỰC NGUỒN TIN", "PHÂN TÍCH CHUYÊN SÂU", "TỐI ƯU TRẢI NGHIỆM ĐỌC", "BẢO MẬT DỮ LIỆU"].map(
+                    (item, index) => (
+                      <li
+                        key={index}
+                        className="flex items-center gap-3 bg-white p-4 border-[1.5px] border-black rounded-none"
+                      >
+                        <div className="w-8 h-8 bg-black flex items-center justify-center text-white flex-shrink-0">
+                          {index % 2 === 0 ? <BookOpen className="h-4 w-4" /> : <Code className="h-4 w-4" />}
+                        </div>
+                        <span className="font-bold text-xs uppercase tracking-widest">{item}</span>
+                      </li>
+                    ),
+                  )}
+                </ul>
+              </div>
+
+              <div className="border-[2px] border-black p-8 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                <div className="flex items-center gap-6">
+                  <div className="relative w-24 h-24 flex-shrink-0 border-[1.5px] border-black bg-black flex items-center justify-center">
+                    <Users className="w-10 h-10 text-white" />
+                  </div>
+                  <div className="space-y-3">
+                    <h4 className="text-2xl font-black uppercase tracking-widest text-black">{teamMembers[0]?.name}</h4>
+                    <p className="text-black font-bold text-xs uppercase tracking-widest bg-gray-100 inline-block px-2 py-1 border border-black">{teamMembers[0]?.role}</p>
+                    <div className="flex gap-4 pt-2">
+                      {[
+                        { icon: <FaLinkedin className="h-5 w-5" />, href: "#" },
+                        { icon: <FaGithub className="h-5 w-5" />, href: "https://github.com/TDevUIT/Bloai" },
+                      ].map((item, index) => (
+                        <a
+                          key={index}
+                          className="text-black hover:text-white hover:bg-black border-[1.5px] border-black p-2 transition-colors"
+                          href={item.href}
+                        >
+                          {item.icon}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CONTACT */}
+        <section className="container mx-auto px-6 py-20 border-b-2 border-black max-w-5xl">
+          <div className="mb-12">
+            <h2 className="text-3xl font-extrabold uppercase tracking-widest text-black inline-block border-b-[3px] border-black pb-2">
+              LIÊN HỆ TÒA SOẠN
             </h2>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8 items-center">
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-900">Nhóm BloAI</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Dự án được phát triển bởi nhóm sinh viên Đại học Công Nghệ Thông Tin - UIT trong khuôn khổ môn học
-                <span className="text-blue-600 font-medium"> IE204 - SEO</span>. Chúng tôi áp dụng:
+          <div className="grid lg:grid-cols-2 gap-12">
+            <div className="space-y-6">
+              <p className="text-black font-medium leading-relaxed">
+                Chúng tôi luôn chào đón các chuyên gia, nhà báo công nghệ và các tổ chức cùng chung tay xây dựng hệ sinh thái thông tin AI minh bạch, giá trị.
               </p>
-              <ul className="grid grid-cols-2 gap-3">
-                {["SEO On-page/Off-page", "Content Marketing", "Technical SEO", "Phân tích dữ liệu"].map(
-                  (item, index) => (
-                    <li
-                      key={index}
-                      className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-                    >
-                      <div className="w-6 h-6 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
-                        {index % 2 === 0 ? <Code className="h-3 w-3" /> : <BookOpen className="h-3 w-3" />}
-                      </div>
-                      <span className="font-medium text-sm">{item}</span>
-                    </li>
-                  ),
-                )}
+              <ul className="grid grid-cols-2 gap-4">
+                {["CHUYÊN GIA AI", "NHÀ NGHIÊN CỨU", "DOANH NGHIỆP CÔNG NGHỆ", "KÝ GIẢ BÁO CHÍ"].map((item, index) => (
+                  <li
+                    key={index}
+                    className="flex items-center gap-3 bg-white p-4 border-[1.5px] border-black rounded-none"
+                  >
+                    <div className="w-8 h-8 bg-black flex items-center justify-center text-white flex-shrink-0">
+                      {index % 2 === 0 ? <Users className="h-4 w-4" /> : <Mail className="h-4 w-4" />}
+                    </div>
+                    <span className="font-bold text-[10px] uppercase tracking-widest">{item}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 shadow-md hover:translate-y-[-3px] transition-transform">
+            <div className="border-[2px] border-black p-8 bg-black text-white space-y-8">
               <div className="flex items-center gap-4">
-                <div className="relative w-20 h-20 flex-shrink-0">
-                  <Image
-                    src={teamMembers[0]?.avatar || "/placeholder.svg"}
-                    alt={teamMembers[0]?.name || ''}
-                    width={80}
-                    height={80}
-                    className="rounded-xl object-contain"
-                  />
+                <div className="w-12 h-12 border-[1.5px] border-white flex items-center justify-center bg-white text-black">
+                  <Mail className="h-5 w-5" />
                 </div>
-                <div className="space-y-2">
-                  <h4 className="text-xl font-bold text-gray-900">{teamMembers[0]?.name}</h4>
-                  <p className="text-gray-600 text-sm">{teamMembers[0]?.role}</p>
-                  <div className="flex gap-3">
-                    {[
-                      { icon: <FaLinkedin className="h-4 w-4" />, color: "text-[#0A66C2]" },
-                      { icon: <FaGithub className="h-4 w-4" />, color: "text-gray-700" },
-                    ].map((item, index) => (
-                      <a
-                        key={index}
-                        className={`${item.color} hover:text-opacity-80 transition-all hover:scale-110`}
-                        href="https://github.com/TDevUIT/Bloai"
-                      >
-                        {item.icon}
-                      </a>
-                    ))}
-                  </div>
+                <div>
+                  <p className="font-bold text-[10px] uppercase tracking-widest text-gray-300 mb-1">Đường dây nóng / Hộp thư điện tử</p>
+                  <p className="text-xl font-bold tracking-wider">ie204seo@gmail.com</p>
+                </div>
+              </div>
+
+              <div className="space-y-4 border-t border-gray-700 pt-6">
+                <p className="font-bold text-[10px] uppercase tracking-widest text-gray-300">Kết nối mạng xã hội</p>
+                <div className="flex gap-4">
+                  {[
+                    { icon: <FaLinkedin className="h-5 w-5" /> },
+                    { icon: <FaGithub className="h-5 w-5" /> },
+                  ].map((item, index) => (
+                    <a
+                      key={index}
+                      className="w-12 h-12 border-[1.5px] border-white flex items-center justify-center text-white hover:bg-white hover:text-black transition-colors"
+                      href="https://github.com/TDevUIT/Bloai"
+                    >
+                      {item.icon}
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-      <section className="container mx-auto px-4 py-12 mb-8 max-w-5xl">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="h-1 w-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
-          <h2 className="text-2xl font-bold text-gray-900 bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-            Liên hệ hợp tác
-          </h2>
-        </div>
+        </section>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          <div className="space-y-4">
-            <p className="text-gray-600 leading-relaxed">
-              Chúng tôi luôn mở rộng hợp tác với các chuyên gia AI/ML, nhà nghiên cứu, công ty công nghệ và content
-              creator.
+        {/* CTA */}
+        <section id="get-started" className="w-full py-24 bg-white px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-widest text-black mb-8">BẮT ĐẦU NGAY HÔM NAY</h2>
+
+            <p className="text-black font-medium text-lg mb-10 max-w-2xl mx-auto">
+              Trở thành độc giả thường xuyên để không bỏ lỡ những bài phân tích sâu sắc nhất về thời đại Trí tuệ nhân tạo.
             </p>
-            <ul className="grid grid-cols-2 gap-3">
-              {["Chuyên gia AI/ML", "Nhà nghiên cứu", "Công ty công nghệ", "Content Creator"].map((item, index) => (
-                <li
-                  key={index}
-                  className="flex items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-all"
-                >
-                  <div
-                    className={`w-6 h-6 ${index % 2 === 0 ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"} rounded-lg flex items-center justify-center`}
-                  >
-                    {index % 2 === 0 ? <Code className="h-3 w-3" /> : <Users className="h-3 w-3" />}
-                  </div>
-                  <span className="font-medium text-sm">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
 
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl space-y-4 shadow-md">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
-                <Mail className="h-4 w-4" />
-              </div>
-              <div>
-                <p className="font-medium text-gray-600 text-sm">Liên hệ qua email</p>
-                <p className="text-lg font-semibold text-gray-900">ie204seo@gmail.com</p>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <p className="font-medium text-gray-600 text-sm">Theo dõi chúng tôi</p>
-              <div className="flex gap-4">
-                {[
-                  { icon: <FaLinkedin className="h-4 w-4" />, color: "bg-[#0A66C2]/10", text: "text-[#0A66C2]" },
-                  { icon: <FaGithub className="h-4 w-4" />, color: "bg-gray-700/10", text: "text-gray-700" },
-                ].map((item, index) => (
-                  <a
-                    key={index}
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center ${item.color} ${item.text} hover:opacity-80 transition-all hover:-translate-y-1`}
-                    href="https://github.com/TDevUIT/Bloai"
-                  >
-                    {item.icon}
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section id="get-started" className="w-full py-16 md:py-24 bg-blue-50 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">📢 Bắt đầu ngay!</h2>
-
-          <p className="text-gray-700 text-xl mb-8">
-            📌 Khám phá ngay blog của chúng tôi và bắt đầu hành trình với trí tuệ nhân tạo! Đừng quên theo dõi để nhận
-            cập nhật mới nhất về AI và đón đọc những bài viết hữu ích nhất.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/"
-              className="bg-blue-600 text-white px-8 py-4 rounded-md font-medium min-w-[200px] text-center text-lg hover:bg-blue-700 transition-colors"
+              className="inline-block bg-black text-white border-2 border-black px-10 py-5 font-bold uppercase tracking-widest text-lg hover:bg-white hover:text-black transition-colors"
             >
-              Khám Phá Blog
+              ĐỌC BẢN TIN MỚI NHẤT
             </Link>
           </div>
-        </div>
-      </section>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(aboutPageSchemaLd)}}
-      />
-    </div>
+        </section>
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(aboutPageSchemaLd) }}
+        />
+      </div>
     </>
   );
 }

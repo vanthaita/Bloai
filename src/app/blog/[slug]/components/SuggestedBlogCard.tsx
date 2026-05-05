@@ -9,22 +9,22 @@ interface SuggestedBlogCardProps {
 
 const SuggestedBlogCard: React.FC<SuggestedBlogCardProps> = ({ post }) => {
     return (
-        <article key={post.slug} className="group">
+        <article key={post.slug} className="group h-full border-[1.5px] border-black bg-white hover:-translate-y-1 transition-transform">
             <Link
                 href={`/blog/${post.slug}`}
-                className="flex gap-3 items-start group"
+                className="flex flex-col h-full"
                 aria-label={`Đọc bài viết: ${post.title}`}
             >
                 {post.imageUrl && (
-                    <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-md overflow-hidden relative border border-gray-100">
+                    <div className="w-full aspect-video relative border-b-[1.5px] border-black overflow-hidden bg-white">
                         <CldImage
-                            width={80}
-                            height={80}
+                            width={400}
+                            height={225}
                             src={post.imageUrl}
                             alt={post.imageAlt || `Thumbnail for ${post.title}`}
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                             loading="lazy"
-                            sizes="(max-width: 640px) 64px, 80px"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                             quality={80}
                             format="webp"
                             crop="fill"
@@ -34,18 +34,16 @@ const SuggestedBlogCard: React.FC<SuggestedBlogCardProps> = ({ post }) => {
                         />
                     </div>
                 )}
-                <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-blue-600 transition-colors duration-150 group-hover:underline underline-offset-2">
+                <div className="flex flex-col flex-1 p-4">
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-black mb-3 line-clamp-2 group-hover:text-gray-600 transition-colors">
                         {post.title}
                     </h3>
-                    <div className="flex items-center mt-1.5 text-xs text-gray-500">
+                    <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold uppercase tracking-widest text-black">
                         <time dateTime={new Date(post.publishDate).toISOString()}>
-                            {new Date(post.publishDate).toLocaleDateString('vi-VN', {
-                                day: 'numeric', month: 'short', year: 'numeric'
-                            })}
+                            {new Date(post.publishDate).toLocaleDateString('vi-VN')}
                         </time>
-                        <span className="mx-1.5">•</span>
-                        <span>{post.readTime} phút đọc</span>
+                        <span className="w-1 h-1 bg-black rounded-none"></span>
+                        <span>{post.readTime} PHÚT ĐỌC</span>
                     </div>
                 </div>
             </Link>

@@ -96,7 +96,7 @@ const Search = () => {
 
 
     return (
-        <div className="relative px-4 py-6 w-full">
+        <div className="relative py-4 w-full">
             <form onSubmit={handleSearch} className="relative w-full" noValidate>
                 <label htmlFor="main-search" className="sr-only">Search content</label>
                 <input
@@ -107,29 +107,29 @@ const Search = () => {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
-                    placeholder="Search blog..."
-                    className="w-full bg-gray-50 text-gray-800 rounded-lg
-                            py-2.5 px-4 pl-11
-                            text-base
-                            outline-none shadow-sm transition-all"
+                    placeholder="Tìm kiếm bài viết..."
+                    className="w-full bg-white text-black border-[1.5px] border-black rounded-none
+                            py-2 px-4 pl-10
+                            text-xs font-bold uppercase tracking-widest placeholder:text-gray-400 placeholder:normal-case
+                            outline-none focus:ring-1 focus:ring-black transition-all"
                     aria-label="Search articles"
                     autoComplete="off"
                 />
                 <FaSearch
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2
-                            w-4 h-4 text-gray-500 pointer-events-none"
+                    className="absolute left-3 top-1/2 -translate-y-1/2
+                            w-3.5 h-3.5 text-black pointer-events-none"
                     aria-hidden="true"
                 />
 
                 {showResultsArea && (
-                    <div className="absolute z-10 mt-2 left-0 right-0 bg-white rounded-lg shadow-lg border border-gray-200 max-h-[550px] overflow-y-auto scroll-custom">
+                    <div className="absolute z-[100] mt-1 left-0 w-[85vw] sm:w-[450px] bg-white rounded-none shadow-none border-[1.5px] border-black max-h-[500px] overflow-y-auto hide-scrollbar">
                         {showLoadingSpinner ? (
-                            <div className="flex justify-center py-4">
-                                <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-blue-500"></div>
+                            <div className="flex justify-center py-6">
+                                <div className="h-5 w-5 border-2 border-black border-t-transparent animate-spin"></div>
                             </div>
                         ) : error ? (
-                            <div className="text-red-500 text-center p-4">
-                                Error: {error.message}
+                            <div className="text-red-500 text-center p-4 text-xs font-bold">
+                                Lỗi: {error.message}
                             </div>
                         ) : blogSearchData ? (
                             <div className="p-2">
@@ -153,20 +153,20 @@ const Search = () => {
                                             <Link
                                                 key={result.id}
                                                 href={`/blog/${result.slug}`}
-                                                className="block p-3 hover:bg-gray-100 rounded-md transition-colors focus:outline-none focus:bg-gray-100"
+                                                className="block p-3 hover:bg-black group rounded-none transition-colors border-b-[1.5px] border-black last:border-b-0 focus:outline-none focus:bg-black"
                                                 onMouseDown={(e) => e.preventDefault()}
                                             >
                                                 <div className="flex items-start space-x-3">
                                                     {result.imageUrl && (
-                                                        <div className="flex-shrink-0 w-16 h-16 relative">
+                                                        <div className="flex-shrink-0 w-16 h-16 relative border-[1.5px] border-black">
                                                             <CldImage
                                                                 width={300}
                                                                 height={300}
                                                                 src={result.imageUrl}
                                                                 alt={result.imageAlt || result.title}
-                                                                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                                                                className="w-full h-full object-cover"
                                                                 loading="lazy"
-                                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                                                sizes="(max-width: 768px) 100vw, 600px"
                                                                 crop="fill"
                                                                 gravity="auto"
                                                                 quality="auto:best"
@@ -176,15 +176,15 @@ const Search = () => {
                                                         </div>
                                                     )}
                                                     <div className="flex-1 min-w-0">
-                                                        <h3 className="text-sm font-medium text-gray-900 truncate">
+                                                        <h3 className="text-sm font-bold text-black group-hover:text-white truncate transition-colors">
                                                             {highlightMatch(result.title, debouncedSearchTerm)}
                                                         </h3>
                                                         {result.metaDescription && (
-                                                            <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                                                            <p className="text-xs text-gray-500 group-hover:text-gray-300 mt-1 line-clamp-2 transition-colors">
                                                                 {result.metaDescription}
                                                             </p>
                                                         )}
-                                                        <div className="flex flex-wrap items-center text-xs text-gray-400 mt-2 gap-x-3 gap-y-1">
+                                                        <div className="flex flex-wrap items-center text-[10px] font-bold uppercase tracking-widest text-gray-400 group-hover:text-gray-400 mt-2 gap-x-3 gap-y-1">
                                                             {result.author?.name && (
                                                                 <div className="flex items-center whitespace-nowrap">
                                                                     <FaUser className="mr-1 flex-shrink-0" size={10} />
@@ -194,11 +194,7 @@ const Search = () => {
                                                             {result.publishDate && (
                                                                 <div className="flex items-center whitespace-nowrap">
                                                                     <FaCalendarAlt className="mr-1 flex-shrink-0" size={10} />
-                                                                    {new Date(result.publishDate).toLocaleDateString('en-US', {
-                                                                        year: 'numeric',
-                                                                        month: 'short',
-                                                                        day: 'numeric'
-                                                                    })}
+                                                                    {new Date(result.publishDate).toLocaleDateString('vi-VN')}
                                                                 </div>
                                                             )}
                                                         </div>
@@ -210,20 +206,20 @@ const Search = () => {
                                 </div>
 
                                 {blogSearchData.totalPages > 1 && (
-                                    <div className="flex justify-between items-center px-3 py-2 border-t border-gray-100 mt-2">
+                                    <div className="flex justify-between items-center px-3 py-3 border-t-[1.5px] border-black mt-0 bg-white">
                                         <button
                                             onClick={(e) => {
                                                 e.preventDefault(); 
                                                 setCurrentPage(p => Math.max(1, p - 1));
                                             }}
                                             disabled={currentPage === 1 || isFetching}
-                                            className="text-xs px-3 py-1 text-gray-700 rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-1 focus:ring-blue-300"
+                                            className="text-[10px] font-bold uppercase tracking-widest px-3 py-2 text-black bg-white rounded-none border-[1.5px] border-black hover:bg-black hover:text-white disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-black focus:outline-none transition-colors"
                                             onMouseDown={(e) => e.preventDefault()}
                                         >
-                                            Previous
+                                            Trang trước
                                         </button>
-                                        <span className="text-xs text-gray-500">
-                                            Page {currentPage} of {blogSearchData.totalPages}
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-black">
+                                            {currentPage} / {blogSearchData.totalPages}
                                         </span>
                                         <button
                                             onClick={(e) => {
@@ -231,10 +227,10 @@ const Search = () => {
                                                 setCurrentPage(p => Math.min(blogSearchData.totalPages, p + 1));
                                             }}
                                             disabled={currentPage === blogSearchData.totalPages || isFetching}
-                                            className="text-xs px-3 py-1 text-gray-700 rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-1 focus:ring-blue-300"
+                                            className="text-[10px] font-bold uppercase tracking-widest px-3 py-2 text-black bg-white rounded-none border-[1.5px] border-black hover:bg-black hover:text-white disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-black focus:outline-none transition-colors"
                                             onMouseDown={(e) => e.preventDefault()}
                                         >
-                                            Next
+                                            Trang sau
                                         </button>
                                     </div>
                                 )}

@@ -53,10 +53,12 @@ const BlogContentRenderer: React.FC<BlogContentRendererProps> = ({ content, head
     );
 
     return (
-        <div className="prose prose-slate max-w-none lg:prose-lg prose-headings:scroll-mt-24 
-            prose-img:rounded-lg prose-img:shadow-md prose-img:max-w-full prose-img:h-auto 
-            prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-a:transition-colors 
+        <div className="prose prose-slate max-w-none lg:prose-lg prose-headings:scroll-mt-40 
+            prose-img:rounded-none prose-img:border-2 prose-img:border-black prose-img:shadow-none prose-img:max-w-full prose-img:h-auto 
+            prose-a:text-black prose-a:underline prose-a:underline-offset-2 hover:prose-a:bg-black hover:prose-a:text-white prose-a:transition-colors 
             prose-a:duration-150 prose-code:before:content-none prose-code:after:content-none 
+            prose-blockquote:border-l-4 prose-blockquote:border-black prose-blockquote:bg-gray-50 prose-blockquote:py-1 prose-blockquote:pr-4
+            prose-headings:font-extrabold prose-headings:text-black
             mb-12"
         >
             <DynamicReactMarkdown

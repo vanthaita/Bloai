@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FaArrowRight, FaRobot, FaBrain, FaCode, FaChartLine, FaTwitter, FaLinkedin, FaGithub } from 'react-icons/fa';
 import Head from 'next/head';
+import { homePageSchemaLd, safeJsonLdStringify } from '@/config/seo';
 
 const LandingPage = () => {
   const [heroImage] = useState('https://images.unsplash.com/photo-1507146426996-ef05306b995a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
@@ -27,7 +28,7 @@ const LandingPage = () => {
       </Head>
       <script
          type="application/ld+json"
-         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema).replace(/</g, '\\u003c') }}
+         dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(homePageSchemaLd) }}
        />
       <div className="min-h-screen bg-white text-gray-800">
       <section className="container mx-auto px-4 py-16">
@@ -51,7 +52,6 @@ const LandingPage = () => {
               <Link href="/about" className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium">
                 Tìm hiểu thêm
               </Link>
->>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
             </div>
           </div>
           <div className="lg:w-1/2 relative">

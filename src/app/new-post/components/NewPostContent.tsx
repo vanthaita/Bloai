@@ -42,7 +42,7 @@ const NewPostContent = () => {
     const [isGeneratingSlugManually, setIsGeneratingSlugManually] = useState(false);
     const [readTime, setReadTime] = useState(0)
 
-    const {selectedModel, setSelectedModel, availableModels, isModelLoading} = useAI();
+    const { selectedModel, setSelectedModel, availableModels, isModelLoading } = useAI();
 
     const [checkIsImageGenerated, setCheckIsImageGenerated] = useState(false);
 
@@ -52,7 +52,7 @@ const NewPostContent = () => {
     const [isGeneratingOgDescription, setIsGeneratingOgDescription] = useState(false);
     const [isGeneratingTitle, setIsGeneratingTitle] = useState(false);
     const [isGeneratingExcerpt, setIsGeneratingExcerpt] = useState(false);
-    const [isGeneratingEnhanceContent,setIsGeneratingEnhanceContent] = useState(false);
+    const [isGeneratingEnhanceContent, setIsGeneratingEnhanceContent] = useState(false);
 
     const [isAutoCanonical, setIsAutoCanonical] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,12 +68,12 @@ const NewPostContent = () => {
     const currentUser = useCurrentUser();
     const searchParams = useSearchParams();
     const blogSlug = searchParams.get('blogSlug') as string;
-    
+
     const { data: blogData, isLoading: isBlogLoading } = api.blog.getBlog.useQuery({ slug: blogSlug }, {
         enabled: !!blogSlug,
         select: (data) => ({
             ...data,
-            tags: data.tags.map(tag => tag.name), 
+            tags: data.tags.map(tag => tag.name),
         }),
     });
 
@@ -101,7 +101,7 @@ const NewPostContent = () => {
             setOgTitle(blogData.ogTitle || '');
             setOgDescription(blogData.ogDescription || '');
             setReadTime(blogData.readTime || 0);
-            
+
             if (blogData.canonicalUrl && blogData.canonicalUrl !== `${env.NEXT_PUBLIC_APP_URL}/blog/${blogData.slug}`) {
                 setIsAutoCanonical(false);
             }
@@ -153,7 +153,7 @@ const NewPostContent = () => {
 
     const handleTitleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value);
-        setIsGeneratingSlugManually(false); 
+        setIsGeneratingSlugManually(false);
     }, []);
 
     const handleSlugChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -197,9 +197,9 @@ const NewPostContent = () => {
             setImageAlt(title.slice(0, 125));
         }
         if (!file) {
-            setImageAlt(''); 
+            setImageAlt('');
         }
-    }, [imageAlt, title]); 
+    }, [imageAlt, title]);
 
     const uploadImageToCloudinary = useCallback(async (file: File): Promise<string | null> => {
         const formData = new FormData();
@@ -225,7 +225,7 @@ const NewPostContent = () => {
             toast.error(`Lỗi tải ảnh lên Cloudinary: ${error instanceof Error ? error.message : 'Unknown error'}`);
             return null;
         }
-    }, []); 
+    }, []);
 
     const handleSubmit = useCallback(async () => {
         if (!isSEOValid) {
@@ -243,12 +243,12 @@ const NewPostContent = () => {
         setIsSubmitting(true);
         try {
             let imageUrl = existingThumbnailUrl;
-            
+
             if (thumbnail && checkIsImageGenerated === false) {
                 const uploadedUrl = await uploadImageToCloudinary(thumbnail);
                 if (!uploadedUrl) {
-                    setIsSubmitting(false); 
-                    return; 
+                    setIsSubmitting(false);
+                    return;
                 }
                 imageUrl = uploadedUrl;
             }
@@ -257,21 +257,21 @@ const NewPostContent = () => {
             const finalTitle = title.trim();
             const finalMetaDesc = metaDescription.trim();
             const finalCanonical = canonicalUrl.trim() || `${env.NEXT_PUBLIC_APP_URL}/blog/${finalSlug}`;
-            const finalOgTitle = ogTitle.trim() || finalTitle; 
-            const finalOgDesc = ogDescription.trim() || finalMetaDesc; 
+            const finalOgTitle = ogTitle.trim() || finalTitle;
+            const finalOgDesc = ogDescription.trim() || finalMetaDesc;
 
             const postData = {
                 title: finalTitle,
                 slug: finalSlug,
-                content: content, 
-                tags: tags, 
+                content: content,
+                tags: tags,
                 thumbnail: imageUrl,
                 metaDescription: finalMetaDesc,
                 imageAlt: imageAlt.trim().slice(0, 125),
                 canonicalUrl: finalCanonical,
                 ogTitle: finalOgTitle,
                 ogDescription: finalOgDesc,
-                readTime: readTime, 
+                readTime: readTime,
             };
 
             if (blogSlug && blogData) {
@@ -285,7 +285,7 @@ const NewPostContent = () => {
                 toast.success('Bài viết đã được xuất bản thành công!');
             }
 
-            refresh(); 
+            refresh();
             router.push(`/blog/${finalSlug}`);
 
         } catch (error: any) {
@@ -306,204 +306,203 @@ const NewPostContent = () => {
         <TooltipProvider>
             {isLoading ? (
                 <Loading />
-            ) : ( 
-            <div className="bg-white min-h-screen p-1 md:p-4 w-full">
-               <div className="space-y-4 mb-6">
-                    <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center p-3 rounded-lg">
-                        <div 
-                            onClick={() => router.back()} 
-                            className="cursor-pointer group"
-                            aria-label="Quay lại trang trước"
-                        >
-                            <Button 
-                            variant="ghost" 
-                            className="flex items-center gap-2 px-3 py-2 transition-all hover:bg-accent hover:pl-2"
+            ) : (
+                <div className="bg-white min-h-screen p-1 md:p-4 w-full">
+                    <div className="space-y-4 mb-6">
+                        <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center p-3 rounded-lg">
+                            <div
+                                onClick={() => router.back()}
+                                className="cursor-pointer group"
+                                aria-label="Quay lại trang trước"
                             >
-                            <ArrowLeft className="w-5 h-5 text-primary group-hover:-translate-x-1 transition-transform" />
-                            <span className="font-medium">Trở lại danh sách</span>
-                            </Button>
+                                <Button
+                                    variant="ghost"
+                                    className="flex items-center gap-2 px-3 py-2 transition-all hover:bg-accent hover:pl-2"
+                                >
+                                    <ArrowLeft className="w-5 h-5 text-primary group-hover:-translate-x-1 transition-transform" />
+                                    <span className="font-medium">Trở lại danh sách</span>
+                                </Button>
+                            </div>
+
+                            <div className="w-full sm:w-auto min-w-[200px]">
+                                <Select
+                                    value={selectedModel}
+                                    onValueChange={setSelectedModel}
+                                    disabled={isModelLoading}
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <div className="flex items-center gap-2 truncate">
+                                            <span className="font-medium">Model:</span>
+                                            <SelectValue asChild>
+                                                <span className="truncate">
+                                                    {availableModels.find(m => m.id === selectedModel)?.name || "Select"}
+                                                </span>
+                                            </SelectValue>
+                                        </div>
+                                    </SelectTrigger>
+                                    <SelectContent className="min-w-[280px]">
+                                        {availableModels.map((model) => (
+                                            <SelectItem key={model.id} value={model.id} className="py-2">
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="flex justify-between items-center cursor-pointer">
+                                                        <span className="font-medium truncate max-w-[180px]">{model.name}</span>
+                                                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                                            {model.maxTokens.toLocaleString()} token
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
-                        
-                        <div className="w-full sm:w-auto min-w-[200px]">
-                            <Select 
-                            value={selectedModel} 
-                            onValueChange={setSelectedModel}
-                            disabled={isModelLoading}
-                            >
-                            <SelectTrigger className="w-full">
-                                <div className="flex items-center gap-2 truncate">
-                                <span className="font-medium">Model:</span>
-                                <SelectValue asChild>
-                                    <span className="truncate">
-                                    {availableModels.find(m => m.id === selectedModel)?.name || "Select"}
-                                    </span>
-                                </SelectValue>
+
+                        <div className="bg-blue-50/80 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <div className="flex items-start gap-3">
+                                <Lightbulb className="w-5 h-5 mt-0.5 text-blue-600 dark:text-blue-300 flex-shrink-0" />
+                                <div>
+                                    <h3 className="font-semibold text-blue-800 dark:text-blue-100 mb-1.5">
+                                        Lưu ý quan trọng khi tạo bài viết chuẩn SEO
+                                    </h3>
+                                    <ol className="list-decimal list-inside space-y-1.5 text-sm text-blue-700 dark:text-blue-300">
+                                        <li>
+                                            <span className="font-medium">Tạo Tags trước:</span> Xác định từ khóa chính
+                                            và phụ để hệ thống gợi ý nội dung phù hợp
+                                        </li>
+                                        <li>
+                                            <span className="font-medium">Tiêu đề (Title):</span> Chứa từ khóa chính,
+                                            dưới 60 ký tự và thu hút click
+                                        </li>
+                                        <li>
+                                            <span className="font-medium">Mô tả (Description):</span> Tóm tắt nội dung
+                                            trong 150-160 ký tự, chứa từ khóa
+                                        </li>
+                                        <li>
+                                            <span className="font-medium">Header (H2, H3):</span> Phân cấp rõ ràng,
+                                            mỗi section nên chứa ít nhất 1 từ khóa phụ
+                                        </li>
+                                    </ol>
                                 </div>
-                            </SelectTrigger>
-                            <SelectContent className="min-w-[280px]">
-                                {availableModels.map((model) => (
-                                <SelectItem key={model.id} value={model.id} className="py-2">
-                                    <div className="flex flex-col gap-1">
-                                    <div className="flex justify-between items-center cursor-pointer">
-                                        <span className="font-medium truncate max-w-[180px]">{model.name}</span>
-                                        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                                        {model.maxTokens.toLocaleString()} token
-                                        </span>
-                                    </div>
-                                    </div>
-                                </SelectItem>
-                                ))}
-                            </SelectContent>
-                            </Select>
+                            </div>
                         </div>
                     </div>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
+                                {blogSlug ? 'Chỉnh Sửa Bài Viết' : 'Tạo Bài Viết Mới'}
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant="ghost" size="icon" className="w-5 h-5 p-0">
+                                            <HelpCircle className="w-4 h-4" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent><p>Điền đầy đủ các trường (*) và tối ưu SEO.</p></TooltipContent>
+                                </Tooltip>
+                            </CardTitle>
+                        </CardHeader>
 
-                <div className="bg-blue-50/80 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <div className="flex items-start gap-3">
-                    <Lightbulb className="w-5 h-5 mt-0.5 text-blue-600 dark:text-blue-300 flex-shrink-0" />
-                    <div>
-                        <h3 className="font-semibold text-blue-800 dark:text-blue-100 mb-1.5">
-                        Lưu ý quan trọng khi tạo bài viết chuẩn SEO
-                        </h3>
-                        <ol className="list-decimal list-inside space-y-1.5 text-sm text-blue-700 dark:text-blue-300">
-                        <li>
-                            <span className="font-medium">Tạo Tags trước:</span> Xác định từ khóa chính 
-                            và phụ để hệ thống gợi ý nội dung phù hợp
-                        </li>
-                        <li>
-                            <span className="font-medium">Tiêu đề (Title):</span> Chứa từ khóa chính, 
-                            dưới 60 ký tự và thu hút click
-                        </li>
-                        <li>
-                            <span className="font-medium">Mô tả (Description):</span> Tóm tắt nội dung 
-                            trong 150-160 ký tự, chứa từ khóa
-                        </li>
-                        <li>
-                            <span className="font-medium">Header (H2, H3):</span> Phân cấp rõ ràng, 
-                            mỗi section nên chứa ít nhất 1 từ khóa phụ
-                        </li>
-                        </ol>
-                    </div>
-                    </div>
-                </div>
-                </div>
->>>>>>> e31a2c630cb91bfa50a5ce151e47714bee6b7ccb
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
-                            {blogSlug ? 'Chỉnh Sửa Bài Viết' : 'Tạo Bài Viết Mới'}
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="w-5 h-5 p-0">
-                                        <HelpCircle className="w-4 h-4" />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent><p>Điền đầy đủ các trường (*) và tối ưu SEO.</p></TooltipContent>
-                            </Tooltip>
-                        </CardTitle>
-                    </CardHeader>
+                        <CardContent className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
+                            <div className="lg:col-span-3 space-y-5">
+                                <TitleSlugInput
+                                    title={title}
+                                    onTitleChange={handleTitleChange}
+                                    setTitle={setTitle}
+                                    slug={slug}
+                                    onSlugChange={handleSlugChange}
+                                    isGeneratingSlugManually={isGeneratingSlugManually}
+                                    onToggleManualSlug={handleToggleManualSlug}
+                                    isGeneratingTitle={isGeneratingTitle}
+                                    setIsGeneratingTitle={setIsGeneratingTitle}
+                                    contentForAI={content}
+                                    modelAi={selectedModel}
+                                />
 
-                    <CardContent className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
-                        <div className="lg:col-span-3 space-y-5">
-                            <TitleSlugInput
-                                title={title}
-                                onTitleChange={handleTitleChange}
-                                setTitle={setTitle}
-                                slug={slug}
-                                onSlugChange={handleSlugChange}
-                                isGeneratingSlugManually={isGeneratingSlugManually}
-                                onToggleManualSlug={handleToggleManualSlug}
-                                isGeneratingTitle={isGeneratingTitle}
-                                setIsGeneratingTitle={setIsGeneratingTitle}
-                                contentForAI={content} 
-                                modelAi={selectedModel}
-                            />
+                                <DescriptionInputs
+                                    metaDescription={metaDescription}
+                                    onMetaDescriptionChange={handleMetaDescriptionChange}
+                                    setMetaDescription={setMetaDescription}
+                                    isGeneratingExcerpt={isGeneratingExcerpt}
+                                    setIsGeneratingExcerpt={setIsGeneratingExcerpt}
+                                    isGeneratingMetaDesc={isGeneratingMetaDescription}
+                                    setIsGeneratingMetaDesc={setIsGeneratingMetaDescription}
+                                    isSEOValid={isSEOValid}
+                                    contentForAI={content}
+                                    modelAi={selectedModel}
 
-                            <DescriptionInputs
-                                metaDescription={metaDescription}
-                                onMetaDescriptionChange={handleMetaDescriptionChange}
-                                setMetaDescription={setMetaDescription} 
-                                isGeneratingExcerpt={isGeneratingExcerpt}
-                                setIsGeneratingExcerpt={setIsGeneratingExcerpt}
-                                isGeneratingMetaDesc={isGeneratingMetaDescription}
-                                setIsGeneratingMetaDesc={setIsGeneratingMetaDescription}
+                                />
+
+                                <ThumbnailUploader
+                                    thumbnail={thumbnail}
+                                    onThumbnailChange={handleThumbnailChange}
+                                    imageAlt={imageAlt}
+                                    onImageAltChange={handleImageAltChange}
+                                    isSEOValid={isSEOValid}
+                                    existingThumbnailUrl={existingThumbnailUrl}
+                                    content={content}
+                                    modelAi={selectedModel}
+                                    setCheckIsImageGenerated={setCheckIsImageGenerated}
+                                    setExistingThumbnailUrl={setExistingThumbnailUrl}
+                                />
+
+                                <ContentEditorWithContext
+                                    content={content}
+                                    onContentChange={handleContentChange}
+                                    readTime={readTime}
+                                    isGeneratingEnhanceContent={isGeneratingEnhanceContent}
+                                    setIsGeneratingEnhanceContent={(setIsGeneratingEnhanceContent)}
+                                    modelAi={selectedModel}
+                                />
+                            </div>
+
+                            <div className="space-y-6 lg:border-l lg:pl-6">
+                                <SEOPreviewDisplay
+                                    title={title}
+                                    slug={slug}
+                                    metaDescription={metaDescription}
+                                />
+                                <AdvancedSEOFormFields
+                                    canonicalUrl={canonicalUrl}
+                                    onCanonicalUrlChange={handleCanonicalUrlChange}
+                                    isAutoCanonical={isAutoCanonical}
+                                    setIsAutoCanonical={setIsAutoCanonical}
+                                    ogTitle={ogTitle}
+                                    onOgTitleChange={handleOgTitleChange}
+                                    setOgTitle={setOgTitle}
+                                    ogDescription={ogDescription}
+                                    onOgDescriptionChange={handleOgDescriptionChange}
+                                    setOgDescription={setOgDescription}
+                                    isGeneratingOgTitle={isGeneratingOgTitle}
+                                    setIsGeneratingOgTitle={setIsGeneratingOgTitle}
+                                    isGeneratingOgDescription={isGeneratingOgDescription}
+                                    setIsGeneratingOgDescription={setIsGeneratingOgDescription}
+                                    slug={slug}
+                                    contentForAI={content}
+                                    modelAi={selectedModel}
+                                />
+
+                                <TagsManagementInput
+                                    tags={tags}
+                                    setTags={setTags}
+                                    isGeneratingKeywords={isGeneratingKeywords}
+                                    setIsGeneratingKeywords={setIsGeneratingKeywords}
+                                    contentForAI={content}
+                                    modelAi={selectedModel}
+                                />
+                                <Separator />
+                            </div>
+                        </CardContent>
+
+                        <CardFooter>
+                            <SubmissionArea
                                 isSEOValid={isSEOValid}
-                                contentForAI={content} 
-                                modelAi={selectedModel}
-
+                                isSubmitting={isSubmitting}
+                                onSubmit={handleSubmit}
+                                isUpdateMode={!!blogSlug}
                             />
-
-                            <ThumbnailUploader
-                                thumbnail={thumbnail}
-                                onThumbnailChange={handleThumbnailChange}
-                                imageAlt={imageAlt}
-                                onImageAltChange={handleImageAltChange}
-                                isSEOValid={isSEOValid}
-                                existingThumbnailUrl={existingThumbnailUrl}
-                                content={content}
-                                modelAi={selectedModel}
-                                setCheckIsImageGenerated={setCheckIsImageGenerated}
-                                setExistingThumbnailUrl={setExistingThumbnailUrl}
-                            />
-
-                            <ContentEditorWithContext
-                                content={content}
-                                onContentChange={handleContentChange}
-                                readTime={readTime}
-                                isGeneratingEnhanceContent={isGeneratingEnhanceContent}
-                                setIsGeneratingEnhanceContent={(setIsGeneratingEnhanceContent)}
-                                modelAi={selectedModel}
-                            />
-                        </div>
-
-                        <div className="space-y-6 lg:border-l lg:pl-6">
-                            <SEOPreviewDisplay
-                                title={title}
-                                slug={slug}
-                                metaDescription={metaDescription}
-                            />
-                            <AdvancedSEOFormFields
-                                canonicalUrl={canonicalUrl}
-                                onCanonicalUrlChange={handleCanonicalUrlChange}
-                                isAutoCanonical={isAutoCanonical}
-                                setIsAutoCanonical={setIsAutoCanonical}
-                                ogTitle={ogTitle}
-                                onOgTitleChange={handleOgTitleChange}
-                                setOgTitle={setOgTitle}
-                                ogDescription={ogDescription}
-                                onOgDescriptionChange={handleOgDescriptionChange}
-                                setOgDescription={setOgDescription} 
-                                isGeneratingOgTitle={isGeneratingOgTitle}
-                                setIsGeneratingOgTitle={setIsGeneratingOgTitle}
-                                isGeneratingOgDescription={isGeneratingOgDescription}
-                                setIsGeneratingOgDescription={setIsGeneratingOgDescription}
-                                slug={slug} 
-                                contentForAI={content}
-                                modelAi={selectedModel}
-                            />
-
-                            <TagsManagementInput
-                                tags={tags}
-                                setTags={setTags} 
-                                isGeneratingKeywords={isGeneratingKeywords}
-                                setIsGeneratingKeywords={setIsGeneratingKeywords}
-                                contentForAI={content}
-                                modelAi={selectedModel}
-                            />
-                            <Separator />
-                        </div>
-                    </CardContent>
-
-                    <CardFooter>
-                        <SubmissionArea
-                            isSEOValid={isSEOValid}
-                            isSubmitting={isSubmitting}
-                            onSubmit={handleSubmit}
-                            isUpdateMode={!!blogSlug}
-                        />
-                    </CardFooter>
-                </Card>
-            </div>)}
+                        </CardFooter>
+                    </Card>
+                </div>)}
         </TooltipProvider>
     )
 }

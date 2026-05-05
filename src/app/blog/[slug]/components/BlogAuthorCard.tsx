@@ -26,40 +26,42 @@ const AuthorCard: React.FC<AuthorCardProps> = ({
     ].filter(link => link.url);
 
     return (
-        <div className={`flex flex-col items-center text-center ${className}`}>
-            <Image
-                src={author.image || '/images/fallback-avatar.png'}
-                alt={author.name ? `${author.name}'s Avatar` : 'Author Avatar'}
-                width={imageSize}
-                height={imageSize}
-                className="rounded-full object-cover mb-4 border-4 border-white shadow-lg"
-                priority={imageSize > 80}
-                quality={80}
-                unoptimized={!author.image || author.image.startsWith('/')}
-            />
-            <h3 className="text-xl font-bold text-gray-900 mb-2">{author.name || 'Unknown Author'}</h3>
-            <p className="text-gray-600 mb-6 leading-relaxed max-w-md">
-                {author.bio || 'The author shares insights on AI, machine learning, and tech.'}
-            </p>
-            {showSocials && socialLinks.length > 0 && (
-                 <div className="flex gap-3 w-full items-center justify-center">
-                    <div className="flex gap-2">
+        <div className={`flex flex-col sm:flex-row items-center text-center sm:text-left border-[1.5px] border-black p-8 bg-white gap-8 w-full ${className}`}>
+            <div className="shrink-0">
+                <Image
+                    src={author.image || '/images/fallback-avatar.png'}
+                    alt={author.name ? `${author.name}'s Avatar` : 'Author Avatar'}
+                    width={imageSize}
+                    height={imageSize}
+                    className="rounded-none object-cover border-[1.5px] border-black"
+                    priority={imageSize > 80}
+                    quality={80}
+                    unoptimized={!author.image || author.image.startsWith('/')}
+                />
+            </div>
+            <div className="flex flex-col flex-1 items-center sm:items-start">
+                <h3 className="text-xl font-bold uppercase tracking-widest text-black mb-4">{author.name || 'Unknown Author'}</h3>
+                <p className="text-black font-medium mb-6 leading-relaxed max-w-lg">
+                    {author.bio || 'The author shares insights on AI, machine learning, and tech.'}
+                </p>
+                {showSocials && socialLinks.length > 0 && (
+                     <div className="flex gap-3 items-center justify-center sm:justify-start">
                         {socialLinks.map(({ platform, url, Icon, label }) => (
                              <Link
                                  key={platform}
                                  href={url!}
-                                 className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                 className="p-2 border-[1.5px] border-black hover:bg-black hover:text-white text-black bg-white transition-colors rounded-none"
                                  target="_blank"
                                  rel="noopener noreferrer nofollow"
                                  aria-label={label}
                                  title={label}
                                 >
-                                <Icon className="w-5 h-5" />
+                                <Icon className="w-4 h-4" />
                             </Link>
                         ))}
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };

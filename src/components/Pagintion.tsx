@@ -64,9 +64,9 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <nav 
       aria-label="Pagination" 
-      className={cn("flex flex-col sm:flex-row items-center justify-between gap-4 w-full", className)}
+      className={cn("flex flex-col sm:flex-row items-center justify-between gap-4 w-full border-t-2 border-black pt-6 mt-12", className)}
     >
-      <div className="text-sm text-gray-600 dark:text-gray-400 hidden md:block">
+      <div className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-black hidden md:block">
         Trang {currentPage} / {totalPages}
       </div>
 
@@ -76,7 +76,7 @@ const Pagination: React.FC<PaginationProps> = ({
           size="icon" 
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="h-9 w-9 p-0 border-[#e4d9c8] text-[#554640] hover:bg-[#3A6B4C]/10 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
+          className="h-10 w-10 p-0 border-[1.5px] border-black rounded-none text-black bg-white hover:bg-black hover:text-white transition-colors disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-black"
           aria-label="Trang trước"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -84,16 +84,13 @@ const Pagination: React.FC<PaginationProps> = ({
 
         {pageNumbers.map((page, index) => (
           page === '...' ? (
-            <Button
+            <div
               key={`ellipsis-${index}`}
-              variant="outline"
-              size="icon"
-              className="h-9 w-9 p-0 border-[#e4d9c8] text-[#554640] hover:bg-[#3A6B4C]/10 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 cursor-default"
-              disabled
+              className="h-10 w-10 flex items-center justify-center text-black font-bold tracking-[0.2em]"
               aria-hidden="true"
             >
               ...
-            </Button>
+            </div>
           ) : (
             <Button
               key={page}
@@ -101,10 +98,10 @@ const Pagination: React.FC<PaginationProps> = ({
               size="icon" 
               onClick={() => handlePageChange(page)}
               className={cn(
-                'h-9 w-9 p-0',
+                'h-10 w-10 p-0 border-[1.5px] border-black rounded-none text-xs font-bold transition-colors',
                 page === currentPage
-                  ? 'bg-[#3A6B4C] text-white hover:bg-[#2E5540] dark:bg-[#4F7359] dark:hover:bg-[#3A6B4C]' 
-                  : 'border-[#e4d9c8] text-[#554640] hover:bg-[#3A6B4C]/10 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700'
+                  ? 'bg-black text-white hover:bg-gray-800 hover:text-white' 
+                  : 'bg-white text-black hover:bg-black hover:text-white'
               )}
               aria-current={page === currentPage ? 'page' : undefined}
               aria-label={`Trang ${page}`}
@@ -119,15 +116,15 @@ const Pagination: React.FC<PaginationProps> = ({
           size="icon"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="h-9 w-9 p-0 border-[#e4d9c8] text-[#554640] hover:bg-[#3A6B4C]/10 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
+          className="h-10 w-10 p-0 border-[1.5px] border-black rounded-none text-black bg-white hover:bg-black hover:text-white transition-colors disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-black"
           aria-label="Trang sau"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
 
-      <div className="text-sm text-gray-600 dark:text-gray-400 hidden md:block">
-        {totalPages} trang tổng cộng
+      <div className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-black hidden md:block">
+        Tổng cộng: {totalPages} trang
       </div>
     </nav>
   );
