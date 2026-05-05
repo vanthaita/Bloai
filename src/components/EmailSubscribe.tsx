@@ -71,20 +71,24 @@ const EmailSubscribeSection = ({
   };
 
   return (
-    <section className={` p-8 ${className}`}>
-      <div className="max-w-2xl mx-auto text-center">
-        <h3 className="text-2xl font-bold text-[#2B463C] mb-3">{title}</h3>
-        <p className="text-[#554640]/90 mb-6">{description}</p>
+    <section className={`py-12 md:py-16 ${className}`}>
+      <div className="max-w-3xl mx-auto text-center px-4">
+        <h3 className="text-2xl md:text-3xl font-black uppercase tracking-widest text-black mb-4">
+          {title}
+        </h3>
+        <p className="text-gray-600 mb-8 font-medium max-w-xl mx-auto">
+          {description}
+        </p>
         
-        <form className="flex flex-col sm:flex-row gap-3" onSubmit={handleSubmit}>
+        <form className="flex flex-col sm:flex-row gap-0 border-[2px] border-black p-1 max-w-2xl mx-auto bg-white" onSubmit={handleSubmit}>
           <div className="relative flex-grow">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#554640]" />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
               type="email"
-              placeholder='Nhập email của bạn'
+              placeholder='Nhập email của bạn...'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="pl-10 focus:ring-2 focus:ring-[#3A6B4C] rounded-lg h-12"
+              className="pl-12 rounded-none border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 h-12 md:h-14 bg-transparent text-black placeholder:text-gray-400 text-sm md:text-base w-full"
               aria-label="Email đăng ký nhận bản tin"
               disabled={isLoading}
               required
@@ -92,22 +96,21 @@ const EmailSubscribeSection = ({
           </div>
           <Button 
             type="submit" 
-            className="bg-[#3A6B4C] hover:bg-[#2E5540] text-white h-12 px-6"
+            className="bg-black hover:bg-gray-800 text-white rounded-none h-12 md:h-14 px-6 md:px-8 uppercase font-bold tracking-widest text-[10px] md:text-xs transition-colors shrink-0"
             disabled={isLoading}
-            size="lg"
           >
             {isLoading ? (
-              'Đang gửi...'
+              'ĐANG GỬI...'
             ) : (
-              <>
-                Đăng ký ngay
+              <span className="flex items-center">
+                ĐĂNG KÝ NGAY
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </>
+              </span>
             )}
           </Button>
         </form>
         
-        <p className="text-xs text-[#554640]/60 mt-3">
+        <p className="text-xs text-gray-500 mt-4 font-medium">
           Chúng tôi tôn trọng quyền riêng tư của bạn. Bạn có thể hủy đăng ký bất cứ lúc nào.
         </p>
       </div>

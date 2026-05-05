@@ -122,7 +122,7 @@ export function BlogGrid() {
       
       {/* Category Filter Tabs */}
       {tagsData && tagsData.tags.length > 0 && (
-        <div className="w-full overflow-x-auto pb-4 mb-4 hide-scrollbar">
+        <div className="w-full overflow-x-auto pb-4 mb-4 scroll-custom">
           <div className="flex items-center gap-2 min-w-max">
             <button
               onClick={clearFilter}
