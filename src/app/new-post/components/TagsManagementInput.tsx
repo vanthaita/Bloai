@@ -67,17 +67,31 @@ export const TagsManagementInput: React.FC<TagsManagementInputProps> = ({
 
             // Thử parse JSON từ AI
             let parsed: TagItem[] = [];
-            try {
-                // Trích JSON array từ response (phòng trường hợp AI thêm text thừa)
-                const jsonMatch = rawResult.match(/\[[\s\S]*\]/);
-                if (jsonMatch) {
-                    parsed = JSON.parse(jsonMatch[0]) as TagItem[];
+            
+            const jsonMatch = rawResult.match(/\[[\s\S]*\]/);
+            if (jsonMatch) {
+                try {
+                    const parsedJson = JSON.parse(jsonMatch[0]);
+                    if (Array.isArray(parsedJson)) {
+                        parsed = parsedJson.map((item: any) => {
+                            if (typeof item === 'string') {
+                                return { tag: item.trim().toLowerCase(), isExisting: false };
+                            } else if (item && typeof item.tag === 'string') {
+                                return { tag: item.tag.trim().toLowerCase(), isExisting: !!item.isExisting };
+                            }
+                            return null;
+                        }).filter(Boolean) as TagItem[];
+                    }
+                } catch {
+                    // JSON parse failed, ignore and fall through
                 }
-            } catch {
+            }
+
+            if (parsed.length === 0) {
                 // Fallback: AI trả về chuỗi phân cách dấu phẩy
                 parsed = rawResult
                     .split(/,\s*/)
-                    .map(t => t.trim())
+                    .map(t => t.trim().replace(/['"]/g, ''))
                     .filter(Boolean)
                     .map(t => ({ tag: t.toLowerCase(), isExisting: false }));
             }

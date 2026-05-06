@@ -158,9 +158,7 @@ export default async function RootLayout({
           <TRPCReactProvider>
             <main id="main-content" aria-label="Nội dung chính">
               <AppSidebarProvider>
-                <Suspense fallback={<Loading />}>
-                  {children}
-                </Suspense>
+                {children}
                 <ToastContainer position="bottom-right" />
                 <Analytics />
                 <SpeedInsights />
