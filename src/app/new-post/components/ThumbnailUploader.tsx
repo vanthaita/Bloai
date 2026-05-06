@@ -97,46 +97,59 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
     }, [content, onThumbnailChange, modelAi]);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            <div className="space-y-1.5">
-                <div className='flex gap-2 items-center'>
-                    <Label htmlFor="thumbnail-dropzone" className="text-base">Ảnh thu nhỏ *</Label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start mt-4">
+            {/* Cột trái: Dropzone */}
+            <div className="flex flex-col space-y-2">
+                <div className='flex justify-between items-center h-9'>
+                    <Label htmlFor="thumbnail-dropzone" className="text-base font-semibold text-gray-800 flex items-center gap-1.5">
+                        Ảnh thu nhỏ <span className="text-red-500">*</span>
+                    </Label>
                     <AIGenerationButton
                         label="Tạo ảnh"
                         action={handleGenerateImage}
                         isGenerating={isGeneratingImage}
                         setIsGenerating={setIsGeneratingImage}
                         contentForAI={content as string}
+                        modelAi={modelAi}
                         requiresContent={true}
                     />
                 </div>
-                <Dropzone
-                    id="thumbnail-dropzone"
-                    onDrop={handleFileDrop}
-                    accept="image/png, image/jpeg, image/webp, image/avif"
-                    maxFiles={1}
-                    maxSize={5 * 1024 * 1024} 
-                    aria-label="Tải lên ảnh thu nhỏ"
-                />
-                {!isSEOValid && !thumbnail && !existingThumbnailUrl && (
-                    <p className="text-xs text-red-600 pt-1">Vui lòng chọn ảnh thu nhỏ.</p>
-                )}
+                <div className="flex flex-col">
+                    <div className="aspect-video w-full">
+                        <Dropzone
+                            id="thumbnail-dropzone"
+                            onDrop={handleFileDrop}
+                            accept="image/png, image/jpeg, image/webp, image/avif"
+                            maxFiles={1}
+                            maxSize={5 * 1024 * 1024} 
+                            aria-label="Tải lên ảnh thu nhỏ"
+                        />
+                    </div>
+                    {!isSEOValid && !thumbnail && !existingThumbnailUrl && (
+                        <p className="text-xs text-red-600 pt-1.5">Vui lòng chọn ảnh thu nhỏ.</p>
+                    )}
+                </div>
             </div>
-            <div className="space-y-4">
+
+            {/* Cột phải: Preview */}
+            <div className="flex flex-col space-y-2">
+                <div className='flex items-center h-9'>
+                    <span className="text-sm font-semibold text-gray-700">Xem trước ảnh</span>
+                </div>
+                
                 {previewUrl ? (
-                    <div className="relative space-y-2 ">
-                        <p className="text-sm font-medium text-muted-foreground">Xem trước:</p>
-                        <div className="relative aspect-video rounded-lg overflow-hidden border border-dashed border-muted">
+                    <div className="flex flex-col space-y-3">
+                        <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
                             <img 
                                 src={previewUrl} 
                                 alt="Xem trước ảnh thu nhỏ" 
-                                className="object-cover w-full h-full " 
+                                className="object-cover w-full h-full" 
                             />
                             {thumbnail && (
                                 <Button 
                                     variant="destructive" 
                                     size="icon" 
-                                    className="absolute top-1 right-1 h-6 w-6" 
+                                    className="absolute top-2 right-2 h-7 w-7 rounded-full shadow-md hover:scale-105 transition-transform" 
                                     onClick={handleRemoveThumbnail}
                                     aria-label="Xóa ảnh thu nhỏ đã chọn"
                                 >
@@ -144,9 +157,12 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
                                 </Button>
                             )}
                         </div>
-                        <div className="space-y-1.5 pt-2">
-                            <Label htmlFor="imageAlt" className="flex items-center gap-2 text-base">
-                                Alt Text (SEO) <span className="text-xs text-muted-foreground">({imageAlt.length}/125 ký tự)</span>
+                        <div className="space-y-1.5 pt-1">
+                            <Label htmlFor="imageAlt" className="flex items-center justify-between text-sm font-semibold text-gray-700">
+                                <span>Alt Text (SEO)</span>
+                                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${imageAlt.length > 0 ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                                    {imageAlt.length}/125
+                                </span>
                             </Label>
                             <Textarea
                                 id="imageAlt"
@@ -154,15 +170,18 @@ export const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
                                 value={imageAlt}
                                 onChange={onImageAltChange}
                                 rows={2}
-                                className="resize-none text-sm"
+                                className="resize-none text-sm bg-white border-gray-200 focus-visible:ring-purple-500 shadow-sm transition-all"
                                 maxLength={125}
                             />
-                            <p className="text-xs text-muted-foreground">Mô tả ngắn gọn nội dung ảnh.</p>
                         </div>
                     </div>
                 ) : (
-                    <div className="flex items-center justify-center h-full min-h-[150px] border border-dashed rounded-lg text-muted-foreground text-sm bg-muted/40 md:min-h-[200px] md:mt-8">
-                        Xem trước ảnh thu nhỏ
+                    <div className="flex flex-col">
+                        <div className="aspect-video w-full flex items-center justify-center border border-dashed border-gray-200 rounded-xl text-gray-400 text-sm bg-gray-50/50 shadow-sm">
+                            <span className="flex items-center gap-2">
+                                Chưa có ảnh thu nhỏ
+                            </span>
+                        </div>
                     </div>
                 )}
             </div>

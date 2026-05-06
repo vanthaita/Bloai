@@ -158,20 +158,22 @@ export const TagsManagementInput: React.FC<TagsManagementInputProps> = ({
     return (
         <div className="space-y-3">
             {/* Header */}
-            <Label htmlFor="tagInput" className="flex items-center gap-2 text-sm font-semibold">
-                <Sparkles className="w-4 h-4 text-purple-500" />
-                Từ khóa SEO (Tags)
-                <span className={`ml-auto text-xs font-normal px-2 py-0.5 rounded-full ${
+            <Label htmlFor="tagInput" className="flex items-center justify-between text-base font-semibold text-gray-800">
+                <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-purple-500" />
+                    Từ khóa SEO (Tags)
+                </span>
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
                     remaining === 0 ? 'bg-red-100 text-red-600' :
-                    remaining <= 3 ? 'bg-amber-100 text-amber-600' :
-                    'bg-gray-100 text-gray-500'
+                    remaining <= 3 ? 'bg-amber-100 text-amber-700' :
+                    'bg-gray-100 text-gray-600'
                 }`}>
                     {tags.length}/15
                 </span>
             </Label>
 
             {/* Input + AI button */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
                 <div className="relative flex-1">
                     <Input
                         id="tagInput"
@@ -180,14 +182,14 @@ export const TagsManagementInput: React.FC<TagsManagementInputProps> = ({
                         onChange={handleInputChange}
                         onKeyDown={handleTagKeyDown}
                         disabled={remaining === 0}
-                        className="text-sm pr-16"
+                        className="text-sm pr-16 bg-white border-gray-200 focus-visible:ring-purple-500 shadow-sm transition-all h-10 px-3"
                         aria-label="Thêm từ khóa SEO"
                     />
                     {tagInput.trim() && remaining > 0 && (
                         <button
                             type="button"
                             onClick={() => { addTag(tagInput); setTagInput(''); }}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-medium"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 text-[11px] bg-blue-50 text-blue-600 hover:bg-blue-100 px-2 py-1 rounded font-semibold transition-colors"
                         >
                             <Plus className="w-3 h-3" /> Thêm
                         </button>
@@ -199,6 +201,7 @@ export const TagsManagementInput: React.FC<TagsManagementInputProps> = ({
                     isGenerating={isGeneratingKeywords}
                     setIsGenerating={setIsGeneratingKeywords}
                     contentForAI={contentForAI}
+                    modelAi={modelAi}
                     requiresContent={true}
                 />
             </div>

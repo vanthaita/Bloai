@@ -71,48 +71,46 @@ export const ContentEditorWithContext: React.FC<ContentEditorWithContextProps> =
         }
     };
     return (
-        <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-                <Label htmlFor="content-editor" id="content-editor-label" className="flex items-center gap-2 text-base">
-                    Nội dung * <span className="text-sm text-muted-foreground">(~{readTime} phút đọc)</span>
+        <div className="space-y-2 mt-4">
+            <div className="flex items-center justify-between h-9">
+                <Label htmlFor="content-editor" id="content-editor-label" className="flex items-center gap-1.5 text-base font-semibold text-gray-800">
+                    Nội dung <span className="text-red-500">*</span>
+                    <span className="text-[11px] font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full ml-2">(~{readTime} phút đọc)</span>
                 </Label>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button 
                                     type="button"
-                                    variant="ghost"
+                                    variant="outline"
                                     size="sm"
-                                    className="text-blue-600 hover:text-blue-700 h-auto px-2 py-1 text-xs"
+                                    className="h-8 px-3 text-xs font-medium text-gray-600 hover:text-gray-900 border-gray-200 hover:bg-gray-50 rounded-full transition-all flex items-center gap-1.5"
                                     onClick={handleContentChangeWithImageProcessing}
                                     disabled={isProcessing}
                                 >
                                     {isProcessing ? 'Đang xử lý...' : 'Xử lý URL ảnh'}
-                                    <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                                    <HelpCircle className="w-3.5 h-3.5 text-gray-400" />
                                 </Button>
                             </TooltipTrigger>
-                            <TooltipContent className="max-w-[300px]">
-                                <p className="text-sm">
-                                    Tự động chuyển đổi URL ảnh trong bài viết sang định dạng tối ưu.
-                                    Hỗ trợ các URL từ các dịch vụ lưu trữ ảnh phổ biến.
-                                </p>
+                            <TooltipContent className="max-w-[300px] text-xs">
+                                <p>Tự động tải lên các ảnh bên ngoài (link http) vào Cloudinary để tối ưu tốc độ tải trang.</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
                     
+                    <div className="h-4 w-[1px] bg-gray-200 mx-1"></div>
+
                     <AIGenerationButton
-                        label="Nội dung"
+                        label="Cải thiện nội dung"
                         action={handlegenerateEnhanceContentBlogForSEO}
                         isGenerating={isGeneratingEnhanceContent}
                         setIsGenerating={setIsGeneratingEnhanceContent}
                         contentForAI={content}
+                        modelAi={modelAi}
                         requiresContent={false}
                     />
-                    <span className="text-xs text-gray-600 font-medium dark:text-gray-300">
-                        Cải thiện chất lượng bài viết
-                    </span>
                 </div>
             </div>
             

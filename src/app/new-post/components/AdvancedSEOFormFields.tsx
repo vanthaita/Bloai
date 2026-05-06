@@ -74,13 +74,16 @@ export const AdvancedSEOFormFields: React.FC<AdvancedSEOFormFieldsProps> = ({
     };
 
     return (
-        <div className="space-y-4">
-            <Label className="text-lg font-semibold">SEO Nâng cao</Label>
+        <div className="space-y-6">
+            <div className="border-b border-gray-100 pb-2">
+                <Label className="text-lg font-bold text-gray-800">SEO Nâng cao</Label>
+                <p className="text-xs text-gray-500 mt-1">Tuỳ chỉnh cách bài viết hiển thị trên mạng xã hội và Google.</p>
+            </div>
             <div className="space-y-1.5">
-                <Label htmlFor="canonicalUrl" className="flex items-center gap-2 text-sm">
-                    URL Canonical
+                <Label htmlFor="canonicalUrl" className="flex items-center justify-between text-sm font-semibold text-gray-700">
+                    <span>URL Canonical</span>
                     {!isAutoCanonical && (
-                        <Button type="button" variant="link" size="sm" className="text-blue-600 hover:text-blue-700 h-auto p-0 text-xs" onClick={handleResetCanonical}>
+                        <Button type="button" variant="link" size="sm" className="text-blue-600 hover:text-blue-700 h-auto p-0 text-xs font-medium" onClick={handleResetCanonical}>
                             Đặt lại tự động
                         </Button>
                     )}
@@ -90,19 +93,20 @@ export const AdvancedSEOFormFields: React.FC<AdvancedSEOFormFieldsProps> = ({
                     placeholder="Để trống để tạo tự động"
                     value={canonicalUrl}
                     onChange={onCanonicalUrlChange} 
-                    className="text-sm"
+                    className="h-10 px-3 text-sm bg-gray-50 border-gray-200 focus-visible:ring-purple-500 transition-all shadow-sm"
                 />
-                {isAutoCanonical && <p className="text-xs text-muted-foreground">Tự động tạo từ đường dẫn (slug).</p>}
+                {isAutoCanonical && <p className="text-xs text-muted-foreground pt-0.5">Tự động tạo từ đường dẫn (slug).</p>}
             </div>
-            <div className="space-y-1.5">
-                <Label htmlFor="ogTitle" className="flex items-center gap-2 text-sm">
-                    OG Title
+            <div className="space-y-1.5 mt-4">
+                <Label htmlFor="ogTitle" className="flex items-center justify-between text-sm font-semibold text-gray-700">
+                    <span>OG Title</span>
                     <AIGenerationButton
                         label="OG Title"
                         action={handleGenerateOgTitle}
                         isGenerating={isGeneratingOgTitle}
                         setIsGenerating={setIsGeneratingOgTitle}
                         contentForAI={contentForAI}
+                        modelAi={modelAi}
                         requiresContent={true}
                     /> 
                 </Label>
@@ -110,21 +114,22 @@ export const AdvancedSEOFormFields: React.FC<AdvancedSEOFormFieldsProps> = ({
                     id="ogTitle"
                     value={ogTitle}
                     onChange={onOgTitleChange}
-                    placeholder="Tiêu đề hiển thị khi chia sẻ mạng xã hội"
-                    className="text-sm"
+                    placeholder="Tiêu đề hiển thị khi chia sẻ (Facebook, Zalo...)"
+                    className="h-10 px-3 text-sm bg-white border-gray-200 focus-visible:ring-purple-500 transition-all shadow-sm"
                     maxLength={60}
                 />
-                 <p className="text-xs text-muted-foreground">Còn lại {60 - (ogTitle?.length ?? 0)} ký tự</p>
+                 <p className="text-[11px] text-gray-500 pt-0.5">Còn lại {60 - (ogTitle?.length ?? 0)} ký tự</p>
             </div>
-            <div className="space-y-1.5">
-                <Label htmlFor="ogDescription" className="flex items-center gap-2 text-sm">
-                    OG Description
+            <div className="space-y-1.5 mt-4">
+                <Label htmlFor="ogDescription" className="flex items-center justify-between text-sm font-semibold text-gray-700">
+                    <span>OG Description</span>
                     <AIGenerationButton
                         label="OG Description"
                         action={handleGenerateOgDesc}
                         isGenerating={isGeneratingOgDescription}
                         setIsGenerating={setIsGeneratingOgDescription}
                         contentForAI={contentForAI}
+                        modelAi={modelAi}
                         requiresContent={true}
                     />
                 </Label>
@@ -132,12 +137,12 @@ export const AdvancedSEOFormFields: React.FC<AdvancedSEOFormFieldsProps> = ({
                     id="ogDescription"
                     value={ogDescription}
                     onChange={onOgDescriptionChange}
-                    rows={2}
-                    placeholder="Mô tả hiển thị khi chia sẻ mạng xã hội"
-                    className="text-sm"
+                    rows={4}
+                    placeholder="Mô tả hiển thị khi chia sẻ (Facebook, Zalo...)"
+                    className="min-h-[100px] p-3 text-sm bg-white border-gray-200 focus-visible:ring-purple-500 transition-all shadow-sm resize-y"
                     maxLength={155}
                 />
-                <p className="text-xs text-muted-foreground">Còn lại {155 - (ogDescription?.length ?? 0)} ký tự</p>
+                <p className="text-[11px] text-gray-500 pt-0.5">Còn lại {155 - (ogDescription?.length ?? 0)} ký tự</p>
             </div>
         </div>
     );

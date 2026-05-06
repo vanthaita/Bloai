@@ -50,10 +50,12 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
         <>
             <div className="space-y-1.5">
 
-                <Label htmlFor="metaDescription" className="flex items-center gap-2 text-base">
-                    Meta Mô tả *
-                    <span className={`text-xs ${metaDescription.length >= 120 && metaDescription.length <= 165 ? 'text-green-600' : 'text-yellow-600'}`}>
-                        ({metaDescription.length}/165 ký tự)
+                <Label htmlFor="metaDescription" className="flex items-center justify-between text-base font-semibold text-gray-800 mt-4">
+                    <span className="flex items-center gap-1.5">
+                        Meta Mô tả <span className="text-red-500">*</span>
+                        <span className={`ml-2 px-2 py-0.5 rounded-full text-[10px] font-medium ${metaDescription.length >= 120 && metaDescription.length <= 160 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                            {metaDescription.length}/160
+                        </span>
                     </span>
                     <AIGenerationButton
                         label="Meta Mô tả"
@@ -61,6 +63,7 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
                         isGenerating={isGeneratingMetaDesc}
                         setIsGenerating={setIsGeneratingMetaDesc}
                         contentForAI={contentForAI}
+                        modelAi={modelAi}
                         requiresContent={true}
                     />
                 </Label>
@@ -68,10 +71,10 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
                     id="metaDescription"
                     value={metaDescription}
                     onChange={onMetaDescriptionChange}
-                    className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    rows={3}
+                    className="flex w-full rounded-md border border-gray-200 bg-white px-3 py-3 text-sm focus-visible:ring-purple-500 focus-visible:border-purple-500 transition-all shadow-sm resize-y min-h-[100px]"
+                    rows={4}
                     maxLength={160}
-                    placeholder="Tối ưu cho SEO, khoảng 120-160 ký tự."
+                    placeholder="Viết một đoạn mô tả ngắn gọn, hấp dẫn, tối ưu SEO (từ 120-160 ký tự)..."
                     required
                     aria-required="true"
                 />

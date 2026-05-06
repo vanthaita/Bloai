@@ -47,22 +47,25 @@ export const TitleSlugInput: React.FC<TitleSlugInputProps> = ({
     return (
         <>
             <div className="space-y-1.5">
-                <Label htmlFor="title" className="flex items-center gap-2 text-base">
-                    Tiêu đề *
+                <Label htmlFor="title" className="flex items-center justify-between text-base font-semibold text-gray-800">
+                    <span className="flex items-center gap-1.5">
+                        Tiêu đề <span className="text-red-500">*</span>
+                    </span>
                     <AIGenerationButton
                         label="Tiêu đề"
                         action={handleGenerateTitle}
                         isGenerating={isGeneratingTitle}
                         setIsGenerating={setIsGeneratingTitle}
                         contentForAI={contentForAI}
+                        modelAi={modelAi}
                     />
                 </Label>
                 <Input
                     id="title"
-                    placeholder="Nhập tiêu đề bài viết"
+                    placeholder="Nhập tiêu đề bài viết thật ấn tượng..."
                     value={title}
                     onChange={onTitleChange}
-                    className="text-lg font-medium"
+                    className="text-lg font-medium bg-white border-gray-200 focus-visible:ring-purple-500 focus-visible:border-purple-500 shadow-sm transition-all py-6"
                     maxLength={70}
                     required
                     aria-required="true"
@@ -71,14 +74,16 @@ export const TitleSlugInput: React.FC<TitleSlugInputProps> = ({
             </div>
 
             <div className="space-y-1.5">
-                <Label htmlFor="slug" className="flex items-center gap-2 text-base">
-                    Đường dẫn (Slug) *
+                <Label htmlFor="slug" className="flex items-center justify-between text-base font-semibold text-gray-800 mt-4">
+                    <span className="flex items-center gap-1.5">
+                        Đường dẫn (Slug) <span className="text-red-500">*</span>
+                    </span>
                     <button
                         type="button"
                         onClick={onToggleManualSlug}
-                        className="text-xs text-blue-600 hover:underline focus:outline-none"
+                        className="text-xs font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-2 py-1 rounded transition-colors focus:outline-none"
                     >
-                        {isGeneratingSlugManually ? 'Tạo tự động' : 'Chỉnh sửa'}
+                        {isGeneratingSlugManually ? 'Tạo tự động' : 'Chỉnh sửa thủ công'}
                     </button>
                 </Label>
                 <Input
@@ -89,6 +94,7 @@ export const TitleSlugInput: React.FC<TitleSlugInputProps> = ({
                     required
                     aria-required="true"
                     placeholder="duong-dan-bai-viet"
+                    className="bg-gray-50 border-gray-200 focus-visible:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all"
                 />
             </div>
         </>
