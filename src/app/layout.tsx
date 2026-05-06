@@ -31,9 +31,6 @@ export const metadata: Metadata = {
     "Ứng dụng AI"
   ],
   metadataBase: new URL('https://www.bloai.blog'),
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     title: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ Mới Nhất",
     description: "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",

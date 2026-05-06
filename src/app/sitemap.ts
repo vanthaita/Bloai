@@ -23,12 +23,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }),
     ]);
 
-    const blogEntries = blogs.map(blog => ({
-        url: `${blog.canonicalUrl}`,
-        lastModified: blog.updatedAt || new Date(),
-        priority: 0.8,
-        changeFrequency: 'weekly' as const,
-    }));
+    const blogEntries = blogs.map(blog => {
+        const url = blog.canonicalUrl || `${baseUrl}/blog/${blog.slug}`;
+        return {
+            url,
+            lastModified: blog.updatedAt || new Date(),
+            priority: 0.8,
+            changeFrequency: 'weekly' as const,
+        };
+    });
     const staticUrls: MetadataRoute.Sitemap = [
         {
             url: baseUrl,

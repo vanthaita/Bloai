@@ -66,7 +66,16 @@ export function BlogGrid() {
     const params = new URLSearchParams(searchParams);
     params.set('page', newPage.toString());
     router.push(`?${params.toString()}`, { scroll: false });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    const element = document.getElementById('latest-news');
+    if (element) {
+      const headerOffset = 100; // Khoảng cách offset cho header (nếu có sticky header)
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - headerOffset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handleFilterChange = (newFilter: string) => {

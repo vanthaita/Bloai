@@ -9,6 +9,12 @@ import { Sidebar } from "@/components/blog/Sidebar";
 
 export const dynamic = 'force-dynamic';
 
+export const metadata = {
+    alternates: {
+        canonical: '/',
+    },
+};
+
 export default async function Home() {
     // Fetch data for Featured Posts (Top 3)
     const featuredData = await api.blog.getAllBlog({
@@ -44,7 +50,7 @@ export default async function Home() {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
                         {/* Main Content Area */}
                         <div className="lg:col-span-8 xl:col-span-9 flex flex-col">
-                            <div className="mb-8 flex items-center border-t-[3px] border-black pt-6">
+                            <div id="latest-news" className="mb-8 flex items-center border-t-[3px] border-black pt-6">
                                 <div className="w-2 h-8 md:h-10 bg-black mr-4"></div>
                                 <h1 className="text-2xl md:text-4xl font-extrabold tracking-widest uppercase text-black">
                                     Tin mới nhất

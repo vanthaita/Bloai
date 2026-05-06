@@ -75,21 +75,33 @@ export async function generateMetadata(
 
 
     const keywords = getTopKeywords(blog.tags || [], 5); 
+    
+    // Fallbacks and truncations for SEO
+    const maxTitleLength = 60;
+    const truncatedTitle = blog.title.length > maxTitleLength 
+        ? `${blog.title.substring(0, maxTitleLength - 3)}...` 
+        : blog.title;
+        
+    const defaultDescription = `Đọc bài viết: ${blog.title}. Cập nhật kiến thức AI và công nghệ mới nhất trên Bloai Blog.`;
+    const finalDescription = blog.metaDescription || defaultDescription;
+    const finalOgTitle = blog.ogTitle || truncatedTitle;
+    const finalOgDescription = blog.ogDescription || finalDescription;
+
     const blogPostSeo = {
-        title: `${blog.title} | BloAI Technology Blog`,
-        description: blog.metaDescription,
+        title: truncatedTitle,
+        description: finalDescription,
         keywords: keywords,
         canonical: blogUrl,
         openGraph: {
             type: 'article' as const,
-            title: blog.ogTitle || blog.title,
-            description: blog.ogDescription || blog.metaDescription || '', 
+            title: finalOgTitle,
+            description: finalOgDescription, 
             url: blogUrl,
             images: blog.ogImageUrl ? [{
                 url: blog.ogImageUrl,
                 width: 1200, 
                 height: 630,
-                alt: blog.ogTitle || blog.title,
+                alt: finalOgTitle,
             }] : (blog.imageUrl ? [{
                 url: blog.imageUrl,
                 width: 1200, 
@@ -106,8 +118,8 @@ export async function generateMetadata(
         },
         twitter: {
             card: "summary_large_image",
-            title: blog.ogTitle || blog.title,
-            description: blog.ogDescription || blog.metaDescription || '',
+            title: finalOgTitle,
+            description: finalOgDescription,
             images: blog.ogImageUrl ? [blog.ogImageUrl] : (blog.imageUrl ? [blog.imageUrl] : []),
             site: "@Bloai_Team"
         },

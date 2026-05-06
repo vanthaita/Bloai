@@ -27,7 +27,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
   const sidePosts = posts.slice(1, 3);
 
   return (
-    <section className="py-8 lg:py-12 bg-white">
+    <section className="pt-24 pb-8 lg:pt-32 lg:pb-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 min-[375px]:px-6 md:px-8 w-full">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b-2 border-black">
