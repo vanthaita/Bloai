@@ -14,7 +14,7 @@ const BlogMetadata: React.FC<BlogMetadataProps> = ({ blog, suggestedBlogs }) => 
 
         const publisherLogo = {
             "@type": "ImageObject",
-            "url": `https://res.cloudinary.com/dq2z27agv/image/upload/v1742958723/aeaxx8zqeqvhosqew1ka.webp`, 
+            "url": "https://www.bloai.blog/images/Logo/android-chrome-512x512.png", 
             "width": 600,
             "height": 400
         };

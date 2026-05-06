@@ -25,7 +25,7 @@ const AboutPage = () => {
       name: "TÒA SOẠN BLOAI",
       role: "Tổng Biên Tập & Chuyên gia AI",
       bio: "Nhóm chuyên gia định hướng nội dung và phát triển nền tảng",
-      avatar: "/images/Logo/web-app-manifest-512x512.png",
+      avatar: "/images/Logo/android-chrome-512x512.png",
     },
   ];
 

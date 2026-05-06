@@ -4,7 +4,7 @@ const genAI = new GoogleGenAI({
   apiKey: process.env.GOOGLE_GEMINI_API,
 });
 
-const generateSEOContent = async (prompt: string, modelAi: string = 'gemini-1.5-flash'): Promise<string | null> => {
+const generateSEOContent = async (prompt: string, modelAi: string = 'gemini-2.5-flash-lite'): Promise<string | null> => {
   try {
     console.log('--- Sending Prompt to AI ---');
     console.log(`--- Is using ${modelAi} model ---`);

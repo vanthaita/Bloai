@@ -79,7 +79,7 @@ export async function sendBlogNotifications({ db, blogId, type }: SendBlogNotifi
     for (const subscriber of subscribers) {
       try {
         const unsubscribeUrl = `${env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/unsubscribe?email=${encodeURIComponent(subscriber.email)}`;
-        const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL || 'https://res.cloudinary.com/dq2z27agv/image/upload/v1745082810/hnckqv393urojneminwo.png';
+        const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL || 'https://res.cloudinary.com/dq2z27agv/image/upload/q_auto,f_webp,w_1200/v1778080489/vvgbbauib3zgshie7gln.png';
         const emailHtml = `
           <!DOCTYPE html>
           <html>
@@ -170,7 +170,7 @@ export async function sendBlogNotifications({ db, blogId, type }: SendBlogNotifi
 
 export async function sendConfirmationEmail({ email }: SendConfirmationEmailParams) {
   try {
-    const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL || 'https://res.cloudinary.com/dq2z27agv/image/upload/v1745082810/hnckqv393urojneminwo.png';
+    const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL || 'https://res.cloudinary.com/dq2z27agv/image/upload/q_auto,f_webp,w_1200/v1778080489/vvgbbauib3zgshie7gln.png';
     const unsubscribeUrl = `${env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/unsubscribe?email=${encodeURIComponent(email)}`;
 
     const emailHtml = `

@@ -8,7 +8,7 @@ export const rootLayoutMetadata: Metadata = {
   description: "Bloai Blog - Nền tảng chia sẻ kiến thức chuyên sâu về Trí Tuệ Nhân Tạo (AI) và ứng dụng thực tiễn. Cập nhật xu hướng ChatGPT, Midjourney, Generative AI với hướng dẫn chi tiết từ cơ bản đến nâng cao. Đồng hành cùng cộng đồng AI Việt Nam phát triển công nghệ tương lai!",
   metadataBase: new URL('https://www.bloai.blog'),
   openGraph: {
-    images: '/images/Logo/web-app-manifest-512x512.png',
+    images: '/images/Logo/android-chrome-512x512.png',
   },
 };
 
@@ -70,7 +70,7 @@ export const organizationSchemaLd = {
   "name": "Bloai Blog",
   "legalName": "Cộng đồng Bloai Blog",
   "url": "https://www.bloai.blog",
-  "logo": "https://www.bloai.blog/images/Logo/web-app-manifest-512x512.png",
+  "logo": "https://www.bloai.blog/images/Logo/android-chrome-512x512.png",
   "foundingDate": "2023",
   "founders": [{
     "@type": "Person",
@@ -134,12 +134,12 @@ export const blogPageMetadata: Metadata = {
     siteName: 'Bloai Blog',
     title: "Bloai Blog - Trung Tâm Kiến Thức AI Hàng Đầu Việt Nam",
     description: "Hướng dẫn toàn diện về Trí tuệ Nhân tạo từ cơ bản đến nâng cao. Cập nhật xu hướng AI mới nhất và ứng dụng thực tiễn trong mọi lĩnh vực đời sống.",
-    images: [{ url: 'https://www.bloai.blog/images/og-image.jpg' }],
+    images: [{ url: 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: "Bloai Blog - Hướng Dẫn AI Từ Cơ Bản Đến Nâng Cao",
-    images: ['https://www.bloai.blog/images/twitter-card.jpg'],
+    images: ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
   },
   alternates: {
     canonical: 'https://www.bloai.blog',
@@ -160,7 +160,7 @@ export const blogSchema = {
     "name": "Bloai Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://www.bloai.blog/images/Logo/favicon-32x32.png"
+      "url": "https://www.bloai.blog/images/Logo/android-chrome-512x512.png"
     }
   },
   "mainEntity": {
@@ -207,7 +207,7 @@ export const aboutPageSchemaLd = {
     "@type": "WebPage",
     "@id": "https://www.bloai.blog/about"
   },
-  "image": "https://www.bloai.blog/images/Logo/web-app-manifest-512x512.png"
+  "image": "https://www.bloai.blog/images/Logo/android-chrome-512x512.png"
 };
 
 // --- ContactPage ---

@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     siteName: "Bloai Blog",
     images: [
       {
-        url: "https://www.bloai.blog/images/Logo/web-app-manifest-512x512.png",
+        url: "https://www.bloai.blog/images/Logo/android-chrome-512x512.png",
         width: 1200,
         height: 630,
         alt: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ Mới Nhất",
     description: "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",
-    images: ["https://www.bloai.blog/images/Logo/web-app-manifest-512x512.png"],
+    images: ["https://www.bloai.blog/images/Logo/android-chrome-512x512.png"],
     site: "@bloaiblog",
     creator: "@bloaiblog",
   },
@@ -98,7 +98,7 @@ const organizationSchema = {
   "@type": "Organization",
   "name": "Bloai Blog",
   "url": "https://www.bloai.blog",
-  "logo": "https://www.bloai.blog/images/Logo/favicon-32x32.png",
+  "logo": "https://www.bloai.blog/images/Logo/android-chrome-512x512.png",
   "sameAs": [
     "https://www.facebook.com/bloaiblog",
     "https://twitter.com/bloaiblog",
