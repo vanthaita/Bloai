@@ -15,7 +15,11 @@ export default auth(async function middleware(req) {
 
   const isLoggedIn = !!req.auth;
   const isApiAuthRoute = nextUrl.pathname.startsWith(API_AUTH_PREFIX);
-  const isPublicRoute = PUBLIC_ROUTES.includes(nextUrl.pathname) || nextUrl.pathname.startsWith('/blog');
+  const isPublicRoute = PUBLIC_ROUTES.includes(nextUrl.pathname) || 
+                        nextUrl.pathname.startsWith('/blog') || 
+                        nextUrl.pathname.startsWith('/tag') || 
+                        nextUrl.pathname.startsWith('/category') || 
+                        nextUrl.pathname.startsWith('/author');
   const isAuthRoute = AUTH_ROUTES.includes(nextUrl.pathname);
 
   if (isApiAuthRoute) {
