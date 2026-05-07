@@ -12,7 +12,6 @@ const DynamicReactMarkdown = dynamic(
     () => import('react-markdown').then(mod => mod.default),
     {
         loading: () => <div className='prose max-w-none'><p>Loading content...</p></div>,
-        ssr: false
     }
 );
 

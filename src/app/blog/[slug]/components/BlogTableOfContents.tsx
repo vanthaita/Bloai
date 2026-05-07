@@ -7,8 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Heading } from '@/types/helper.type';
 
 const DynamicReactMarkdown = dynamic(
-    () => import('react-markdown').then(mod => mod.default),
-    { ssr: false }
+    () => import('react-markdown').then(mod => mod.default)
 );
 
 interface BlogTableOfContentsProps {

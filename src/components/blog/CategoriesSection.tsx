@@ -114,7 +114,7 @@ export function CategoriesSection() {
           {categories.map((category) => (
             <Link
               key={category.slug}
-              href={`/tags?tag=${category.slug}`}
+              href={`/category/${category.slug}`}
               className={`group relative p-6 rounded-2xl border border-gray-200 ${category.bgColor} transition-all duration-300 hover:shadow-lg hover:scale-105`}
             >
               <div className="flex flex-col items-center text-center space-y-3">

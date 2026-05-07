@@ -1,4 +1,0 @@
-# Backup files
-backups/
-*.json
-!package.json

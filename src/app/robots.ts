@@ -15,15 +15,20 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        userAgent: '*', 
-        allow: '/', 
+        userAgent: '*',
+        allow: '/',
         disallow: [
-            '/api/', 
-            '/new-post/',
-          
+          '/api/',
+          '/new-post/',
+
         ],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: [
+      `${baseUrl}/sitemap.xml`,
+      `${baseUrl}/sitemap-images.xml`,
+      `${baseUrl}/feed.xml`,
+    ],
+
   };
 }

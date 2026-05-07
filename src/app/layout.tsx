@@ -29,6 +29,11 @@ export const metadata: Metadata = {
     "Tin tức công nghệ",
     "Ứng dụng AI"
   ],
+  alternates: {
+    types: {
+      'application/rss+xml': '/feed.xml',
+    },
+  },
   metadataBase: new URL('https://www.bloai.blog'),
   openGraph: {
     title: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ Mới Nhất",

@@ -6,6 +6,7 @@ import { useIsMobile } from '@/hook/use-mobile';
 import { BlogCore } from '@/types/helper.type';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../components/ui/avatar';
 import { FaUser } from 'react-icons/fa';
+import { Breadcrumbs } from '@/components/blog/Breadcrumbs';
 
 interface BlogHeaderProps {
     blog: BlogCore | null;
@@ -37,15 +38,11 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
 
     return (
         <div className="pb-8 mb-10 border-b-[3px] border-black">
-            <div className="mb-8">
-                <Link href="/">
-                    <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-black hover:text-gray-600 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        VỀ TRANG CHỦ
-                    </span>
-                </Link>
+            <div className="mb-4">
+                <Breadcrumbs items={[
+                    { label: 'BLOG', href: '/blog' },
+                    { label: blog.title }
+                ]} />
             </div>
             <div className="flex flex-wrap gap-2 mb-6">
                 {blogTagsMemo}
@@ -64,7 +61,7 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
             </h1>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-3 text-black mb-8 text-[10px] md:text-xs font-bold uppercase tracking-widest">
                 {blog.author?.name && (
-                    <div className="flex items-center gap-2">
+                    <Link href={`/author/${encodeURIComponent(blog.author.name.replace(/ /g, '-'))}`} className="flex items-center gap-2 hover:underline transition-all">
                         {blog.author.image && (
                              <Avatar className='h-6 w-6 rounded-none border border-black'>
                                 <AvatarImage 
@@ -82,8 +79,8 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
                             </Avatar>
                         )}
                         <span>{blog.author.name}</span>
-                        <span className="h-1 w-1 bg-black rounded-none" />
-                    </div>
+                        <span className="h-1 w-1 bg-black rounded-none ml-2" />
+                    </Link>
                 )}
                 <time dateTime={new Date(blog.publishDate).toISOString()} className="flex items-center gap-1.5">
                     {new Date(blog.publishDate).toLocaleDateString('vi-VN')}

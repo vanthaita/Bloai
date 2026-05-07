@@ -5,6 +5,8 @@ import BlogPostClientWrapper from './components/BlogPostClientWrapper';
 import { Blog, SuggestedBlog } from '@/types/helper.type';
 import { unstable_cache } from 'next/cache';
 
+export const revalidate = 300;
+
 type Props = {
     params: Promise<{ slug: string }>
 }
@@ -131,6 +133,10 @@ export async function generateMetadata(
         keywords: blogPostSeo.keywords,
         alternates: {
             canonical: blogPostSeo.canonical,
+            languages: {
+                'vi-VN': blogPostSeo.canonical,
+                'x-default': blogPostSeo.canonical,
+            }
         },
         openGraph: blogPostSeo.openGraph,
         twitter: blogPostSeo.twitter,

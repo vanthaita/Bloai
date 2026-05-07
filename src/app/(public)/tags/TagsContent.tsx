@@ -24,7 +24,7 @@ const TagsContent = () => {
       "@type": "ListItem",
       "position": index + 1,
       "name": tag.name,
-      "url": `https://bloai.blog/tags/${slugify(tag.name)}`
+      "url": `https://bloai.blog/tag/${slugify(tag.name)}`
     }));
   };
 
@@ -80,11 +80,11 @@ const TagsContent = () => {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"> 
               {data.tags.map((tag) => {
                 const tagSlug = slugify(tag.name); 
-                const tagUrl = `/tags/${tagSlug}`; 
+                const tagUrl = `/tag/${tagSlug}`; 
 
                 return (
                   <Link
-                    href={'/tags'}
+                    href={tagUrl}
                     key={tag.id}
                     className="group flex h-full transform md:flex-col rounded-none border-[1.5px] border-black bg-white transition-all duration-300 ease-in-out hover:bg-black hover:text-white focus:outline-none"
                     legacyBehavior>

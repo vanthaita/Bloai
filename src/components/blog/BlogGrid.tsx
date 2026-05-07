@@ -13,16 +13,16 @@ import { InlineNewsletter } from './InlineNewsletter';
 import { useSearchParams, useRouter } from 'next/navigation';
 const LIMIT = 9;
 
-export function BlogGrid() {
+export function BlogGrid({ initialTag }: { initialTag?: string }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const tagParam = searchParams.get('tag');
+  const tagParam = searchParams.get('tag') || initialTag;
   const [activeFilter, setActiveFilter] = useState(tagParam || '');
   const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
 
   useEffect(() => {
-    setActiveFilter(searchParams.get('tag') || '');
-  }, [searchParams]);
+    setActiveFilter(searchParams.get('tag') || initialTag || '');
+  }, [searchParams, initialTag]);
 
   const currentPage = parseInt(searchParams.get('page') || '1');
 

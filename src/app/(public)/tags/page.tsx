@@ -3,6 +3,8 @@ import React from 'react'
 import TagsContent from './TagsContent'
 import Head from 'next/head'
 
+export const revalidate = 300;
+
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Chủ đề AI phổ biến | Bloai Blog",

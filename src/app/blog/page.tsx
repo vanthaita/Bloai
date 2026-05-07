@@ -2,13 +2,17 @@ import { BlogGrid } from "@/components/blog/BlogGrid";
 import Loading from "@/components/loading";
 import { Suspense } from "react";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 export const metadata = {
     title: 'Tất cả bài viết',
     description: 'Danh sách tất cả các bài viết công nghệ và trí tuệ nhân tạo (AI) mới nhất trên Bloai Blog.',
     alternates: {
         canonical: '/blog',
+        languages: {
+            'vi-VN': '/blog',
+            'x-default': '/blog',
+        }
     },
 };
 

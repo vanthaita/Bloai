@@ -7,11 +7,15 @@ import { api, HydrateClient } from "@/trpc/server";
 
 import { Sidebar } from "@/components/blog/Sidebar";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 export const metadata = {
     alternates: {
         canonical: '/',
+        languages: {
+            'vi-VN': '/',
+            'x-default': '/',
+        }
     },
 };
 
