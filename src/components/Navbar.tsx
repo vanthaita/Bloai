@@ -105,7 +105,7 @@ const Navbar = () => {
 
                 {isOpen && (
                   <div
-                    className="absolute top-full right-0 mt-2 w-48 bg-white shadow-none border border-black divide-y divide-black"
+                    className="absolute top-full right-0 mt-2 w-48 bg-white shadow-none border border-black divide-y divide-black z-[100]"
                     role="menu"
                   >
                     <div className="px-3 py-2 bg-black text-white">

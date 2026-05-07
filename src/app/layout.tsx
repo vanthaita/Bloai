@@ -10,7 +10,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import Loading from "@/components/loading";
 import Script from "next/script";
 
 export const metadata: Metadata = {
@@ -20,13 +19,13 @@ export const metadata: Metadata = {
   },
   description: "Bloai Blog - Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam. Cập nhật xu hướng công nghệ mới nhất, hướng dẫn sử dụng ChatGPT, Midjourney, AI Generative và ứng dụng AI trong đời sống, kinh doanh, giáo dục.",
   keywords: [
-    "AI Việt Nam", 
-    "Trí tuệ nhân tạo", 
-    "ChatGPT", 
-    "Midjourney", 
-    "AI Generative", 
-    "Công nghệ AI", 
-    "Hướng dẫn AI", 
+    "AI Việt Nam",
+    "Trí tuệ nhân tạo",
+    "ChatGPT",
+    "Midjourney",
+    "AI Generative",
+    "Công nghệ AI",
+    "Hướng dẫn AI",
     "Tin tức công nghệ",
     "Ứng dụng AI"
   ],
@@ -135,8 +134,8 @@ export default async function RootLayout({
     <SessionProvider session={session}>
       <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
         <head>
-          <Script 
-            async 
+          <Script
+            async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1872574461230356"
             strategy="afterInteractive"
             crossOrigin="anonymous"
