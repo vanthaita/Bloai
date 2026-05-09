@@ -20,6 +20,8 @@ export default function robots(): MetadataRoute.Robots {
         disallow: [
           '/api/',
           '/new-post/',
+          '/admin/',
+          '/unsubscribe/',
         ],
       },
       // Chặn các bot thu thập dữ liệu để train AI (bảo vệ bản quyền bài viết)

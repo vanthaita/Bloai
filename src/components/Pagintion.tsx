@@ -2,6 +2,8 @@ import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 interface PaginationProps {
   currentPage: number;
@@ -50,6 +52,14 @@ const Pagination: React.FC<PaginationProps> = ({
     return visiblePages;
   };
 
+  const searchParams = useSearchParams();
+
+  const createPageUrl = (page: number) => {
+    const params = new URLSearchParams(searchParams?.toString() || '');
+    params.set('page', page.toString());
+    return `?${params.toString()}`;
+  };
+
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages || page === currentPage) return;
     onPageChange(page);
@@ -71,16 +81,27 @@ const Pagination: React.FC<PaginationProps> = ({
       </div>
 
       <div className="flex items-center gap-1">
-        <Button
-          variant="outline"
-          size="icon" 
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="h-10 w-10 p-0 border-[1.5px] border-black rounded-none text-black bg-white hover:bg-black hover:text-white transition-colors disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-black"
-          aria-label="Trang trước"
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
+        {currentPage > 1 ? (
+          <Link
+            href={createPageUrl(currentPage - 1)}
+            scroll={false}
+            onClick={() => handlePageChange(currentPage - 1)}
+            className="flex items-center justify-center h-10 w-10 p-0 border-[1.5px] border-black rounded-none text-black bg-white hover:bg-black hover:text-white transition-colors"
+            aria-label="Trang trước"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Link>
+        ) : (
+          <Button
+            variant="outline"
+            size="icon" 
+            disabled
+            className="h-10 w-10 p-0 border-[1.5px] border-black rounded-none text-black bg-white opacity-30 cursor-not-allowed"
+            aria-label="Trang trước"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+        )}
 
         {pageNumbers.map((page, index) => (
           page === '...' ? (
@@ -92,13 +113,13 @@ const Pagination: React.FC<PaginationProps> = ({
               ...
             </div>
           ) : (
-            <Button
+            <Link
               key={page}
-              variant={page === currentPage ? 'default' : 'outline'}
-              size="icon" 
-              onClick={() => handlePageChange(page)}
+              href={createPageUrl(page as number)}
+              scroll={false}
+              onClick={() => handlePageChange(page as number)}
               className={cn(
-                'h-10 w-10 p-0 border-[1.5px] border-black rounded-none text-xs font-bold transition-colors',
+                'flex items-center justify-center h-10 w-10 p-0 border-[1.5px] border-black rounded-none text-xs font-bold transition-colors',
                 page === currentPage
                   ? 'bg-black text-white hover:bg-gray-800 hover:text-white' 
                   : 'bg-white text-black hover:bg-black hover:text-white'
@@ -107,20 +128,31 @@ const Pagination: React.FC<PaginationProps> = ({
               aria-label={`Trang ${page}`}
             >
               {page}
-            </Button>
+            </Link>
           )
         ))}
 
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="h-10 w-10 p-0 border-[1.5px] border-black rounded-none text-black bg-white hover:bg-black hover:text-white transition-colors disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-black"
-          aria-label="Trang sau"
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+        {currentPage < totalPages ? (
+          <Link
+            href={createPageUrl(currentPage + 1)}
+            scroll={false}
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="flex items-center justify-center h-10 w-10 p-0 border-[1.5px] border-black rounded-none text-black bg-white hover:bg-black hover:text-white transition-colors"
+            aria-label="Trang sau"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        ) : (
+          <Button
+            variant="outline"
+            size="icon"
+            disabled
+            className="h-10 w-10 p-0 border-[1.5px] border-black rounded-none text-black bg-white opacity-30 cursor-not-allowed"
+            aria-label="Trang sau"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       <div className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-black hidden md:block">

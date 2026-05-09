@@ -156,7 +156,10 @@ export async function generateMetadata(
                 'x-default': blogPostSeo.canonical,
             }
         },
-        openGraph: blogPostSeo.openGraph,
+        openGraph: {
+            ...blogPostSeo.openGraph,
+            url: blogPostSeo.canonical,
+        },
         twitter: blogPostSeo.twitter,
     };
 }

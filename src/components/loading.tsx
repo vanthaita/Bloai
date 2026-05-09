@@ -8,9 +8,9 @@ const Loading = () => {
         <div className="w-4 h-4 bg-[#2B463C] rounded-full animate-bounce [animation-delay:-0.15s]"></div>
         <div className="w-4 h-4 bg-[#2B463C] rounded-full animate-bounce"></div>
       </div>
-      <h1 className='font-bold text-4xl text-[#2B463C] animate-pulse-slow'>
+      <div className='font-bold text-4xl text-[#2B463C] animate-pulse-slow'>
         Bloai
-      </h1>
+      </div>
       <p className='text-[#2B463C]/80 mt-2 font-medium animate-fade-in-up'>
         Loading Inspiration...
       </p>

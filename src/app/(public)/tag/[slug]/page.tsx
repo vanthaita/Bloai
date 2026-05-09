@@ -8,9 +8,10 @@ export const revalidate = 300;
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
     const decodedSlug = decodeURIComponent(slug).replace(/-/g, ' ');
+    const description = `Tổng hợp tất cả các bài viết, hướng dẫn và tin tức mới nhất liên quan đến chủ đề ${decodedSlug} trên Bloai Blog. Khám phá ngay để cập nhật kiến thức chuyên sâu về trí tuệ nhân tạo và công nghệ.`;
     return {
         title: `Tag: ${decodedSlug.toUpperCase()} | Bloai Blog`,
-        description: `Khám phá các bài viết liên quan đến chủ đề ${decodedSlug}`,
+        description: description,
         alternates: {
             canonical: `https://www.bloai.blog/tag/${slug}`
         },
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             url: `https://www.bloai.blog/tag/${slug}`,
             siteName: 'Bloai Blog',
             title: `Tag: ${decodedSlug.toUpperCase()} | Bloai Blog`,
-            description: `Khám phá các bài viết liên quan đến chủ đề ${decodedSlug}`,
+            description: description,
             locale: 'vi_VN',
             images: [
                 {
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             card: 'summary_large_image',
             site: '@Bloai_Team',
             title: `Tag: ${decodedSlug.toUpperCase()} | Bloai Blog`,
-            description: `Khám phá các bài viết liên quan đến chủ đề ${decodedSlug}`,
+            description: description,
             images: ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
         },
     }
