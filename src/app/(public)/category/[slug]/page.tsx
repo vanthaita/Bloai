@@ -12,8 +12,31 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         title: `Danh mục: ${decodedSlug.toUpperCase()} | Bloai Blog`,
         description: `Các bài viết mới nhất thuộc danh mục ${decodedSlug}`,
         alternates: {
-            canonical: `/category/${slug}`
-        }
+            canonical: `https://www.bloai.blog/category/${slug}`
+        },
+        openGraph: {
+            type: 'website',
+            url: `https://www.bloai.blog/category/${slug}`,
+            siteName: 'Bloai Blog',
+            title: `Danh mục: ${decodedSlug.toUpperCase()} | Bloai Blog`,
+            description: `Các bài viết mới nhất thuộc danh mục ${decodedSlug}`,
+            locale: 'vi_VN',
+            images: [
+                {
+                    url: 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png',
+                    width: 1200,
+                    height: 630,
+                    alt: `Danh mục ${decodedSlug}`,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            site: '@Bloai_Team',
+            title: `Danh mục: ${decodedSlug.toUpperCase()} | Bloai Blog`,
+            description: `Các bài viết mới nhất thuộc danh mục ${decodedSlug}`,
+            images: ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
+        },
     }
 }
 

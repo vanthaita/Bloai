@@ -70,6 +70,28 @@ const BlogContentRenderer: React.FC<BlogContentRendererProps> = ({ content, head
                     h1: (props) => <CustomHeadingRenderer level={2} {...props} />,
                     h2: (props) => <CustomHeadingRenderer level={2} {...props} />,
                     h3: (props) => <CustomHeadingRenderer level={3} {...props} />,
+                    // Automatically add alt text to images to fix Ahrefs "Missing alt text" warnings
+                    img: ({ node, ...props }) => (
+                        <img 
+                            {...props} 
+                            alt={props.alt || "Bloai Blog Article Image"} 
+                            loading="lazy" 
+                        />
+                    ),
+                    // Convert relative markdown links (e.g. docs/windows.md) to absolute GitHub links to fix 404s
+                    a: ({ node, href, ...props }) => {
+                        const isRelativeMd = href && !href.startsWith('http') && !href.startsWith('mailto:') && !href.startsWith('#');
+                        // If it's a relative link (like docs/setup.md), point it to the GitHub repository to avoid 404s
+                        const finalHref = isRelativeMd ? `https://github.com/TDevUIT/Bloai/tree/main/${href}` : href;
+                        return (
+                            <a 
+                                href={finalHref} 
+                                target={isRelativeMd || href?.startsWith('http') ? '_blank' : undefined} 
+                                rel={isRelativeMd || href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                                {...props} 
+                            />
+                        );
+                    },
                 }}
             >
                 {content}
