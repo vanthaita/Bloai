@@ -10,12 +10,37 @@ import { Sidebar } from "@/components/blog/Sidebar";
 export const revalidate = 300;
 
 export const metadata = {
+    title: 'Bloai Blog - Tin Tức AI & Công Nghệ Mới Nhất',
+    description: 'Bloai Blog — Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam. Cập nhật xu hướng ChatGPT, Midjourney, AI Generative và ứng dụng AI trong đời sống.',
     alternates: {
-        canonical: '/',
+        canonical: 'https://www.bloai.blog',
         languages: {
-            'vi-VN': '/',
-            'x-default': '/',
-        }
+            'vi-VN': 'https://www.bloai.blog',
+            'x-default': 'https://www.bloai.blog',
+        },
+    },
+    openGraph: {
+        type: 'website' as const,
+        url: 'https://www.bloai.blog',
+        siteName: 'Bloai Blog',
+        title: 'Bloai Blog - Tin Tức AI & Công Nghệ Mới Nhất',
+        description: 'Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam.',
+        locale: 'vi_VN',
+        images: [
+            {
+                url: 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png',
+                width: 1200,
+                height: 630,
+                alt: 'Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ',
+            },
+        ],
+    },
+    twitter: {
+        card: 'summary_large_image' as const,
+        site: '@Bloai_Team',
+        title: 'Bloai Blog - Tin Tức AI & Công Nghệ Mới Nhất',
+        description: 'Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam.',
+        images: ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
     },
 };
 

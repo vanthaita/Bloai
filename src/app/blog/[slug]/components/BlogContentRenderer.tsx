@@ -64,7 +64,10 @@ const BlogContentRenderer: React.FC<BlogContentRendererProps> = ({ content, head
                 rehypePlugins={[rehypeRaw]}
                 remarkPlugins={[remarkGfm]}
                 components={{
-                    h1: (props) => <CustomHeadingRenderer level={1} {...props} />,
+                    // Remap h1 → h2 inside article content:
+                    // The page's true H1 is the article title in BlogHeader.
+                    // Any "# heading" in markdown would create a second H1, triggering Ahrefs "Multiple H1 tags".
+                    h1: (props) => <CustomHeadingRenderer level={2} {...props} />,
                     h2: (props) => <CustomHeadingRenderer level={2} {...props} />,
                     h3: (props) => <CustomHeadingRenderer level={3} {...props} />,
                 }}

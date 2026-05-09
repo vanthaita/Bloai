@@ -5,14 +5,37 @@ import { Suspense } from "react";
 export const revalidate = 300;
 
 export const metadata = {
-    title: 'Tất cả bài viết',
-    description: 'Danh sách tất cả các bài viết công nghệ và trí tuệ nhân tạo (AI) mới nhất trên Bloai Blog.',
+    title: 'Tất cả bài viết về AI & Công Nghệ',
+    description: 'Danh sách tất cả các bài viết công nghệ và trí tuệ nhân tạo (AI) mới nhất trên Bloai Blog. Cập nhật hàng ngày về ChatGPT, Machine Learning và ứng dụng AI.',
     alternates: {
-        canonical: '/blog',
+        canonical: 'https://www.bloai.blog/blog',
         languages: {
-            'vi-VN': '/blog',
-            'x-default': '/blog',
-        }
+            'vi-VN': 'https://www.bloai.blog/blog',
+            'x-default': 'https://www.bloai.blog/blog',
+        },
+    },
+    openGraph: {
+        type: 'website' as const,
+        url: 'https://www.bloai.blog/blog',
+        siteName: 'Bloai Blog',
+        title: 'Tất cả bài viết về AI & Công Nghệ — Bloai Blog',
+        description: 'Tất cả bài viết về AI và công nghệ mới nhất trên Bloai Blog.',
+        locale: 'vi_VN',
+        images: [
+            {
+                url: 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png',
+                width: 1200,
+                height: 630,
+                alt: 'Bloai Blog - Tất Cả Bài Viết',
+            },
+        ],
+    },
+    twitter: {
+        card: 'summary_large_image' as const,
+        site: '@Bloai_Team',
+        title: 'Tất cả bài viết về AI & Công Nghệ — Bloai Blog',
+        description: 'Tất cả bài viết về AI và công nghệ mới nhất trên Bloai Blog.',
+        images: ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
     },
 };
 

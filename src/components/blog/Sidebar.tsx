@@ -98,12 +98,18 @@ export function Sidebar() {
             {popularTags.map((tag) => (
               <Link
                 key={tag.id}
-                href={`/tags`}
+                href={`/blog?tag=${encodeURIComponent(tag.name)}`}
                 className="px-3 py-1.5 border-[1.5px] border-black text-[10px] font-bold uppercase tracking-wider text-black bg-white hover:bg-black hover:text-white transition-colors"
               >
                 {tag.name}
               </Link>
             ))}
+            <Link
+              href="/tags"
+              className="px-3 py-1.5 border-[1.5px] border-black text-[10px] font-bold uppercase tracking-wider text-black bg-gray-100 hover:bg-black hover:text-white transition-colors"
+            >
+              Tất cả →
+            </Link>
           </div>
         )}
       </div>

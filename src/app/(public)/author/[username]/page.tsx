@@ -23,8 +23,31 @@ export async function generateMetadata({ params }: { params: Promise<{ username:
         title: `Tác giả: ${author.name} | Bloai Blog`,
         description: author.bio || `Tất cả bài viết từ tác giả ${author.name} trên Bloai Blog`,
         alternates: {
-            canonical: `/author/${username}`
-        }
+            canonical: `https://www.bloai.blog/author/${username}`
+        },
+        openGraph: {
+            type: 'profile',
+            url: `https://www.bloai.blog/author/${username}`,
+            siteName: 'Bloai Blog',
+            title: `Tác giả: ${author.name} | Bloai Blog`,
+            description: author.bio || `Tất cả bài viết từ tác giả ${author.name} trên Bloai Blog`,
+            locale: 'vi_VN',
+            images: [
+                {
+                    url: author.image || 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png',
+                    width: 800,
+                    height: 800,
+                    alt: `Tác giả ${author.name}`,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary',
+            site: '@Bloai_Team',
+            title: `Tác giả: ${author.name} | Bloai Blog`,
+            description: author.bio || `Tất cả bài viết từ tác giả ${author.name} trên Bloai Blog`,
+            images: [author.image || 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
+        },
     }
 }
 

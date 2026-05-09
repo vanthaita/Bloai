@@ -79,15 +79,21 @@ export async function generateMetadata(
     const keywords = getTopKeywords(blog.tags || [], 5); 
     
     // Fallbacks and truncations for SEO
-    const maxTitleLength = 60;
+    // Template adds " | Bloai Blog" (~13 chars), so keep title ≤47 chars to stay under 60 total
+    const maxTitleLength = 47;
     const truncatedTitle = blog.title.length > maxTitleLength 
         ? `${blog.title.substring(0, maxTitleLength - 3)}...` 
         : blog.title;
+
+    // Meta description must be 120–155 chars
+    const maxDescLength = 155;
+    const truncateDesc = (text: string) =>
+        text.length > maxDescLength ? `${text.substring(0, maxDescLength - 3)}...` : text;
         
     const defaultDescription = `Đọc bài viết: ${blog.title}. Cập nhật kiến thức AI và công nghệ mới nhất trên Bloai Blog.`;
-    const finalDescription = blog.metaDescription || defaultDescription;
+    const finalDescription = truncateDesc(blog.metaDescription || defaultDescription);
     const finalOgTitle = blog.ogTitle || truncatedTitle;
-    const finalOgDescription = blog.ogDescription || finalDescription;
+    const finalOgDescription = truncateDesc(blog.ogDescription || finalDescription);
 
     const blogPostSeo = {
         title: truncatedTitle,
@@ -97,8 +103,10 @@ export async function generateMetadata(
         openGraph: {
             type: 'article' as const,
             title: finalOgTitle,
-            description: finalOgDescription, 
+            description: finalOgDescription,
+            // og:url must always match the canonical URL
             url: blogUrl,
+            siteName: 'Bloai Blog',
             images: blog.ogImageUrl ? [{
                 url: blog.ogImageUrl,
                 width: 1200, 
@@ -109,7 +117,12 @@ export async function generateMetadata(
                 width: 1200, 
                 height: 630,
                 alt: blog.title,
-            }] : []),
+            }] : [{
+                url: 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png',
+                width: 1200,
+                height: 630,
+                alt: finalOgTitle,
+            }]),
             article: {
                 publishedTime: blog.publishDate instanceof Date ? blog.publishDate.toISOString() : undefined,
                 modifiedTime: (blog.updatedAt instanceof Date ? blog.updatedAt.toISOString() : 
@@ -119,11 +132,16 @@ export async function generateMetadata(
             },
         },
         twitter: {
-            card: "summary_large_image",
+            card: 'summary_large_image' as const,
             title: finalOgTitle,
             description: finalOgDescription,
-            images: blog.ogImageUrl ? [blog.ogImageUrl] : (blog.imageUrl ? [blog.imageUrl] : []),
-            site: "@Bloai_Team"
+            images: blog.ogImageUrl 
+                ? [blog.ogImageUrl] 
+                : (blog.imageUrl 
+                    ? [blog.imageUrl] 
+                    : ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png']),
+            site: '@Bloai_Team',
+            creator: '@Bloai_Team',
         },
     };
 

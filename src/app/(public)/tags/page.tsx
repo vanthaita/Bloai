@@ -1,7 +1,6 @@
 import { Metadata } from 'next'
 import React from 'react'
 import TagsContent from './TagsContent'
-import Head from 'next/head'
 
 export const revalidate = 300;
 
@@ -11,13 +10,16 @@ export async function generateMetadata(): Promise<Metadata> {
     description: "Khám phá các chủ đề AI hot nhất với hơn 100 tags về Machine Learning, Deep Learning, ChatGPT và ứng dụng thực tế",
     keywords: ["tags AI", "chủ đề AI", "thẻ AI", "machine learning tags"],
     authors: [{ name: "Bloai Team" }],
+    alternates: {
+      canonical: 'https://www.bloai.blog/tags',
+    },
     openGraph: {
       type: 'website',
       locale: 'vi_VN',
-      url: 'https://www.bloai.blog',
+      url: 'https://www.bloai.blog/tags',
       siteName: 'Bloai Blog',
-      title: "Bloai Blog - Trung Tâm Kiến Thức AI Hàng Đầu Việt Nam",
-      description: "Hướng dẫn toàn diện về Trí tuệ Nhân tạo từ cơ bản đến nâng cao. Cập nhật xu hướng AI mới nhất và ứng dụng thực tiễn trong mọi lĩnh vực đời sống.",
+      title: "Chủ đề AI phổ biến — Bloai Blog",
+      description: "Khám phá các chủ đề AI hot nhất với hơn 100 tags về Machine Learning, Deep Learning, ChatGPT và ứng dụng thực tế.",
       images: [
         {
           url: 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png',
@@ -29,20 +31,16 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: "Bloai Blog - Hướng Dẫn AI Từ Cơ Bản Đến Nâng Cao",
-      description: "Khám phá thế giới AI với hướng dẫn chi tiết và case study thực tế. Cộng đồng AI lớn nhất Việt Nam",
+      site: '@Bloai_Team',
+      title: "Chủ đề AI phổ biến — Bloai Blog",
+      description: "Khám phá các chủ đề AI hot nhất với Machine Learning, Deep Learning và ChatGPT.",
       images: ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
     },
   }
 }
 const TagPage = () => {
   return (
-    <>
-      <Head>
-        <link rel="canonical" href="https://www.bloai.blog/tags" />
-      </Head>
-      <TagsContent />
-    </>
+    <TagsContent />
   )
 }
 

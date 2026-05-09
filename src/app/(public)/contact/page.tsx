@@ -1,17 +1,44 @@
+import type { Metadata } from 'next';
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import Head from "next/head"
 import { contactPageSchemaLd, safeJsonLdStringify } from '@/config/seo';
 
+export const metadata: Metadata = {
+  title: 'Liên Hệ — Bloai Blog',
+  description: 'Liên hệ với đội ngũ Bloai Blog. Chúng tôi luôn sẵn sàng hỗ trợ bạn về nội dung AI, hợp tác viết bài và các vấn đề kỹ thuật.',
+  alternates: {
+    canonical: 'https://www.bloai.blog/contact',
+  },
+  openGraph: {
+    type: 'website',
+    url: 'https://www.bloai.blog/contact',
+    siteName: 'Bloai Blog',
+    title: 'Liên Hệ — Bloai Blog',
+    description: 'Liên hệ với đội ngũ Bloai Blog. Hỷ sẵn sàng hỗ trợ về nội dung AI và hợp tác.',
+    locale: 'vi_VN',
+    images: [
+      {
+        url: 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png',
+        width: 1200,
+        height: 630,
+        alt: 'Bloai Blog - Liên Hệ',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@Bloai_Team',
+    title: 'Liên Hệ — Bloai Blog',
+    description: 'Liên hệ với đội ngũ Bloai Blog.',
+    images: ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
+  },
+};
 const ContactPage = () => {
   return (
     <>
-      <Head>
-        <link rel="canonical" href="https://www.bloai.blog/contact" />
-      </Head>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(contactPageSchemaLd)}}

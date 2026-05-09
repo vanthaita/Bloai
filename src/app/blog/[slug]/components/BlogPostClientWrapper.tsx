@@ -31,7 +31,7 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
     suggestedBlogsData: suggestedBlogs = []
 }) => {
     const [headings, setHeadings] = useState<Heading[]>([]);
-    const [isMounted, setIsMounted] = useState(false);
+    const [isMounted, setIsMounted] = useState(true); // SSR-safe: start as true
     const currentUser = useCurrentUser();
     const [isAuthor, setIsAuthor] = useState(false);
     const router = useRouter();
@@ -70,20 +70,12 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
     }, [extractedHeadings]);
 
     useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    useEffect(() => {
         if (blog?.author && currentUser?.id) {
             setIsAuthor(blog.author.id === currentUser.id);
         } else {
             setIsAuthor(false);
         }
     }, [blog?.author, currentUser?.id]);
-
-    if (!isMounted) {
-        return <Loading />;
-    }
 
     if (!blog) {
         return <Loading />;
