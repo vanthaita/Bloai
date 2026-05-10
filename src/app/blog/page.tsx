@@ -45,7 +45,7 @@ export default async function BlogPage() {
     void api.blog.getAllBlog.prefetch({ page: 1, limit: 9 });
     void api.blog.getAllTags.prefetch({ page: 1, limit: 13 });
 
-    const allPostsData = await api.blog.getAllBlog({ page: 1, limit: 50 });
+    const allPostsData = await api.blog.getAllBlog({ page: 1, limit: 1000 });
     const allPostsForCrawlers = allPostsData.blogs || [];
 
     return (
