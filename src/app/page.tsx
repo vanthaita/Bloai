@@ -52,6 +52,13 @@ export default async function Home() {
     });
     const featuredPosts = featuredData.blogs || [];
 
+    // Fetch more posts server-side for static HTML links (SEO: fixes orphan pages)
+    const allPostsData = await api.blog.getAllBlog({
+        page: 1,
+        limit: 18,
+    });
+    const allPostsForCrawlers = allPostsData.blogs || [];
+
     // Prefetch data for SSR hydration to improve LCP and FCP
     void api.blog.getAllBlog.prefetch({
         page: 1,
@@ -98,7 +105,25 @@ export default async function Home() {
                         </div>
                     </div>
                 </section>
+
+                {/*
+                  * Server-rendered blog post index — hidden from users (sr-only) but
+                  * visible to crawlers in the initial HTML. Fixes the "orphan page"
+                  * issue by giving every blog post at least one incoming <a href> link.
+                  */}
+                {allPostsForCrawlers.length > 0 && (
+                    <nav aria-label="Tất cả bài viết" className="sr-only">
+                        <h2>Danh sách bài viết mới nhất</h2>
+                        <ul>
+                            {allPostsForCrawlers.map((post) => (
+                                <li key={post.slug}>
+                                    <a href={`/blog/${post.slug}`}>{post.title}</a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                )}
             </main>
         </HydrateClient>
     );
-}
+}

@@ -1,6 +1,7 @@
 import { BlogGrid } from "@/components/blog/BlogGrid";
 import Loading from "@/components/loading";
 import { Suspense } from "react";
+import { api, HydrateClient } from "@/trpc/server";
 
 export const revalidate = 300;
 
@@ -40,20 +41,43 @@ export const metadata = {
 };
 
 export default async function BlogPage() {
-    return (
-        <main className="flex flex-col min-h-screen bg-white">
-            <section className="max-w-7xl mx-auto w-full px-4 min-[375px]:px-6 md:px-8 pt-24 pb-10 lg:pt-32 lg:pb-12">
-                <div id="latest-news" className="mb-8 flex items-center border-t-[3px] border-black pt-6">
-                    <div className="w-2 h-8 md:h-10 bg-black mr-4"></div>
-                    <h1 className="text-2xl md:text-4xl font-extrabold tracking-widest uppercase text-black">
-                        Tất cả bài viết
-                    </h1>
-                </div>
+    // Server-fetch all posts for static HTML links (fixes orphan pages for crawlers)
+    void api.blog.getAllBlog.prefetch({ page: 1, limit: 9 });
+    void api.blog.getAllTags.prefetch({ page: 1, limit: 13 });
 
-                <Suspense fallback={<Loading />}>
-                    <BlogGrid />
-                </Suspense>
-            </section>
-        </main>
+    const allPostsData = await api.blog.getAllBlog({ page: 1, limit: 50 });
+    const allPostsForCrawlers = allPostsData.blogs || [];
+
+    return (
+        <HydrateClient>
+            <main className="flex flex-col min-h-screen bg-white">
+                <section className="max-w-7xl mx-auto w-full px-4 min-[375px]:px-6 md:px-8 pt-24 pb-10 lg:pt-32 lg:pb-12">
+                    <div id="latest-news" className="mb-8 flex items-center border-t-[3px] border-black pt-6">
+                        <div className="w-2 h-8 md:h-10 bg-black mr-4"></div>
+                        <h1 className="text-2xl md:text-4xl font-extrabold tracking-widest uppercase text-black">
+                            Tất cả bài viết
+                        </h1>
+                    </div>
+
+                    <Suspense fallback={<Loading />}>
+                        <BlogGrid />
+                    </Suspense>
+                </section>
+
+                {/* Server-rendered blog index for crawlers (sr-only = hidden from users) */}
+                {allPostsForCrawlers.length > 0 && (
+                    <nav aria-label="Chỉ mục tất cả bài viết" className="sr-only">
+                        <h2>Danh sách tất cả bài viết</h2>
+                        <ul>
+                            {allPostsForCrawlers.map((post) => (
+                                <li key={post.slug}>
+                                    <a href={`/blog/${post.slug}`}>{post.title}</a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                )}
+            </main>
+        </HydrateClient>
     );
-}
+}

@@ -4,6 +4,7 @@ import { api } from '@/trpc/server';
 import BlogPostClientWrapper from './components/BlogPostClientWrapper'; 
 import { Blog, SuggestedBlog } from '@/types/helper.type';
 import { unstable_cache } from 'next/cache';
+import Link from 'next/link';
 
 export const revalidate = 86400;
 
@@ -175,13 +176,34 @@ export default async function BlogPostPage({ params }: Props) {
         notFound();
     }
 
-    const suggestedBlogs = suggestedBlogsResult ?? []; 
+    const suggestedBlogs = (suggestedBlogsResult ?? []) as SuggestedBlog[]; 
 
-  
     return (
-        <BlogPostClientWrapper
-            blogData={blog as Blog} 
-            suggestedBlogsData={suggestedBlogs as SuggestedBlog[]} 
-        />
+        <>
+            <BlogPostClientWrapper
+                blogData={blog as Blog} 
+                suggestedBlogsData={suggestedBlogs} 
+            />
+            {/* 
+              * Server-rendered related posts — these <a> links appear in the
+              * initial HTML so crawlers can discover & follow them without JS.
+              * This is the key fix for the "orphan page" SEO issue.
+              * Visually hidden via sr-only so users don't see a duplicate section.
+              */}
+            {suggestedBlogs.length > 0 && (
+                <nav aria-label="Bài viết liên quan" className="sr-only">
+                    <h2>Bài viết liên quan</h2>
+                    <ul>
+                        {suggestedBlogs.map((post) => (
+                            <li key={post.slug}>
+                                <Link href={`/blog/${post.slug}`}>
+                                    {post.title}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+            )}
+        </>
     );
 }
