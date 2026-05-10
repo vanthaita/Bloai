@@ -75,6 +75,12 @@
   }
 } */
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -167,9 +173,41 @@ html {
 .prose h3:hover {
   color: #2563eb;
 }
+
 .prose img {
   height: auto;
   max-width: 100%;
   display: block;
   margin: 1rem auto;
 }
+
+.prose {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+ }
+
+ .prose pre {
+  max-width: 100%;
+  overflow-x: auto;
+ }
+
+ .prose code {
+  word-break: break-word;
+ }
+
+ .prose a {
+  word-break: break-word;
+ }
+
+ .prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+ }
+
+ .prose iframe,
+ .prose video,
+ .prose embed,
+ .prose object {
+  max-width: 100%;
+ }

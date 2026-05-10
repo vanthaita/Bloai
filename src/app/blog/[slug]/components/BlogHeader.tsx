@@ -56,7 +56,7 @@ const BlogHeader: React.FC<BlogHeaderProps> = ({ blog }) => {
                     </Link>
                 )}
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-black mb-6 leading-[1.1] tracking-tight uppercase">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-black mb-6 leading-[1.1] tracking-tight uppercase [overflow-wrap:anywhere] hyphens-auto">
                 {blog.title}
             </h1>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-3 text-black mb-8 text-[10px] md:text-xs font-bold uppercase tracking-widest">

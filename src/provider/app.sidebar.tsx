@@ -9,7 +9,7 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
   const isAuthRoute = AUTH_ROUTES.includes(pathname) || PROTECTED_ROUTES.includes(pathname);
   const isNewPostRoute = pathname.startsWith('/new-post') || pathname.startsWith('/unsubscribe');
-  
+
   return (
     <>
       {isAuthRoute || isNewPostRoute ? (
@@ -17,7 +17,7 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
       ) : (
         <section className='flex flex-1'>
           <main className='flex-1'>
-            <div className='h-14'>
+            <div className='h-16 mb-4'>
               <Navbar />
             </div>
             {children}
