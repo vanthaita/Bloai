@@ -14,6 +14,8 @@ export const PUBLIC_ROUTES = [
   "/about",
   "/landing",
   "/contact",
+  "/privacy",
+  "/faqs",
   "/sitemap.xml",
   "/sitemap-images.xml",
   "/feed.xml",

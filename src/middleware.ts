@@ -7,11 +7,6 @@ const { auth } = NextAuth(authConfig)
 
 export default auth(async function middleware(req) {
   const { nextUrl } = req;
-  
-  if (nextUrl.pathname === "/" && !nextUrl.searchParams.has('page')) {
-    nextUrl.searchParams.set('page', '1');
-    return NextResponse.redirect(nextUrl);
-  }
 
   const isLoggedIn = !!req.auth;
   const isApiAuthRoute = nextUrl.pathname.startsWith(API_AUTH_PREFIX);
@@ -19,7 +14,12 @@ export default auth(async function middleware(req) {
                         nextUrl.pathname.startsWith('/blog') || 
                         nextUrl.pathname.startsWith('/tag') || 
                         nextUrl.pathname.startsWith('/category') || 
-                        nextUrl.pathname.startsWith('/author');
+                        nextUrl.pathname.startsWith('/author') ||
+                        nextUrl.pathname.startsWith('/privacy') ||
+                        nextUrl.pathname.startsWith('/faqs') ||
+                        nextUrl.pathname.startsWith('/contact') ||
+                        nextUrl.pathname.startsWith('/landing') ||
+                        nextUrl.pathname.startsWith('/about');
   const isAuthRoute = AUTH_ROUTES.includes(nextUrl.pathname);
 
   if (isApiAuthRoute) {

@@ -64,12 +64,16 @@ export function BlogGrid({ initialTag }: { initialTag?: string }) {
 
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams);
-    params.set('page', newPage.toString());
+    if (newPage <= 1) {
+      params.delete('page');
+    } else {
+      params.set('page', newPage.toString());
+    }
     router.push(`?${params.toString()}`, { scroll: false });
     
     const element = document.getElementById('latest-news');
     if (element) {
-      const headerOffset = 100; // Khoảng cách offset cho header (nếu có sticky header)
+      const headerOffset = 100;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY - headerOffset;
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
@@ -81,7 +85,7 @@ export function BlogGrid({ initialTag }: { initialTag?: string }) {
   const handleFilterChange = (newFilter: string) => {
     setActiveFilter(newFilter);
     const params = new URLSearchParams(searchParams);
-    params.set('page', '1');
+    params.delete('page'); // Reset to page 1 = clean URL
     if (newFilter) {
       params.set('tag', newFilter);
     } else {
@@ -93,7 +97,7 @@ export function BlogGrid({ initialTag }: { initialTag?: string }) {
   const clearFilter = () => {
     setActiveFilter('');
     const params = new URLSearchParams(searchParams);
-    params.set('page', '1');
+    params.delete('page');
     params.delete('tag');
     router.push(`?${params.toString()}`, { scroll: false });
   };

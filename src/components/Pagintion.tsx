@@ -56,8 +56,13 @@ const Pagination: React.FC<PaginationProps> = ({
 
   const createPageUrl = (page: number) => {
     const params = new URLSearchParams(searchParams?.toString() || '');
-    params.set('page', page.toString());
-    return `?${params.toString()}`;
+    if (page <= 1) {
+      params.delete('page');
+    } else {
+      params.set('page', page.toString());
+    }
+    const queryString = params.toString();
+    return queryString ? `?${queryString}` : '?';
   };
 
   const handlePageChange = (page: number) => {

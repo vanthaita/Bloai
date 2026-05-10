@@ -64,13 +64,19 @@ const Footer = () => {
                 Liên kết
               </h3>
               <ul className="space-y-3">
-                {['Trang chủ', 'Danh mục', 'Về chúng tôi'].map((item, idx) => (
+                {[
+                  { label: 'Trang chủ', href: '/' },
+                  { label: 'Danh mục', href: '/tags' },
+                  { label: 'Về chúng tôi', href: '/about' },
+                  { label: 'Liên hệ', href: '/contact' },
+                  { label: 'Giới thiệu', href: '/landing' },
+                ].map((item, idx) => (
                   <li key={idx}>
                     <Link 
-                      href={item === 'Trang chủ' ? '/' : item === 'Danh mục' ? '/tags' : '/about'} 
+                      href={item.href} 
                       className="text-black font-bold hover:underline underline-offset-[4px] decoration-1 transition-all text-[11px] uppercase tracking-wider"
                     >
-                      {item}
+                      {item.label}
                     </Link>
                   </li>
                 ))}
