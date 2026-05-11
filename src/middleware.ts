@@ -8,10 +8,19 @@ const { auth } = NextAuth(authConfig)
 export default auth(async function middleware(req) {
   const { nextUrl } = req;
 
+  if (nextUrl.pathname === '/$') {
+    return NextResponse.redirect(new URL('/', nextUrl));
+  }
+
+  if (nextUrl.pathname.startsWith('/chat/solutions') || nextUrl.pathname.startsWith('/chat')) {
+    return NextResponse.redirect(new URL('/', nextUrl));
+  }
+
   const isLoggedIn = !!req.auth;
   const isApiAuthRoute = nextUrl.pathname.startsWith(API_AUTH_PREFIX);
   const isPublicRoute = PUBLIC_ROUTES.includes(nextUrl.pathname) || 
                         nextUrl.pathname.startsWith('/blog') || 
+                        nextUrl.pathname.startsWith('/search') ||
                         nextUrl.pathname.startsWith('/tag') || 
                         nextUrl.pathname.startsWith('/category') || 
                         nextUrl.pathname.startsWith('/author') ||

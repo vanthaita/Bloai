@@ -14,6 +14,16 @@ const config = {
   async redirects() {
     return [
       {
+        source: '/$',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/chat/:path*',
+        destination: '/',
+        permanent: true,
+      },
+      {
         source: '/blog/huong-dan-su-dung-midjourney-de-tao-anh-ai',
         destination: '/blog/huong-dan-su-dung-midjourney-hieu-qua-khong-can-discord-2025',
         permanent: true,
