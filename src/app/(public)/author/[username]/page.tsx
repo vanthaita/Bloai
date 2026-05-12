@@ -19,9 +19,11 @@ export async function generateMetadata({ params }: { params: Promise<{ username:
         return { title: 'Tác giả không tồn tại | Bloai Blog' };
     }
 
+    const defaultDescription = `Tất cả bài viết từ tác giả ${author.name} trên Bloai Blog. Khám phá các bài viết phân tích chuyên sâu, chia sẻ kiến thức hữu ích về Trí tuệ nhân tạo (AI), Machine Learning và công nghệ mới nhất.`;
+
     return {
-        title: `Tác giả: ${author.name} | Bloai Blog`,
-        description: author.bio || `Tất cả bài viết từ tác giả ${author.name} trên Bloai Blog`,
+        title: `Tác giả: ${author.name}`,
+        description: author.bio || defaultDescription,
         alternates: {
             canonical: `https://www.bloai.blog/author/${username}`
         },
@@ -29,8 +31,8 @@ export async function generateMetadata({ params }: { params: Promise<{ username:
             type: 'profile',
             url: `https://www.bloai.blog/author/${username}`,
             siteName: 'Bloai Blog',
-            title: `Tác giả: ${author.name} | Bloai Blog`,
-            description: author.bio || `Tất cả bài viết từ tác giả ${author.name} trên Bloai Blog`,
+            title: `Tác giả: ${author.name}`,
+            description: author.bio || defaultDescription,
             locale: 'vi_VN',
             images: [
                 {
@@ -44,8 +46,8 @@ export async function generateMetadata({ params }: { params: Promise<{ username:
         twitter: {
             card: 'summary',
             site: '@Bloai_Team',
-            title: `Tác giả: ${author.name} | Bloai Blog`,
-            description: author.bio || `Tất cả bài viết từ tác giả ${author.name} trên Bloai Blog`,
+            title: `Tác giả: ${author.name}`,
+            description: author.bio || defaultDescription,
             images: [author.image || 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
         },
     }

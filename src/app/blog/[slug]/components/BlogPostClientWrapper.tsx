@@ -88,7 +88,7 @@ const BlogPostClientWrapper: React.FC<BlogPostClientWrapperProps> = ({
             <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 text-center p-6 bg-white border-2 border-black max-w-2xl mx-auto my-12">
                 <div className="inline-flex items-center gap-2 text-black">
                     <IconUserOff stroke={1.5} className="w-10 h-10" />
-                    <span className="text-2xl font-bold uppercase tracking-widest">Không tìm thấy Tác giả</span>
+                    <h1 className="text-2xl font-bold uppercase tracking-widest">Không tìm thấy Tác giả</h1>
                 </div>
                 <p className="max-w-md text-gray-700 font-medium">
                     Không thể tải thông tin tác giả cho bài viết này.

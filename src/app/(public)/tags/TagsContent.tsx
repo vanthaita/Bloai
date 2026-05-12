@@ -131,9 +131,11 @@ const TagsContent = () => {
 const CategoriesLoadingSkeleton = () => (
   <div className="min-h-screen bg-white pt-32 pb-8 px-4 sm:px-6 lg:px-8">
     <div className="mx-auto max-w-7xl">
-      <div className="mb-12 border-b-[3px] border-black pb-8 text-center">
-        <Skeleton className="mx-auto mb-4 h-10 w-3/5 max-w-md rounded-none bg-gray-200" />
-        <Skeleton className="mx-auto h-6 w-4/5 max-w-xl rounded-none bg-gray-100" />
+      <div className="mb-12 text-center">
+        <h1 className="inline-block border-b-[3px] border-black pb-2 text-3xl font-extrabold uppercase tracking-widest text-black sm:text-4xl lg:text-5xl">
+          CHUYÊN MỤC TỪ KHÓA
+        </h1>
+        <Skeleton className="mx-auto mt-6 h-6 w-4/5 max-w-xl rounded-none bg-gray-100" />
       </div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {[...Array(8)].map((_, i) => ( 

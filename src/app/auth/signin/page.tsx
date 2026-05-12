@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     canonical: 'https://www.bloai.blog/auth/signin',
   },
   robots: {
-    index: false,
-    follow: false,
+    index: true,
+    follow: true,
   },
   openGraph: {
     type: 'website',

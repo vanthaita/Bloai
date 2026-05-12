@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -27,9 +28,12 @@ const SignInPage = () => {
         <h1 className="text-3xl font-bold text-gray-900 mb-2 font-mono">
           Chào mừng trở lại
         </h1>
-        <p className="text-gray-600">
+        <p className="text-gray-600 mb-4">
           Đăng nhập để tiếp tục hành trình của bạn
         </p>
+        <Link href="/" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors inline-flex items-center gap-1">
+          &larr; Quay lại Trang chủ
+        </Link>
       </div>
       {error && (
         <motion.div
