@@ -1,34 +1,27 @@
 import { BlogGrid } from "@/components/blog/BlogGrid";
 import { FeaturedPosts } from "@/components/blog/FeaturedPosts";
-import Loading from "@/components/loading"; 
+import Loading from "@/components/loading";
 import { Suspense } from "react";
 import { api, HydrateClient } from "@/trpc/server";
-import dynamic from "next/dynamic";
-
-// Defer Sidebar — its tRPC calls (leaderboard + tags) are non-critical for LCP.
-// Loading it lazily keeps the initial JS payload smaller.
-const Sidebar = dynamic(
-  () => import("@/components/blog/Sidebar").then(m => ({ default: m.Sidebar })),
-  { ssr: false, loading: () => <SidebarSkeleton /> }
-);
+import { Sidebar } from "@/components/blog/Sidebar";
 
 function SidebarSkeleton() {
-  return (
-    <aside className="w-full flex flex-col gap-10 animate-pulse">
-      <div className="space-y-4">
-        <div className="h-4 bg-gray-200 w-24 mb-6" />
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="flex gap-4">
-            <div className="w-8 h-8 bg-gray-200 shrink-0" />
-            <div className="flex-1 space-y-2">
-              <div className="h-3 bg-gray-200 w-full" />
-              <div className="h-3 bg-gray-200 w-2/3" />
+    return (
+        <aside className="w-full flex flex-col gap-10 animate-pulse">
+            <div className="space-y-4">
+                <div className="h-4 bg-gray-200 w-24 mb-6" />
+                {[...Array(5)].map((_, i) => (
+                    <div key={i} className="flex gap-4">
+                        <div className="w-8 h-8 bg-gray-200 shrink-0" />
+                        <div className="flex-1 space-y-2">
+                            <div className="h-3 bg-gray-200 w-full" />
+                            <div className="h-3 bg-gray-200 w-2/3" />
+                        </div>
+                    </div>
+                ))}
             </div>
-          </div>
-        ))}
-      </div>
-    </aside>
-  );
+        </aside>
+    );
 }
 
 export const revalidate = 300;
@@ -74,7 +67,7 @@ export default async function Home() {
         api.blog.getAllBlog({ page: 1, limit: 3 }),
         api.blog.getAllBlog({ page: 1, limit: 18 }),
     ]);
-    
+
     const featuredPosts = featuredData.blogs || [];
     const allPostsForCrawlers = allPostsData.blogs || [];
 
@@ -110,7 +103,9 @@ export default async function Home() {
                         {/* Sidebar Area */}
                         <div className="lg:col-span-4 xl:col-span-3 pt-6 lg:pt-0">
                             <div className="sticky top-28">
-                                <Sidebar />
+                                <Suspense fallback={<SidebarSkeleton />}>
+                                    <Sidebar />
+                                </Suspense>
                             </div>
                         </div>
                     </div>

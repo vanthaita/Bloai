@@ -7,21 +7,7 @@ import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
 import { Inter } from 'next/font/google';
 import Script from "next/script";
-import dynamic from "next/dynamic";
-
-// Lazy-load heavy third-party / non-critical UI to reduce initial JS parse cost
-const Analytics = dynamic(() =>
-  import('@vercel/analytics/react').then(m => ({ default: m.Analytics })),
-  { ssr: false }
-);
-const SpeedInsights = dynamic(() =>
-  import('@vercel/speed-insights/next').then(m => ({ default: m.SpeedInsights })),
-  { ssr: false }
-);
-const ToastContainer = dynamic(() =>
-  import('react-toastify').then(m => ({ default: m.ToastContainer })),
-  { ssr: false }
-);
+import { ClientProviders } from "@/components/ClientProviders";
 
 export const metadata: Metadata = {
   title: {
@@ -92,7 +78,12 @@ export const metadata: Metadata = {
 const inter = Inter({
   subsets: ['vietnamese'],
   variable: '--font-inter',
-  display: 'optional',
+  // 'swap' + adjustFontFallback:true = Next.js generates a fallback font with
+  // identical metrics to Inter, making the swap visually imperceptible while
+  // guaranteeing Inter is applied consistently — including in the footer.
+  // 'optional' was causing CLS 0.345 because the footer rendered after the
+  // 100ms optional window and received an untuned system fallback instead.
+  display: 'swap',
   preload: true,
   adjustFontFallback: true,
 });
@@ -176,9 +167,7 @@ export default async function RootLayout({
             <div id="app-root">
               <AppSidebarProvider>
                 {children}
-                <ToastContainer position="bottom-right" />
-                {isVercel && <Analytics />}
-                {isVercel && <SpeedInsights />}
+                <ClientProviders isVercel={isVercel} />
               </AppSidebarProvider>
             </div>
           </SessionProvider>

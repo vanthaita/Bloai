@@ -115,55 +115,21 @@ const config = {
       },
     ];
   },
-  webpack(config, { isServer, dev }) {
+  webpack(config, { isServer }) {
     if (!isServer) {
       // Target modern browsers — removes polyfills for already-baseline features
       config.target = ['web', 'es2022'];
 
-      if (!dev) {
-        // Break the large shared chunk (1517-86ce, ~780ms CPU) into smaller pieces
-        // so unused code is not downloaded on the critical path.
-        config.optimization = {
-          ...config.optimization,
-          splitChunks: {
-            ...config.optimization?.splitChunks,
-            chunks: 'all',
-            maxInitialRequests: 25,
-            minSize: 20_000,
-            cacheGroups: {
-              // Vendor: react / react-dom — almost never changes
-              reactVendor: {
-                test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
-                name: 'vendor-react',
-                chunks: 'all',
-                priority: 40,
-              },
-              // tRPC + tanstack-query — large but cacheable
-              trpcVendor: {
-                test: /[\\/]node_modules[\\/](@trpc|@tanstack)[\\/]/,
-                name: 'vendor-trpc',
-                chunks: 'all',
-                priority: 30,
-              },
-              // Radix UI primitives — barrel-export optimized above, chunk separately
-              radixVendor: {
-                test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
-                name: 'vendor-radix',
-                chunks: 'all',
-                priority: 20,
-              },
-              // Everything else in node_modules
-              defaultVendors: {
-                test: /[\\/]node_modules[\\/]/,
-                name: 'vendor-misc',
-                chunks: 'all',
-                priority: 10,
-                reuseExistingChunk: true,
-              },
-            },
-          },
-        };
-      }
+      // Prefer ESM builds ('module' field) over CJS ('main' field).
+      // Many packages ship both; the CJS build includes Babel-compiled polyfills
+      // (@babel/plugin-transform-classes, Array.prototype.at, etc.) while the
+      // ESM build targets modern JS. This eliminates the ~12 KiB legacy JS Lighthouse flagged.
+      // NOTE: We intentionally do NOT override splitChunks — Next.js 15's built-in
+      // chunk splitting is already optimal; a custom catch-all caused a single 657 kB chunk.
+      config.resolve = {
+        ...config.resolve,
+        mainFields: ['browser', 'module', 'main'],
+      };
     }
     return config;
   },

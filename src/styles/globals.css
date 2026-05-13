@@ -216,8 +216,7 @@ html {
   max-width: 100%;
  }
 
-/* Footer is always below-fold — defer its paint to after LCP */
-footer {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 400px;
-}
+/* NOTE: content-visibility: auto was removed from footer.
+   It caused CLS 0.345 because when the footer rendered lazily, the Inter
+   font was past its 'optional' window — system font rendered first, then
+   Inter swapped in, shifting the footer text by 0.345. */
