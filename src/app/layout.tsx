@@ -9,7 +9,6 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
-import { GoogleAnalytics } from '@next/third-parties/google';
 import Script from "next/script";
 
 export const metadata: Metadata = {

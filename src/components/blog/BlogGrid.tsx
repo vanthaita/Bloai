@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from '@/trpc/react';
 import { Button } from '../ui/button';
 import { BlogCard } from './BlogCard';
@@ -12,11 +12,13 @@ import { useSearchParams, useRouter } from 'next/navigation';
 
 // Lazy load non-critical components to reduce initial bundle
 const BackToTop = dynamic(() => import('../BackToTop').then(mod => ({ default: mod.BackToTop })), {
-  ssr: false
+  ssr: false,
+  loading: () => null
 });
 
 const InlineNewsletter = dynamic(() => import('./InlineNewsletter').then(mod => ({ default: mod.InlineNewsletter })), {
-  loading: () => <div className="h-64 bg-gray-100 animate-pulse rounded" />
+  ssr: false,
+  loading: () => <div className="col-span-1 md:col-span-2 lg:col-span-2 xl:col-span-3 h-64 bg-gray-100 animate-pulse rounded" />
 });
 
 const LIMIT = 9;
