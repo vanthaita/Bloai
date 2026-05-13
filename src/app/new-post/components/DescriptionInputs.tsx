@@ -79,7 +79,7 @@ export const DescriptionInputs: React.FC<DescriptionInputsProps> = ({
                     aria-required="true"
                 />
                 {!isSEOValid && metaDescription.length > 0 && (metaDescription.length < 120 || metaDescription.length > 160) && (
-                    <p className="text-xs text-red-600">Độ dài Meta Description chưa tối ưu (cần 120-160 ký tự).</p>
+                    <p className="text-xs text-red-600">Độ dài Meta Description chưa tối ưu (cần dưới 160 ký tự).</p>
                 )}
             </div>
         </>

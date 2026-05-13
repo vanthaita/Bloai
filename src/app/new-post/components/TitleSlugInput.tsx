@@ -70,7 +70,7 @@ export const TitleSlugInput: React.FC<TitleSlugInputProps> = ({
                     required
                     aria-required="true"
                 />
-                <p className="text-xs text-muted-foreground">Còn lại {70 - title.length} ký tự (khuyến nghị SEO)</p>
+                <p className="text-xs text-muted-foreground">Dưới 60 ký tự</p>
             </div>
 
             <div className="space-y-1.5">
