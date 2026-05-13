@@ -5,8 +5,8 @@ import { buildCldUrl, CldQuality } from '@/lib/cldUrl';
 interface OptimizedImageProps {
   src: string;
   alt: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   priority?: boolean;
   className?: string;
   sizes?: string;
