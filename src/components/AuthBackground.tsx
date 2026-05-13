@@ -1,14 +1,15 @@
 'use client'
+import dynamic from 'next/dynamic'
 import {
   Card,
   CardContent,
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
-import { WarpBackground } from "./ui/warp-background";
-import { motion, AnimatePresence } from "framer-motion";
 import { Rocket } from "lucide-react";
 import { useEffect, useState } from "react";
+
+const WarpBackground = dynamic(() => import('./ui/warp-background').then(mod => ({ default: mod.WarpBackground })), { ssr: false })
 
 const AI_TAGLINES = [
   "Exploring AI Frontiers",
@@ -35,11 +36,7 @@ export function AuthBackground() {
         beamDelayMax={2}
         beamDuration={2.5}
       >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-      >
+      <div className="animate-fade-in">
         <Card className="overflow-hidden relative max-w-md w-full bg-transparent shadow-none border-none">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/30" />
           
@@ -51,18 +48,12 @@ export function AuthBackground() {
                   Bloai
                 </CardTitle>
                 <div className="h-12 flex items-center justify-center">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentTagline}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.5 }}
-                      className="text-lg font-medium bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent"
-                    >
-                      {AI_TAGLINES[currentTagline]}
-                    </motion.div>
-                  </AnimatePresence>
+                  <div
+                    key={currentTagline}
+                    className="text-lg font-medium bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent animate-fade-in"
+                  >
+                    {AI_TAGLINES[currentTagline]}
+                  </div>
                 </div>
 
                 <CardDescription className="text-base text-muted-foreground/80">
@@ -75,7 +66,7 @@ export function AuthBackground() {
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
     </WarpBackground>
   );
 }

@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaArrowRight, FaRobot, FaBrain, FaCode, FaChartLine } from 'react-icons/fa';
+import { FaArrowRight, FaRobot, FaBrain, FaCode, FaChartLine } from '@/components/icons';
 import { homePageSchemaLd, safeJsonLdStringify } from '@/config/seo';
 
 const LandingClient = () => {

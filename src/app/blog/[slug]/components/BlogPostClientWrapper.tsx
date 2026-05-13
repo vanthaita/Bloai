@@ -1,24 +1,24 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { IconEdit, IconUserOff } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import Loading from '@/components/loading';
-
-
-import BlogMetadata from './BlogMetadata';
-import BlogShareSidebar from './BlogShareSidebar';
-import BlogHeader from './BlogHeader';
-import BlogTableOfContents from './BlogTableOfContents';
-import BlogContentRenderer from './BlogContentRenderer';
-import BlogAuthorBioSection from './BlogAuthorBioSection';
-import BlogSuggestedPosts from './BlogSuggestedPosts';
-import { BackToTop } from '@/components/BackToTop';
 import { Author, Blog, Heading, slugify, SuggestedBlog } from '@/types/helper.type';
 import { useCurrentUser } from '@/hook/use-current-user';
-import BlogComments from './BlogComment';
 import Link from 'next/link';
+
+const BlogMetadata = dynamic(() => import('./BlogMetadata'));
+const BlogShareSidebar = dynamic(() => import('./BlogShareSidebar'));
+const BlogHeader = dynamic(() => import('./BlogHeader'));
+const BlogTableOfContents = dynamic(() => import('./BlogTableOfContents'));
+const BlogContentRenderer = dynamic(() => import('./BlogContentRenderer'));
+const BlogAuthorBioSection = dynamic(() => import('./BlogAuthorBioSection'));
+const BlogSuggestedPosts = dynamic(() => import('./BlogSuggestedPosts'));
+const BlogComments = dynamic(() => import('./BlogComment'));
+const BackToTop = dynamic(() => import('@/components/BackToTop').then(mod => ({ default: mod.BackToTop })));
 
 
 interface BlogPostClientWrapperProps {

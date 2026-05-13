@@ -1,18 +1,12 @@
-// components/AboutSection.tsx
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-// Lucide Icons
-import { Lightbulb, Users, ShieldCheck, Sparkles, ArrowRight, Rocket, FileText, BarChart2, Smile } from 'lucide-react';
-// React Icons
-import { FaRegLightbulb, FaUsers, FaShieldAlt, FaMagic } from 'react-icons/fa';
+import { Lightbulb, Users, ShieldCheck, Wand2, Rocket, FileText, BarChart2, Smile } from 'lucide-react';
 
 interface CoreValue {
   icon: React.ElementType;
   title: string;
   description: string;
   color: string;
-  iconLibrary: 'lucide' | 'react-icons';
 }
 
 const AboutSection: React.FC = () => {
@@ -29,28 +23,24 @@ const AboutSection: React.FC = () => {
       title: 'Đổi Mới Sáng Tạo',
       description: 'Áp dụng công nghệ AI tiên tiến nhất để mang lại giải pháp đột phá trong sáng tạo nội dung.',
       color: 'text-purple-600',
-      iconLibrary: 'lucide'
     },
     {
-      icon: FaUsers,
+      icon: Users,
       title: 'Trao Quyền Cho Người Dùng',
       description: 'Giúp mọi người ở mọi trình độ có thể thành công trong việc tạo và kiếm tiền từ blog.',
       color: 'text-blue-600',
-      iconLibrary: 'react-icons'
     },
     {
       icon: ShieldCheck,
       title: 'Chất Lượng & Tin Cậy',
       description: 'Nền tảng ổn định, an toàn với nội dung AI tạo ra đạt chất lượng cao nhất.',
       color: 'text-green-600',
-      iconLibrary: 'lucide'
     },
     {
-      icon: FaMagic,
+      icon: Wand2,
       title: 'Minh Bạch & Đạo Đức',
       description: 'Tuân thủ các nguyên tắc đạo đức trong phát triển AI và minh bạch trong hoạt động.',
       color: 'text-amber-600',
-      iconLibrary: 'react-icons'
     },
   ];
 

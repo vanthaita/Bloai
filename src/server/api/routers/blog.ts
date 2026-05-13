@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import { Resend } from "resend";
 import { sendBlogNotifications, sendConfirmationEmail } from "@/lib/notifySubscribers";
 import { revalidateTag } from "next/cache";
+import { getCachedData, CACHE_TTL, redis } from "@/lib/redis";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -191,6 +192,12 @@ export const blogRouter = createTRPCRouter({
           });
         }
 
+        if (redis) {
+          await redis.del('blogs:all:*');
+          await redis.del('tags:all:*');
+          await redis.del('leaderboard:*');
+        }
+
         revalidateTag("blog");
 
         return { success: true, result };
@@ -291,6 +298,14 @@ export const blogRouter = createTRPCRouter({
           timeout: 10000,
         });
 
+        if (redis) {
+          await redis.del(`blog:${input.slug}`);
+          await redis.del('blogs:all:*');
+          await redis.del('blogs:tag:*');
+          await redis.del('tags:all:*');
+          await redis.del('leaderboard:*');
+        }
+
         revalidateTag("blog");
 
         return { success: true, result };
@@ -306,43 +321,49 @@ export const blogRouter = createTRPCRouter({
         .input(z.object({ slug: z.string() }))
         .query(async ({ ctx, input }) => {
             try {
-            const blog = await ctx.db.blog.findUnique({
-                where: { slug: input.slug },
-                select: {
-                  id: true,
-                  title: true,
-                  slug: true,
-                  content: true,
-                  imageUrl: true,
-                  imageAlt: true,
-                  publishDate: true,
-                  updatedAt: true,
-                  readTime: true,
-                  canonicalUrl: true,
-                  metaDescription: true,
-                  ogTitle: true,
-                  ogDescription: true,
-                  ogImageUrl: true,
-                  authorId: true,
-                  tags: { select: { id: true, name: true } },
-                  author: { select: { id: true, name: true, image: true } },
-                  comments: {
-                    select: {
-                      id: true,
-                      content: true,
-                      createdAt: true,
-                      author: { select: { id: true, name: true, image: true } }
+            return getCachedData(
+              `blog:${input.slug}`,
+              async () => {
+                const blog = await ctx.db.blog.findUnique({
+                  where: { slug: input.slug },
+                  select: {
+                    id: true,
+                    title: true,
+                    slug: true,
+                    content: true,
+                    imageUrl: true,
+                    imageAlt: true,
+                    publishDate: true,
+                    updatedAt: true,
+                    readTime: true,
+                    canonicalUrl: true,
+                    metaDescription: true,
+                    ogTitle: true,
+                    ogDescription: true,
+                    ogImageUrl: true,
+                    authorId: true,
+                    tags: { select: { id: true, name: true } },
+                    author: { select: { id: true, name: true, image: true } },
+                    comments: {
+                      select: {
+                        id: true,
+                        content: true,
+                        createdAt: true,
+                        author: { select: { id: true, name: true, image: true } }
+                      },
+                      orderBy: { createdAt: 'desc' },
                     },
-                    orderBy: { createdAt: 'desc' },
                   },
-                },
-            });
-            console.log(blog?.comments)
-            if (!blog) {
-                throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
-            }
-
-            return blog;
+                });
+                
+                if (!blog) {
+                  throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
+                }
+                
+                return blog;
+              },
+              CACHE_TTL.BLOG_DETAIL
+            );
             } catch (error) {
             if (error instanceof TRPCError) {
                 throw error;
@@ -361,29 +382,35 @@ export const blogRouter = createTRPCRouter({
           limit: z.number().int().positive().optional().default(6)
         }))
         .query(async ({ ctx, input }) => {
-          const skip = (input.page - 1) * input.limit;
-          const [blogs, totalBlogs] = await Promise.all([
-            ctx.db.blog.findMany({
-              skip,
-              take: input.limit,
-              orderBy: { publishDate: 'desc' },
-              include: {
-                tags: true,
-                author: true,
-              },
-            }),
-            ctx.db.blog.count() 
-          ]);
-      
-          const totalPages = Math.ceil(totalBlogs / input.limit);
-      
-          return {
-            blogs,
-            total: totalBlogs,
-            totalPages,
-            currentPage: input.page,
-            limit: input.limit
-          };
+          return getCachedData(
+            `blogs:all:${input.page}:${input.limit}`,
+            async () => {
+              const skip = (input.page - 1) * input.limit;
+              const [blogs, totalBlogs] = await Promise.all([
+                ctx.db.blog.findMany({
+                  skip,
+                  take: input.limit,
+                  orderBy: { publishDate: 'desc' },
+                  include: {
+                    tags: true,
+                    author: true,
+                  },
+                }),
+                ctx.db.blog.count() 
+              ]);
+          
+              const totalPages = Math.ceil(totalBlogs / input.limit);
+          
+              return {
+                blogs,
+                total: totalBlogs,
+                totalPages,
+                currentPage: input.page,
+                limit: input.limit
+              };
+            },
+            CACHE_TTL.BLOG_LIST
+          );
     }),
 
     getBlogByTags: publicProcedure
@@ -393,47 +420,53 @@ export const blogRouter = createTRPCRouter({
         tag: z.string(),
       }))
       .query(async ({ctx, input}) => {
-        const skip = (input.page - 1) * input.limit;
-        const [blogs, totalBlogs] = await Promise.all([
-          ctx.db.blog.findMany({
-            skip: skip,
-            take: input.limit,
-            orderBy: { publishDate: 'desc' },
-            where: {
-              tags: {
-                some: {
-                  name: {
-                    equals: input.tag,
-                    mode: 'insensitive' 
+        return getCachedData(
+          `blogs:tag:${input.tag}:${input.page}:${input.limit}`,
+          async () => {
+            const skip = (input.page - 1) * input.limit;
+            const [blogs, totalBlogs] = await Promise.all([
+              ctx.db.blog.findMany({
+                skip: skip,
+                take: input.limit,
+                orderBy: { publishDate: 'desc' },
+                where: {
+                  tags: {
+                    some: {
+                      name: {
+                        equals: input.tag,
+                        mode: 'insensitive' 
+                      }
+                    }
+                  }
+                },
+                include: {
+                  tags: true,
+                  author: true,
+                },
+              }),
+              ctx.db.blog.count({
+                where: {
+                  tags: {
+                    some: {
+                      name: {
+                        equals: input.tag,
+                        mode: 'insensitive' 
+                      }
+                    }
                   }
                 }
-              }
-            },
-            include: {
-              tags: true,
-              author: true,
-            },
-          }),
-          ctx.db.blog.count({
-            where: {
-              tags: {
-                some: {
-                  name: {
-                    equals: input.tag,
-                    mode: 'insensitive' 
-                  }
-                }
-              }
-            }
-          }) 
-        ]);
+              }) 
+            ]);
 
-        return {
-          blogs,
-          total: totalBlogs,
-          totalPages: Math.ceil(totalBlogs / input.limit),
-          currentPage: input.page
-        };
+            return {
+              blogs,
+              total: totalBlogs,
+              totalPages: Math.ceil(totalBlogs / input.limit),
+              currentPage: input.page
+            };
+          },
+          CACHE_TTL.BLOG_LIST
+        );
     }),
 
     getAllTags: publicProcedure
@@ -442,30 +475,36 @@ export const blogRouter = createTRPCRouter({
         limit: z.number().int().positive().optional().default(10)
       }))
       .query(async ({ ctx, input }) => {
-        const skip = (input.page - 1) * input.limit;
-        const tags = await ctx.db.tag.findMany({
-          skip: skip,
-          take: input.limit,
-          include: {
-            _count: {
-              select: { blogs: true }
-            }
+        return getCachedData(
+          `tags:all:${input.page}:${input.limit}`,
+          async () => {
+            const skip = (input.page - 1) * input.limit;
+            const tags = await ctx.db.tag.findMany({
+              skip: skip,
+              take: input.limit,
+              include: {
+                _count: {
+                  select: { blogs: true }
+                }
+              },
+              orderBy: {
+                blogs: {
+                  _count: 'desc'
+                }
+              }
+            });
+            
+            const totalTags = await ctx.db.tag.count();
+            
+            return {
+              tags,
+              totalTags,
+              totalPages: Math.ceil(totalTags / input.limit),
+              currentPage: input.page
+            };
           },
-          orderBy: {
-            blogs: {
-              _count: 'desc'
-            }
-          }
-        });
-        
-        const totalTags = await ctx.db.tag.count();
-        
-        return {
-          tags,
-          totalTags,
-          totalPages: Math.ceil(totalTags / input.limit),
-          currentPage: input.page
-        };
+          CACHE_TTL.TAGS
+        );
     }),
 
     getSuggestedBlogs: publicProcedure
@@ -693,62 +732,68 @@ export const blogRouter = createTRPCRouter({
     authorLimit: z.number().int().positive().optional().default(5),
     blogLimit: z.number().int().positive().optional().default(5),
   })) .query(async ({input, ctx}) => {
-    const topAuthors = await ctx.db.user.findMany({
-      take: input.authorLimit,
-      orderBy: {
-        blogs: {
-          _count: 'desc'
-        }
-      },
-      select: {
-        id: true,
-        name: true,
-        image: true,
-        _count: {
+    return getCachedData(
+      `leaderboard:${input.authorLimit}:${input.blogLimit}`,
+      async () => {
+        const topAuthors = await ctx.db.user.findMany({
+          take: input.authorLimit,
+          orderBy: {
+            blogs: {
+              _count: 'desc'
+            }
+          },
           select: {
-            blogs: true,
-          }
-        }
-      }
-    })
-    const topViewedBlogs = await ctx.db.blog.findMany({
-      take: input.blogLimit,
-      orderBy: {
-        views: 'desc'
-      },
-      select: {
-        id: true,
-        title: true,
-        views: true,
-        slug: true,
-        author: {
-          select: {
+            id: true,
             name: true,
+            image: true,
+            _count: {
+              select: {
+                blogs: true,
+              }
+            }
           }
-        },
-        publishDate: true,
-      }
-    })
+        })
+        const topViewedBlogs = await ctx.db.blog.findMany({
+          take: input.blogLimit,
+          orderBy: {
+            views: 'desc'
+          },
+          select: {
+            id: true,
+            title: true,
+            views: true,
+            slug: true,
+            author: {
+              select: {
+                name: true,
+              }
+            },
+            publishDate: true,
+          }
+        })
 
-    const formattedAuthors = topAuthors.map((author) => ({
-      id: author.id,
-      name: author.name || 'Ẩn danh',
-      blogCount: author._count.blogs,
-      avatar: author.image || ''
-    }))
+        const formattedAuthors = topAuthors.map((author) => ({
+          id: author.id,
+          name: author.name || 'Ẩn danh',
+          blogCount: author._count.blogs,
+          avatar: author.image || ''
+        }))
 
-    const formattedBlogs = topViewedBlogs.map((blog) => ({
-      id: blog.id,
-      title: blog.title,
-      views: blog.views,
-      author: blog.author.name || 'Ẩn danh',
-      slug: blog.slug,
-      publish_day: blog.publishDate
-    }));
-    return {
-      topAuthors: formattedAuthors,
-      topViewedBlogs: formattedBlogs,
-    };
+        const formattedBlogs = topViewedBlogs.map((blog) => ({
+          id: blog.id,
+          title: blog.title,
+          views: blog.views,
+          author: blog.author.name || 'Ẩn danh',
+          slug: blog.slug,
+          publish_day: blog.publishDate
+        }));
+        return {
+          topAuthors: formattedAuthors,
+          topViewedBlogs: formattedBlogs,
+        };
+      },
+      CACHE_TTL.LEADERBOARD
+    );
   }),
   addComment: publicProcedure
   .input(z.object({ 
@@ -785,6 +830,10 @@ export const blogRouter = createTRPCRouter({
         author: true,
       },
     })
+    
+    if (redis) {
+      await redis.del(`blog:${input.slug}`);
+    }
     
     revalidateTag("blog");
     

@@ -5,7 +5,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { getCldImageUrl } from 'next-cloudinary';
-import { FaEye, FaBookOpen, FaClock } from 'react-icons/fa';
+import { FaEye, FaBookOpen, FaClock } from '@/components/icons';
 import { TrendingUp, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Prisma } from '@prisma/client';

@@ -210,9 +210,11 @@ const NewPostContent = () => {
             const response = await axios.post(`https://api.cloudinary.com/v1_1/${env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, formData);
             if (response?.data?.secure_url) {
                 const transformedUrl = transformCloudinaryUrl(response.data.secure_url, {
-                    quality: 'auto',
+                    quality: 'auto:eco',
                     format: 'webp',
                     width: 1200,
+                    height: 675,
+                    crop: 'fill',
                 });
                 return transformedUrl;
             } else {

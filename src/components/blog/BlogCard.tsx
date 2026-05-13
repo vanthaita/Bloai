@@ -1,6 +1,6 @@
 import React from 'react';
 import { CldImage } from 'next-cloudinary';
-import { FaEye, FaHeart, FaBookOpen } from 'react-icons/fa';
+import { FaEye, FaBookOpen } from '@/components/icons';
 import { Prisma } from '@prisma/client'; 
 
 
@@ -30,17 +30,18 @@ export function BlogCard({ blog, onClick, isNavigating, priority = false }: Blog
       <div className="group relative bg-white h-full flex flex-col">
         <div className="relative aspect-video mb-4 overflow-hidden bg-gray-100">
           <CldImage
-            width={600}
-            height={400}
+            width={364}
+            height={243}
             src={blog.imageUrl ?? 'your-default-placeholder-public-id'}
             alt={blog.title ?? 'Blog post image'}
             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
             loading={priority ? "eager" : "lazy"}
             priority={priority}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+            fetchPriority={priority ? "high" : "low"}
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 364px"
             crop="fill"
             gravity="auto"
-            quality={priority ? "auto:good" : "auto:eco"}
+            quality="auto:eco"
             format="webp"
             dpr="auto"
           />

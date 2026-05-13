@@ -6,7 +6,7 @@ import { Blog, SuggestedBlog } from '@/types/helper.type';
 import { unstable_cache } from 'next/cache';
 import Link from 'next/link';
 
-export const revalidate = 86400;
+export const revalidate = 3600; // ISR: revalidate every hour for better performance
 
 type Props = {
     params: Promise<{ slug: string }>

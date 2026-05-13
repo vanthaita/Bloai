@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaTwitter, FaFacebook, FaLinkedin } from 'react-icons/fa';
+import { FaTwitter, FaFacebook, FaLinkedin } from '@/components/icons';
 import { Author } from '@/types/helper.type';
 
 interface AuthorCardProps {

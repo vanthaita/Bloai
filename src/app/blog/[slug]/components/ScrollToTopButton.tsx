@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FaArrowUp } from 'react-icons/fa';
+import { FaArrowUp } from '@/components/icons';
 
 interface ScrollToTopButtonProps {
     isVisible: boolean;

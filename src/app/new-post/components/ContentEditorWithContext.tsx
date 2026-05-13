@@ -1,20 +1,23 @@
 'use client';
 import React, { useCallback, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Label } from '@/components/ui/label';
-import {
-    ContextMenu,
-    ContextMenuContent,
-    ContextMenuItem,
-    ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import { EditorWrapper } from './EditorWrapper';
-import { AIGenerationButton } from './AIGenerationButton';
-import { generateEnhanceContentBlogForSEO } from '@/lib/action';
-import { processMarkdownImages } from '@/lib/uploadImageUrl';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-toastify';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
+import { generateEnhanceContentBlogForSEO } from '@/lib/action';
+import { processMarkdownImages } from '@/lib/uploadImageUrl';
+
+const ContextMenu = dynamic(() => import('@/components/ui/context-menu').then(mod => ({ default: mod.ContextMenu })));
+const ContextMenuContent = dynamic(() => import('@/components/ui/context-menu').then(mod => ({ default: mod.ContextMenuContent })));
+const ContextMenuItem = dynamic(() => import('@/components/ui/context-menu').then(mod => ({ default: mod.ContextMenuItem })));
+const ContextMenuTrigger = dynamic(() => import('@/components/ui/context-menu').then(mod => ({ default: mod.ContextMenuTrigger })));
+const EditorWrapper = dynamic(() => import('./EditorWrapper').then(mod => ({ default: mod.EditorWrapper })));
+const AIGenerationButton = dynamic(() => import('./AIGenerationButton').then(mod => ({ default: mod.AIGenerationButton })));
+const Tooltip = dynamic(() => import('@/components/ui/tooltip').then(mod => ({ default: mod.Tooltip })));
+const TooltipContent = dynamic(() => import('@/components/ui/tooltip').then(mod => ({ default: mod.TooltipContent })));
+const TooltipProvider = dynamic(() => import('@/components/ui/tooltip').then(mod => ({ default: mod.TooltipProvider })));
+const TooltipTrigger = dynamic(() => import('@/components/ui/tooltip').then(mod => ({ default: mod.TooltipTrigger })));
 
 interface ContentEditorWithContextProps {
     content: string;

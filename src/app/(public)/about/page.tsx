@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from "next/link"
 import { Bot, Brain, Code, TrendingUp, Users, BookOpen, Mail } from "lucide-react"
-import { FaGithub, FaLinkedin } from "react-icons/fa"
+import { FaGithub, FaLinkedin } from "@/components/icons"
 import { aboutPageSchemaLd, safeJsonLdStringify } from "@/config/seo"
 
 export const metadata: Metadata = {

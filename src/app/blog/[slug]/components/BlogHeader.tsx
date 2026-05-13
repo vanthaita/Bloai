@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useIsMobile } from '@/hook/use-mobile';
 import { BlogCore } from '@/types/helper.type';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../../components/ui/avatar';
-import { FaUser } from 'react-icons/fa';
+import { FaUser } from '@/components/icons';
 import { Breadcrumbs } from '@/components/blog/Breadcrumbs';
 
 interface BlogHeaderProps {

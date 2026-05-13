@@ -2,7 +2,7 @@
 
 import { useCurrentUser } from '@/hook/use-current-user';
 import Link from 'next/link';
-import { FaSearch, FaUser, FaSignOutAlt, FaPenAlt, FaHome } from 'react-icons/fa';
+import { FaSearch, FaUser, FaSignOutAlt, FaPenAlt, FaHome } from '@/components/icons';
 import { signOut } from 'next-auth/react';
 import { useState, useEffect, useRef } from 'react';
 import { useIsMobile } from '@/hook/use-mobile';

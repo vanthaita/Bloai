@@ -2,7 +2,7 @@
 
 import React, { useCallback } from 'react';
 import { Share, Eye as EyeIcon } from 'lucide-react';
-import { FaTwitter, FaFacebook, FaLinkedin } from 'react-icons/fa';
+import { FaTwitter, FaFacebook, FaLinkedin } from '@/components/icons';
 import { BlogCore } from '@/types/helper.type';
 import Link from 'next/link';
 import { useBlogViews } from '@/hook/use-blog-view';

@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { api } from '@/trpc/react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { FaUser } from 'react-icons/fa'
+import { FaUser } from '@/components/icons'
 
 interface BlogCommentProps {
   slug: string

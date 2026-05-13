@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Eye, Medal, Trophy, Star, Zap } from 'lucide-react';
 import { api } from '@/trpc/server';
-import { FaUser } from 'react-icons/fa';
+import { FaUser } from '@/components/icons';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 

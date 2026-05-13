@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { Breadcrumbs } from "@/components/blog/Breadcrumbs";
 import Link from "next/link";
-import { FaUser } from "react-icons/fa";
+import { FaUser } from "@/components/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const revalidate = 300;

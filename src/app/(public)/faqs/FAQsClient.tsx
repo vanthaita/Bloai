@@ -1,8 +1,7 @@
 ﻿"use client"
 import { useState } from "react"
 import Link from "next/link"
-import { motion } from "framer-motion"
-import { FaQuestionCircle, FaArrowRight, FaEnvelope, FaChevronDown } from "react-icons/fa"
+import { FaQuestionCircle, FaArrowRight, FaEnvelope, FaChevronDown } from "@/components/icons"
 
 interface AccordionItemProps {
   question: string
@@ -103,13 +102,13 @@ export default function FAQsClient() {
             <h2 className="text-3xl font-bold text-gray-900 text-center mb-10">Tài nguyên liên quan</h2>
             <div className="grid md:grid-cols-3 gap-8">
               {resources.map((resource, index) => (
-                <motion.div key={index} whileHover={{ y: -5 }} className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all">
+                <div key={index} className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all hover:-translate-y-1">
                   <h3 className="text-xl font-semibold mb-3 text-gray-900">{resource.title}</h3>
                   <p className="text-gray-600 mb-4">{resource.description}</p>
                   <Link href={resource.link} className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
                     Xem thêm <FaArrowRight className="ml-2 text-sm" />
                   </Link>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>

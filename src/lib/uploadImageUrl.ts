@@ -10,9 +10,11 @@ function isValidImageUrl(url: string): boolean {
           /\/image\/|\.(jpg|png|gif)(\?|$)|%2F(image|img)/i.test(url));
 }
 export function transformCloudinaryUrl(url: string, options: {
-    quality?: number | 'auto';
+    quality?: number | 'auto' | 'auto:eco' | 'auto:good' | 'auto:best';
     width?: number;
+    height?: number;
     format?: 'webp' | 'auto';
+    crop?: 'fill' | 'fit' | 'scale';
   }): string {
     const urlParts = url.split('/upload/');
     const transformations: string[] = [];
@@ -20,6 +22,9 @@ export function transformCloudinaryUrl(url: string, options: {
     if (options.quality) transformations.push(`q_${options.quality}`);
     if (options.format) transformations.push(`f_${options.format}`);
     if (options.width) transformations.push(`w_${options.width}`);
+    if (options.height) transformations.push(`h_${options.height}`);
+    if (options.crop) transformations.push(`c_${options.crop}`);
+    transformations.push('dpr_auto');
   
     const transformationString = transformations.join(',');
   

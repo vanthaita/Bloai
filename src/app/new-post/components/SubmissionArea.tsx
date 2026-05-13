@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { FiLoader } from 'react-icons/fi';
+import { FiLoader } from '@/components/icons';
 
 interface SubmissionAreaProps {
     isSEOValid: boolean;

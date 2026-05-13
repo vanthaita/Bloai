@@ -2,37 +2,33 @@ import React from 'react';
 
 export function BlogCardSkeleton() {
   return (
-    <div className="bg-white overflow-hidden border-b border-black pb-4 h-full flex flex-col animate-pulse">
-      {/* Image Skeleton */}
-      <div className="relative h-48 bg-gray-200" />
+    <div className="bg-white h-full flex flex-col animate-pulse">
+      {/* Image — aspect-video matches the real CldImage wrapper */}
+      <div className="relative aspect-video mb-4 bg-gray-200" />
 
-      {/* Content Skeleton */}
-      <div className="p-5 space-y-3 flex-grow flex flex-col justify-between">
-        <div>
-          {/* Title Skeleton */}
-          <div className="space-y-2 mb-3">
-            <div className="h-5 bg-gray-200 rounded w-full" />
-            <div className="h-5 bg-gray-200 rounded w-3/4" />
-          </div>
+      <div className="flex flex-col flex-grow space-y-3">
+        {/* Tag + date row */}
+        <div className="flex items-center justify-between">
+          <div className="h-3 bg-gray-200 rounded w-16" />
+          <div className="h-3 bg-gray-200 rounded w-20" />
         </div>
-
-        <div>
-          {/* Meta Skeleton */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="h-4 bg-gray-200 rounded w-20" />
-              <div className="h-4 bg-gray-200 rounded w-24" />
-            </div>
-            <div className="h-4 bg-gray-200 rounded w-16" />
-          </div>
-
-          {/* Tags & Date Skeleton */}
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2">
-              <div className="h-5 bg-gray-200 rounded-full w-16" />
-              <div className="h-5 bg-gray-200 rounded-full w-20" />
-            </div>
-            <div className="h-4 bg-gray-200 rounded w-20" />
+        {/* Title */}
+        <div className="space-y-2">
+          <div className="h-5 bg-gray-200 rounded w-full" />
+          <div className="h-5 bg-gray-200 rounded w-4/5" />
+          <div className="h-5 bg-gray-200 rounded w-3/5" />
+        </div>
+        {/* Description */}
+        <div className="space-y-1.5">
+          <div className="h-3.5 bg-gray-200 rounded w-full" />
+          <div className="h-3.5 bg-gray-200 rounded w-5/6" />
+        </div>
+        {/* Footer */}
+        <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
+          <div className="h-3 bg-gray-200 rounded w-20" />
+          <div className="flex gap-3">
+            <div className="h-3 bg-gray-200 rounded w-12" />
+            <div className="h-3 bg-gray-200 rounded w-12" />
           </div>
         </div>
       </div>
@@ -42,7 +38,8 @@ export function BlogCardSkeleton() {
 
 export function BlogGridSkeleton() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-4 border-t border-black">
+    // Must match BlogGrid columns exactly to prevent CLS on hydration
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-12 pt-8 border-t-2 border-black">
       {Array.from({ length: 9 }).map((_, index) => (
         <BlogCardSkeleton key={index} />
       ))}

@@ -1,7 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { FaBook, FaShieldAlt } from "react-icons/fa"
+import { FaBook, FaShieldAlt } from "@/components/icons"
 
 export default function PrivacyClient() {
   return (
@@ -22,12 +21,7 @@ export default function PrivacyClient() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="bg-white p-8 rounded-2xl shadow-md"
-          >
+          <div className="bg-white p-8 rounded-2xl shadow-md animate-fade-in">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
                 <FaBook className="text-xl" />
@@ -62,14 +56,9 @@ export default function PrivacyClient() {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-white p-8 rounded-2xl shadow-md"
-          >
+          <div className="bg-white p-8 rounded-2xl shadow-md animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <div className="flex items-center gap-4 mb-6">
               <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600">
                 <FaShieldAlt className="text-xl" />
@@ -109,7 +98,7 @@ export default function PrivacyClient() {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </main>

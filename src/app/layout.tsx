@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import "@/styles/globals.css";
 import { TRPCReactProvider } from "@/trpc/react";
 import AppSidebarProvider from "@/provider/app.sidebar";
@@ -81,7 +81,10 @@ export const metadata: Metadata = {
 const inter = Inter({
   subsets: ['vietnamese'],
   variable: '--font-inter',
-  display: 'swap',
+  // 'optional' = browser uses fallback if font not cached; no mid-paint swap → zero font CLS
+  display: 'optional',
+  preload: true,
+  adjustFontFallback: true, // auto-adjusts fallback metrics to minimize layout shift
 });
 
 const websiteSchema = {
@@ -139,19 +142,18 @@ export default async function RootLayout({
     <SessionProvider session={session}>
       <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
         <head>
-          {/* Resource hints: warm up connections before browser discovers assets */}
           <link rel="preconnect" href="https://res.cloudinary.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
           <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
           <link rel="dns-prefetch" href="https://vercel.live" />
-          {/* AdSense: lazyOnload so it doesn't compete with LCP */}
           <Script
+            type="text/partytown"
             async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1872574461230356"
-            strategy="lazyOnload"
+            strategy="worker"
             crossOrigin="anonymous"
-          ></Script>
+          />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
@@ -173,7 +175,36 @@ export default async function RootLayout({
                 <ToastContainer position="bottom-right" />
                 <Analytics />
                 <SpeedInsights />
-                <GoogleAnalytics gaId="G-CL7D21ZY78" />
+                <Script
+                  type="text/partytown"
+                  id="gtag-base"
+                  strategy="worker"
+                  dangerouslySetInnerHTML={{
+                    __html: `
+                      window.dataLayer = window.dataLayer || [];
+                      function gtag(){dataLayer.push(arguments);}
+                      gtag('js', new Date());
+                      gtag('config', 'G-CL7D21ZY78');
+                    `
+                  }}
+                />
+                <Script
+                  type="text/partytown"
+                  src="https://www.googletagmanager.com/gtag/js?id=G-CL7D21ZY78"
+                  strategy="worker"
+                />
+                <Script
+                  type="text/partytown"
+                  id="gtm-script"
+                  strategy="worker"
+                  dangerouslySetInnerHTML={{
+                    __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                    })(window,document,'script','dataLayer','GTM-XXXXXXX');`
+                  }}
+                />
               </AppSidebarProvider>
             </main>
           </TRPCReactProvider>

@@ -1,15 +1,33 @@
 'use client'
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import dynamic from 'next/dynamic'
 import { Plus, RefreshCw, Settings, Globe, Book, Clock, FileText, Users, Tag as TagIcon, MessageSquare, Search, ChevronLeft, ChevronRight } from 'lucide-react'
 import { api } from '@/trpc/react'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+
+const Button = dynamic(() => import('@/components/ui/button').then(mod => ({ default: mod.Button })))
+const Input = dynamic(() => import('@/components/ui/input').then(mod => ({ default: mod.Input })))
+const Card = dynamic(() => import('@/components/ui/card').then(mod => ({ default: mod.Card })))
+const CardHeader = dynamic(() => import('@/components/ui/card').then(mod => ({ default: mod.CardHeader })))
+const CardTitle = dynamic(() => import('@/components/ui/card').then(mod => ({ default: mod.CardTitle })))
+const CardContent = dynamic(() => import('@/components/ui/card').then(mod => ({ default: mod.CardContent })))
+const CardFooter = dynamic(() => import('@/components/ui/card').then(mod => ({ default: mod.CardFooter })))
+const Table = dynamic(() => import('@/components/ui/table').then(mod => ({ default: mod.Table })))
+const TableHeader = dynamic(() => import('@/components/ui/table').then(mod => ({ default: mod.TableHeader })))
+const TableRow = dynamic(() => import('@/components/ui/table').then(mod => ({ default: mod.TableRow })))
+const TableHead = dynamic(() => import('@/components/ui/table').then(mod => ({ default: mod.TableHead })))
+const TableBody = dynamic(() => import('@/components/ui/table').then(mod => ({ default: mod.TableBody })))
+const TableCell = dynamic(() => import('@/components/ui/table').then(mod => ({ default: mod.TableCell })))
+const Tabs = dynamic(() => import('@/components/ui/tabs').then(mod => ({ default: mod.Tabs })))
+const TabsList = dynamic(() => import('@/components/ui/tabs').then(mod => ({ default: mod.TabsList })))
+const TabsTrigger = dynamic(() => import('@/components/ui/tabs').then(mod => ({ default: mod.TabsTrigger })))
+const TabsContent = dynamic(() => import('@/components/ui/tabs').then(mod => ({ default: mod.TabsContent })))
+const Badge = dynamic(() => import('@/components/ui/badge').then(mod => ({ default: mod.Badge })))
+const Select = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.Select })))
+const SelectContent = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.SelectContent })))
+const SelectItem = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.SelectItem })))
+const SelectTrigger = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.SelectTrigger })))
+const SelectValue = dynamic(() => import('@/components/ui/select').then(mod => ({ default: mod.SelectValue })))
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('blogs')

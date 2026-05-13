@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { FaHome, FaArrowLeft, FaSearch, FaExclamationTriangle } from 'react-icons/fa';
+import { FaHome, FaArrowLeft, FaSearch, FaExclamationTriangle } from '@/components/icons';
 
 
 const NotFound = () => {

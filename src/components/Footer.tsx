@@ -2,8 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Logo from './logo';
-import { FaGithub, FaFacebook, FaYoutube } from 'react-icons/fa';
-import { FaXTwitter } from 'react-icons/fa6';
+import { FaGithub, FaFacebook, FaYoutube, FaXTwitter } from '@/components/icons';
 import { Mail } from 'lucide-react';
 
 const Footer = () => {

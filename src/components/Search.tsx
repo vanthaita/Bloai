@@ -1,6 +1,6 @@
 import { api } from '@/trpc/react';
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaCalendarAlt, FaUser } from 'react-icons/fa';
+import { FaSearch, FaCalendarAlt, FaUser } from '@/components/icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import { CldImage } from 'next-cloudinary';

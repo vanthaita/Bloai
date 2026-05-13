@@ -10,9 +10,24 @@ const config = {
   experimental: {
     optimizePackageImports: [
       'lucide-react',
-      'react-icons',
       '@tabler/icons-react',
+      '@radix-ui/react-avatar',
+      '@radix-ui/react-checkbox',
+      '@radix-ui/react-context-menu',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-label',
+      '@radix-ui/react-select',
+      '@radix-ui/react-separator',
+      '@radix-ui/react-slot',
+      '@radix-ui/react-switch',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-tooltip',
+      'react-toastify',
+      '@tanstack/react-query',
     ],
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -27,28 +42,29 @@ const config = {
       { protocol: 'https', hostname: 'miro.medium.com' },
       { protocol: 'https', hostname: 'placeholder.com' },
     ],
-    minimumCacheTTL: 31536000, // 1 year
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 31536000,
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    // Disable static image inlining — forces CDN path instead of base64 blobs
+    unoptimized: false,
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   async headers() {
     return [
       {
-        // Static assets: JS, CSS, fonts, images served by Next.js
         source: '/_next/static/:path*',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
       {
-        // Public folder assets
         source: '/images/:path*',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' },
         ],
       },
       {
-        // Favicon
         source: '/favicon.ico',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=86400' },

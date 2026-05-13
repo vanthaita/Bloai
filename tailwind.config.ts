@@ -5,6 +5,7 @@ import typography from '@tailwindcss/typography';
 export default {
     darkMode: ["class"],
     content: ["./src/**/*.tsx"],
+    safelist: [],
   theme: {
   	container: {
   		center: true,

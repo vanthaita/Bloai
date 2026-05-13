@@ -103,7 +103,7 @@ export function BlogGrid({ initialTag }: { initialTag?: string }) {
 
   if (isTagsLoading || (!currentQuery.data && currentQuery.isLoading)) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 min-h-[600px]">
         <div className="h-12 bg-gray-200 rounded-lg animate-pulse" />
         <BlogGridSkeleton />
       </div>
@@ -113,7 +113,7 @@ export function BlogGrid({ initialTag }: { initialTag?: string }) {
   const error = blogsQuery.error || tagsError || blogsByTagQuery.error;
   if (error) {
     return (
-      <div className='h-[calc(100vh-80px)] w-full flex justify-center items-center text-center px-4'>
+      <div className='min-h-[600px] w-full flex justify-center items-center text-center px-4'>
         <div className="max-w-md">
           <div className="text-6xl mb-4">😕</div>
           <h3 className="text-2xl font-bold text-gray-900 mb-2">Oops! Có lỗi xảy ra</h3>
