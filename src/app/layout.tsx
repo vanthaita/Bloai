@@ -5,12 +5,23 @@ import AppSidebarProvider from "@/provider/app.sidebar";
 import { auth } from "@/server/auth";
 import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter } from 'next/font/google';
-import { ToastContainer } from 'react-toastify';
-import { GoogleAnalytics } from '@next/third-parties/google';
 import Script from "next/script";
+import dynamic from "next/dynamic";
+
+// Lazy-load heavy third-party / non-critical UI to reduce initial JS parse cost
+const Analytics = dynamic(() =>
+  import('@vercel/analytics/react').then(m => ({ default: m.Analytics })),
+  { ssr: false }
+);
+const SpeedInsights = dynamic(() =>
+  import('@vercel/speed-insights/next').then(m => ({ default: m.SpeedInsights })),
+  { ssr: false }
+);
+const ToastContainer = dynamic(() =>
+  import('react-toastify').then(m => ({ default: m.ToastContainer })),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   title: {
@@ -143,6 +154,8 @@ export default async function RootLayout({
     <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" />
+        {/* preconnect speeds up the GA script request itself */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <script
           type="application/ld+json"
@@ -170,7 +183,19 @@ export default async function RootLayout({
             </div>
           </SessionProvider>
         </TRPCReactProvider>
-        <GoogleAnalytics gaId="G-CL7D21ZY78" />
+        {/* lazyOnload = load after page is fully idle — avoids 391ms main-thread block */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-CL7D21ZY78"
+          strategy="lazyOnload"
+        />
+        <Script id="ga-init" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-CL7D21ZY78', { send_page_view: false });
+          `}
+        </Script>
       </body>
     </html>
   );

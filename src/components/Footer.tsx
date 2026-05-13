@@ -1,19 +1,14 @@
-'use client';
-import React, { useState } from 'react';
+// Server Component — no 'use client'.
+// Removing the client boundary eliminates this file from the JS bundle sent to the browser,
+// reducing the amount of JavaScript that must be parsed & executed on first load.
+import React from 'react';
 import Link from 'next/link';
 import Logo from './logo';
 import { FaGithub, FaFacebook, FaYoutube, FaXTwitter } from '@/components/icons';
-import { Mail } from 'lucide-react';
+import { FooterNewsletterForm } from './FooterNewsletterForm';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const [email, setEmail] = useState('');
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle subscription logic here
-    console.log('Subscribe:', email);
-  };
 
   return (
     <footer className="bg-white text-black border-t-2 border-black mt-12 max-w-[100vw] overflow-x-hidden">
@@ -28,29 +23,12 @@ const Footer = () => {
                 Bài viết sâu sắc về công nghệ, thiết kế và phát triển. Khám phá tương lai AI cùng Bloai.
               </p>
             </div>
-            
+
             {/* Newsletter */}
             <div className="space-y-3">
               <h3 className="font-bold text-black uppercase tracking-wider text-[11px]">Đăng ký nhận tin</h3>
-              <form onSubmit={handleSubscribe} className="flex max-w-sm">
-                <div className="relative flex-1">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-black" />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Địa chỉ Email"
-                    className="w-full pl-9 pr-3 py-2 border border-black border-r-0 rounded-none focus:outline-none focus:bg-gray-50 text-xs bg-white text-black placeholder:text-gray-500 font-medium transition-colors"
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-black text-white font-bold rounded-none hover:bg-white hover:text-black transition-colors text-[10px] uppercase tracking-wider whitespace-nowrap border border-black"
-                >
-                  Đăng ký
-                </button>
-              </form>
+              {/* Only the form needs client JS — everything else stays server-rendered */}
+              <FooterNewsletterForm />
             </div>
           </div>
 
@@ -69,10 +47,10 @@ const Footer = () => {
                   { label: 'Về chúng tôi', href: '/about' },
                   { label: 'Liên hệ', href: '/contact' },
                   { label: 'Giới thiệu', href: '/landing' },
-                ].map((item, idx) => (
-                  <li key={idx}>
-                    <Link 
-                      href={item.href} 
+                ].map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
                       className="text-black font-bold hover:underline underline-offset-[4px] decoration-1 transition-all text-[11px] uppercase tracking-wider"
                     >
                       {item.label}
@@ -90,31 +68,34 @@ const Footer = () => {
                   Thông tin
                 </h3>
                 <ul className="space-y-3">
-                  {['FAQs', 'Điều khoản & Bảo mật'].map((item, idx) => (
-                    <li key={idx}>
-                      <Link 
-                        href={item === 'FAQs' ? '/faqs' : '/privacy'} 
+                  {[
+                    { label: 'FAQs', href: '/faqs' },
+                    { label: 'Điều khoản & Bảo mật', href: '/privacy' },
+                  ].map((item) => (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
                         className="text-black font-bold hover:underline underline-offset-[4px] decoration-1 transition-all text-[11px] uppercase tracking-wider"
                       >
-                        {item}
+                        {item.label}
                       </Link>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              {/* Social Links Boxy Style */}
+              {/* Social Links */}
               <div>
                 <h3 className="font-bold text-black mb-3 uppercase tracking-wider text-[11px]">Kết nối</h3>
                 <div className="flex flex-wrap gap-2">
                   {[
-                    { icon: FaXTwitter, href: "https://twitter.com", label: "Twitter" },
-                    { icon: FaGithub, href: "https://github.com", label: "GitHub" },
-                    { icon: FaFacebook, href: "https://facebook.com", label: "Facebook" },
-                    { icon: FaYoutube, href: "https://youtube.com", label: "YouTube" }
-                  ].map((social, idx) => (
+                    { icon: FaXTwitter, href: 'https://twitter.com', label: 'Twitter' },
+                    { icon: FaGithub, href: 'https://github.com', label: 'GitHub' },
+                    { icon: FaFacebook, href: 'https://facebook.com', label: 'Facebook' },
+                    { icon: FaYoutube, href: 'https://youtube.com', label: 'YouTube' },
+                  ].map((social) => (
                     <a
-                      key={idx}
+                      key={social.label}
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -135,7 +116,7 @@ const Footer = () => {
           <p className="text-[9px] sm:text-[10px] text-black font-bold uppercase tracking-[0.15em]">
             © {currentYear} Bloai. Bản quyền thuộc về Bloai Team.
           </p>
-          
+
           <div className="flex gap-4 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em]">
             <Link href="/privacy" className="text-black hover:underline underline-offset-[4px] decoration-1 transition-all">
               Bảo mật

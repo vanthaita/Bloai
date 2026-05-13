@@ -79,7 +79,8 @@ html {
 }
 
 .scroll-custom::-webkit-scrollbar-thumb {
-  @apply bg-black/50 rounded-full;
+  background-color: rgb(0 0 0 / 0.5);
+  border-radius: 9999px;
 }
 
 .scroll-custom::-webkit-scrollbar-track {
@@ -87,7 +88,7 @@ html {
 }
 
 .scroll-custom::-webkit-scrollbar-thumb:hover {
-  @apply bg-black/70;
+  background-color: rgb(0 0 0 / 0.7);
 }
 
 .bento-grid {
@@ -214,3 +215,9 @@ html {
  .prose object {
   max-width: 100%;
  }
+
+/* Footer is always below-fold — defer its paint to after LCP */
+footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 400px;
+}

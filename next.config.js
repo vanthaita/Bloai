@@ -23,12 +23,15 @@ const config = {
       '@radix-ui/react-tabs',
       '@radix-ui/react-tooltip',
       'react-toastify',
+      'embla-carousel-react',
       // NOTE: @tanstack/react-query intentionally excluded — it is not a barrel-export
       // package and including it here can break QueryClientProvider initialization order.
     ],
     webpackBuildWorker: true,
     parallelServerCompiles: true,
     parallelServerBuildTraces: true,
+    // Inline critical CSS — shrinks the 14 KiB unused CSS identified by Lighthouse
+    optimizeCss: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -112,10 +115,55 @@ const config = {
       },
     ];
   },
-  webpack(config, { isServer }) {
+  webpack(config, { isServer, dev }) {
     if (!isServer) {
       // Target modern browsers — removes polyfills for already-baseline features
       config.target = ['web', 'es2022'];
+
+      if (!dev) {
+        // Break the large shared chunk (1517-86ce, ~780ms CPU) into smaller pieces
+        // so unused code is not downloaded on the critical path.
+        config.optimization = {
+          ...config.optimization,
+          splitChunks: {
+            ...config.optimization?.splitChunks,
+            chunks: 'all',
+            maxInitialRequests: 25,
+            minSize: 20_000,
+            cacheGroups: {
+              // Vendor: react / react-dom — almost never changes
+              reactVendor: {
+                test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+                name: 'vendor-react',
+                chunks: 'all',
+                priority: 40,
+              },
+              // tRPC + tanstack-query — large but cacheable
+              trpcVendor: {
+                test: /[\\/]node_modules[\\/](@trpc|@tanstack)[\\/]/,
+                name: 'vendor-trpc',
+                chunks: 'all',
+                priority: 30,
+              },
+              // Radix UI primitives — barrel-export optimized above, chunk separately
+              radixVendor: {
+                test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
+                name: 'vendor-radix',
+                chunks: 'all',
+                priority: 20,
+              },
+              // Everything else in node_modules
+              defaultVendors: {
+                test: /[\\/]node_modules[\\/]/,
+                name: 'vendor-misc',
+                chunks: 'all',
+                priority: 10,
+                reuseExistingChunk: true,
+              },
+            },
+          },
+        };
+      }
     }
     return config;
   },
