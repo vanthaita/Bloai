@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { CldImage } from 'next-cloudinary';
 import { FaEye, FaBookOpen } from '@/components/icons';
