@@ -171,12 +171,11 @@ export default async function RootLayout({
           </SessionProvider>
         </TRPCReactProvider>
         <GoogleAnalytics gaId="G-CL7D21ZY78" />
-        <Script
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1872574461230356"
-          strategy="lazyOnload"
           crossOrigin="anonymous"
-        />
+        ></script>
       </body>
     </html>
   );
