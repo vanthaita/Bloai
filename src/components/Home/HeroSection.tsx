@@ -1,6 +1,7 @@
 // components/HeroSection.tsx
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const HeroSection: React.FC = () => {
   return (
@@ -61,6 +62,8 @@ const HeroSection: React.FC = () => {
                   className="inline-block h-10 w-10 rounded-full ring-2 ring-white"
                   src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i+20}.jpg`}
                   alt="User avatar"
+                  width={40}
+                  height={40}
                 />
               ))}
             </div>
@@ -93,10 +96,14 @@ const HeroSection: React.FC = () => {
                 <div className="w-3 h-3 rounded-full bg-green-400"></div>
               </div>
             </div>
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
               alt="Bloai AI Dashboard"
+              width={1350}
+              height={900}
               className="w-full h-auto"
+              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
             />
           </div>
         </div>

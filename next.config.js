@@ -112,6 +112,13 @@ const config = {
       },
     ];
   },
+  webpack(config, { isServer }) {
+    if (!isServer) {
+      // Target modern browsers — removes polyfills for already-baseline features
+      config.target = ['web', 'es2022'];
+    }
+    return config;
+  },
 };
 
 const withBundleAnalyzer = BundAnalyzer({

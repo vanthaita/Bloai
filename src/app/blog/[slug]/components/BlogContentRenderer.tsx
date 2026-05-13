@@ -6,7 +6,6 @@ import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import { getNodeText, Heading } from '@/types/helper.type';
 import Image from 'next/image';
-import { CldImage } from 'next-cloudinary';
 
 const DynamicReactMarkdown = dynamic(
     () => import('react-markdown').then(mod => mod.default),
@@ -71,13 +70,22 @@ const BlogContentRenderer: React.FC<BlogContentRendererProps> = ({ content, head
                     h2: (props) => <CustomHeadingRenderer level={2} {...props} />,
                     h3: (props) => <CustomHeadingRenderer level={3} {...props} />,
                     // Automatically add alt text to images to fix Ahrefs "Missing alt text" warnings
-                    img: ({ node, ...props }) => (
-                        <img 
-                            {...props} 
-                            alt={props.alt || "Bloai Blog Article Image"} 
-                            loading="lazy" 
-                        />
-                    ),
+                    img: ({ node, ...props }) => {
+                        // Provide aspect-ratio hint so the browser reserves space before
+                        // the image loads, preventing layout shift (CLS).
+                        const w = props.width ? Number(props.width) : 1200;
+                        const h = props.height ? Number(props.height) : 630;
+                        return (
+                            <img
+                                {...props}
+                                alt={props.alt || "Bloai Blog Article Image"}
+                                loading="lazy"
+                                width={w}
+                                height={h}
+                                style={{ height: 'auto', maxWidth: '100%' }}
+                            />
+                        );
+                    },
                     // Convert relative markdown links (e.g. docs/windows.md) to absolute GitHub links to fix 404s
                     a: ({ node, href, ...props }) => {
                         const isRelativeMd = href && !href.startsWith('http') && !href.startsWith('mailto:') && !href.startsWith('#');

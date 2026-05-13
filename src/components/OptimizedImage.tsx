@@ -1,7 +1,6 @@
-'use client';
-
-import { CldImage } from 'next-cloudinary';
+import Image from 'next/image';
 import React from 'react';
+import { buildCldUrl, CldQuality } from '@/lib/cldUrl';
 
 interface OptimizedImageProps {
   src: string;
@@ -11,7 +10,8 @@ interface OptimizedImageProps {
   priority?: boolean;
   className?: string;
   sizes?: string;
-  quality?: 'auto:eco' | 'auto:good' | 'auto';
+  quality?: CldQuality;
+  fill?: boolean;
 }
 
 export function OptimizedImage({
@@ -21,12 +21,30 @@ export function OptimizedImage({
   height,
   priority = false,
   className = '',
-  sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px',
+  sizes = '(max-width: 480px) calc(100vw - 32px), (max-width: 768px) calc(50vw - 24px), (max-width: 1200px) calc(50vw - 24px), 600px',
   quality = 'auto:eco',
+  fill = false,
 }: OptimizedImageProps) {
+  const url = buildCldUrl(src, width, height, priority ? 'auto:good' : quality);
+
+  if (fill) {
+    return (
+      <Image
+        src={url}
+        alt={alt}
+        fill
+        priority={priority}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'low'}
+        className={className}
+        sizes={sizes}
+      />
+    );
+  }
+
   return (
-    <CldImage
-      src={src}
+    <Image
+      src={url}
       alt={alt}
       width={width}
       height={height}
@@ -35,11 +53,6 @@ export function OptimizedImage({
       fetchPriority={priority ? 'high' : 'low'}
       className={className}
       sizes={sizes}
-      crop="fill"
-      gravity="auto"
-      quality={priority ? 'auto:good' : quality}
-      format="auto"
-      dpr="1.0"
     />
   );
 }

@@ -8,8 +8,14 @@ import { cn } from "@/lib/utils";
 import Logo from "@/components/logo";
 import Search from "./Search";
 import { usePathname } from "next/navigation";
-import { NewsTicker } from "./blog/NewsTicker";
+import dynamic from "next/dynamic";
 import { UserDropdown } from "./navbar/UserDropdown";
+
+// Lazy-load so the ticker's tRPC fetch doesn't block Navbar hydration
+const NewsTicker = dynamic(
+  () => import("./blog/NewsTicker").then((m) => ({ default: m.NewsTicker })),
+  { ssr: false, loading: () => <div className="bg-black h-8" /> }
+);
 
 const NAV_LINKS = [
   { name: "Trang chủ", path: "/" },

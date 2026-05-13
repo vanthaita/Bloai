@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { CldImage } from "next-cloudinary";
+import Image from "next/image";
+import { buildCldUrl } from "@/lib/cldUrl";
 import { FaUser, FaCalendarAlt } from "@/components/icons";
 
 
@@ -61,19 +62,14 @@ export function SearchResultItem({ result, searchTerm }: SearchResultItemProps) 
       <div className="flex items-start space-x-3">
         {result.imageUrl && (
           <div className="flex-shrink-0 w-16 h-16 relative border-[1.5px] border-black">
-            <CldImage
+            <Image
+              src={buildCldUrl(result.imageUrl, 64, 64, 'auto:eco')}
+              alt={result.imageAlt || result.title}
               width={64}
               height={64}
-              src={result.imageUrl}
-              alt={result.imageAlt || result.title}
               className="w-full h-full object-cover"
               loading="lazy"
               sizes="64px"
-              crop="fill"
-              gravity="auto"
-              quality="auto:eco"
-              format="auto"
-              dpr="1.0"
             />
           </div>
         )}

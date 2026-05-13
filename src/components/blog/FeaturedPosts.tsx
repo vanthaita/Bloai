@@ -9,6 +9,7 @@ import { TrendingUp, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Prisma } from '@prisma/client';
 import { formatDate } from '@/lib/dateUtils';
+import { buildCldUrl } from '@/lib/cldUrl';
 
 type Blog = Prisma.BlogGetPayload<{
   include: {
@@ -21,25 +22,7 @@ interface FeaturedPostsProps {
   posts: Blog[];
 }
 
-/**
- * Build a Cloudinary-optimised URL from either a public ID or an already-full URL.
- * Falls back to a placeholder if src is empty.
- * Uses manual URL construction to ensure consistent server/client rendering.
- */
-function buildCldUrl(
-  src: string | null | undefined,
-  width: number,
-  height: number,
-  quality = 'auto:eco',
-): string {
-  if (!src) {
-    return `https://res.cloudinary.com/dq2z27agv/image/upload/w_${width},h_${height},c_fill,g_auto,q_auto,f_webp/default-placeholder`;
-  }
-  // If it's already a full URL (from another CDN / Unsplash etc.) return as-is
-  if (src.startsWith('http')) return src;
-  // Cloudinary public ID → construct optimised URL manually for consistency
-  return `https://res.cloudinary.com/dq2z27agv/image/upload/w_${width},h_${height},c_fill,g_auto,q_${quality},f_webp/${src}`;
-}
+
 
 export function FeaturedPosts({ posts }: FeaturedPostsProps) {
   if (!posts || posts.length === 0) return null;
@@ -49,7 +32,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
 
   const sidePosts = posts.slice(1, 3);
 
-  const heroUrl = buildCldUrl(mainPost.imageUrl, 800, 450, 'auto:eco');
+  const heroUrl = buildCldUrl(mainPost.imageUrl, 1200, 675, 'auto:eco');
 
   return (
     <section className="pt-24 pb-8 lg:pt-32 lg:pb-12 bg-white">
@@ -126,7 +109,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
           {/* Side Featured Posts — lazy loaded */}
           <div className="lg:col-span-4 flex flex-col gap-6">
             {sidePosts.map((post, index) => {
-              const sideUrl = buildCldUrl(post.imageUrl, 400, 250, 'auto:eco');
+              const sideUrl = buildCldUrl(post.imageUrl, 800, 450, 'auto:eco');
               return (
                 <Link
                   key={post.id}
@@ -142,7 +125,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
                       fill
                       className="object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
                       loading="lazy"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 192px, 33vw"
+                      sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) 192px, calc(33vw - 32px)"
                     />
                   </div>
 
