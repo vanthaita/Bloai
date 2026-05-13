@@ -38,8 +38,8 @@ export function OptimizedImage({
       crop="fill"
       gravity="auto"
       quality={priority ? 'auto:good' : quality}
-      format="webp"
-      dpr="auto"
+      format="auto"
+      dpr="1.0"
     />
   );
 }

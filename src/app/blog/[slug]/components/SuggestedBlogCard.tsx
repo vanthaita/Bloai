@@ -24,12 +24,12 @@ const SuggestedBlogCard: React.FC<SuggestedBlogCardProps> = ({ post }) => {
                             alt={post.imageAlt || `Thumbnail for ${post.title}`}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                             loading="lazy"
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            quality={80}
-                            format="webp"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                            quality="auto:eco"
+                            format="auto"
                             crop="fill"
                             gravity="auto"
-                            dpr="auto" 
+                            dpr="1.0" 
                             fetchPriority="low"
                         />
                     </div>

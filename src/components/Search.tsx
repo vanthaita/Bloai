@@ -160,18 +160,18 @@ const Search = () => {
                                                     {result.imageUrl && (
                                                         <div className="flex-shrink-0 w-16 h-16 relative border-[1.5px] border-black">
                                                             <CldImage
-                                                                width={300}
-                                                                height={300}
+                                                                width={64}
+                                                                height={64}
                                                                 src={result.imageUrl}
                                                                 alt={result.imageAlt || result.title}
                                                                 className="w-full h-full object-cover"
                                                                 loading="lazy"
-                                                                sizes="(max-width: 768px) 100vw, 600px"
+                                                                sizes="64px"
                                                                 crop="fill"
                                                                 gravity="auto"
-                                                                quality="auto:best"
-                                                                format="webp"
-                                                                dpr="auto" 
+                                                                quality="auto:eco"
+                                                                format="auto"
+                                                                dpr="1.0" 
                                                             />
                                                         </div>
                                                     )}

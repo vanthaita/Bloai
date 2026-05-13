@@ -45,37 +45,23 @@ export const metadata = {
 };
 
 export default async function Home() {
-    // Fetch data for Featured Posts (Top 3)
-    const featuredData = await api.blog.getAllBlog({
-        page: 1,
-        limit: 3,
-    });
+    // Parallel fetch for better performance
+    const [featuredData, allPostsData] = await Promise.all([
+        api.blog.getAllBlog({ page: 1, limit: 3 }),
+        api.blog.getAllBlog({ page: 1, limit: 18 }),
+    ]);
+    
     const featuredPosts = featuredData.blogs || [];
-
-    // Fetch more posts server-side for static HTML links (SEO: fixes orphan pages)
-    const allPostsData = await api.blog.getAllBlog({
-        page: 1,
-        limit: 18,
-    });
     const allPostsForCrawlers = allPostsData.blogs || [];
 
     // Prefetch data for SSR hydration to improve LCP and FCP
-    void api.blog.getAllBlog.prefetch({
-        page: 1,
-        limit: 9
-    });
-    void api.blog.getAllTags.prefetch({
-        page: 1,
-        limit: 13
-    });
-    void api.blog.getLeaderBoard.prefetch({
-        blogLimit: 5,
-        authorLimit: 5
-    });
+    void api.blog.getAllBlog.prefetch({ page: 1, limit: 9 });
+    void api.blog.getAllTags.prefetch({ page: 1, limit: 13 });
+    void api.blog.getLeaderBoard.prefetch({ blogLimit: 5, authorLimit: 5 });
 
     return (
-        <HydrateClient>
-            <main className="flex flex-col min-h-screen bg-white text-black">
+        <main className="flex flex-col min-h-screen bg-white text-black">
+            <HydrateClient>
                 {/* Featured Posts */}
                 {featuredPosts.length > 0 && (
                     <FeaturedPosts posts={featuredPosts} />
@@ -123,7 +109,7 @@ export default async function Home() {
                         </ul>
                     </nav>
                 )}
-            </main>
-        </HydrateClient>
+            </HydrateClient>
+        </main>
     );
-}
+}

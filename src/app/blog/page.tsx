@@ -41,16 +41,18 @@ export const metadata = {
 };
 
 export default async function BlogPage() {
-    // Server-fetch all posts for static HTML links (fixes orphan pages for crawlers)
-    void api.blog.getAllBlog.prefetch({ page: 1, limit: 9 });
-    void api.blog.getAllTags.prefetch({ page: 1, limit: 13 });
-
-    const allPostsData = await api.blog.getAllBlog({ page: 1, limit: 1000 });
+    // Parallel prefetch and fetch
+    const [allPostsData] = await Promise.all([
+        api.blog.getAllBlog({ page: 1, limit: 100 }), // Reduced from 1000 to 100
+        api.blog.getAllBlog.prefetch({ page: 1, limit: 9 }),
+        api.blog.getAllTags.prefetch({ page: 1, limit: 13 }),
+    ]);
+    
     const allPostsForCrawlers = allPostsData.blogs || [];
 
     return (
-        <HydrateClient>
-            <main className="flex flex-col min-h-screen bg-white">
+        <main className="flex flex-col min-h-screen bg-white">
+            <HydrateClient>
                 <section className="max-w-7xl mx-auto w-full px-4 min-[375px]:px-6 md:px-8 pt-24 pb-10 lg:pt-32 lg:pb-12">
                     <div id="latest-news" className="mb-8 flex items-center border-t-[3px] border-black pt-6">
                         <div className="w-2 h-8 md:h-10 bg-black mr-4"></div>
@@ -77,7 +79,7 @@ export default async function BlogPage() {
                         </ul>
                     </nav>
                 )}
-            </main>
-        </HydrateClient>
+            </HydrateClient>
+        </main>
     );
-}
+}

@@ -25,10 +25,16 @@ const config = {
       'react-toastify',
       '@tanstack/react-query',
     ],
+    webpackBuildWorker: true,
+    parallelServerCompiles: true,
+    parallelServerBuildTraces: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  swcMinify: true,
+  reactStrictMode: true,
+  poweredByHeader: false,
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -43,9 +49,8 @@ const config = {
       { protocol: 'https', hostname: 'placeholder.com' },
     ],
     minimumCacheTTL: 31536000,
-    deviceSizes: [640, 750, 828, 1080, 1200],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256],
-    // Disable static image inlining — forces CDN path instead of base64 blobs
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     unoptimized: false,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -68,6 +73,12 @@ const config = {
         source: '/favicon.ico',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=86400' },
+        ],
+      },
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-DNS-Prefetch-Control', value: 'on' },
         ],
       },
     ];

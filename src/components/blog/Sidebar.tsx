@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { api } from '@/trpc/react';
 import { Button } from '@/components/ui/button';
+import { formatDateVi } from '@/lib/dateUtils';
 
 export function Sidebar() {
   const { data: leaderBoardData, isLoading: isLoadingLeaderBoard } = api.blog.getLeaderBoard.useQuery({
@@ -53,7 +54,7 @@ export function Sidebar() {
                     {blog.title}
                   </h4>
                   <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 mt-1">
-                    {new Date(blog.publish_day).toLocaleDateString('vi-VN')}
+                    {formatDateVi(blog.publish_day)}
                   </span>
                 </div>
               </Link>

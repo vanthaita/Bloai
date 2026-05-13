@@ -1,7 +1,8 @@
 import React from 'react';
 import { CldImage } from 'next-cloudinary';
 import { FaEye, FaBookOpen } from '@/components/icons';
-import { Prisma } from '@prisma/client'; 
+import { Prisma } from '@prisma/client';
+import { formatDate } from '@/lib/dateUtils'; 
 
 
 type Blog = Prisma.BlogGetPayload<{
@@ -31,19 +32,19 @@ export function BlogCard({ blog, onClick, isNavigating, priority = false }: Blog
         <div className="relative aspect-video mb-4 overflow-hidden bg-gray-100">
           <CldImage
             width={364}
-            height={243}
+            height={205}
             src={blog.imageUrl ?? 'your-default-placeholder-public-id'}
             alt={blog.title ?? 'Blog post image'}
             className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
             loading={priority ? "eager" : "lazy"}
             priority={priority}
             fetchPriority={priority ? "high" : "low"}
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 364px"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 33vw, 364px"
             crop="fill"
             gravity="auto"
             quality="auto:eco"
-            format="webp"
-            dpr="auto"
+            format="auto"
+            dpr="1.0"
           />
         </div>
 
@@ -57,11 +58,7 @@ export function BlogCard({ blog, onClick, isNavigating, priority = false }: Blog
                 ))}
             </div>
             <div className="text-gray-500 font-medium">
-              {new Date(blog.publishDate).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-              })}
+              {formatDate(blog.publishDate, 'full')}
             </div>
           </div>
 

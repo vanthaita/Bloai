@@ -3,14 +3,22 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { api } from '@/trpc/react';
 import { Button } from '../ui/button';
-
 import { BlogCard } from './BlogCard';
 import { BlogGridSkeleton } from './BlogCardSkeleton';
 import Link from 'next/link';
 import Pagination from '../Pagintion';
-import { BackToTop } from '../BackToTop';
-import { InlineNewsletter } from './InlineNewsletter';
+import dynamic from 'next/dynamic';
 import { useSearchParams, useRouter } from 'next/navigation';
+
+// Lazy load non-critical components to reduce initial bundle
+const BackToTop = dynamic(() => import('../BackToTop').then(mod => ({ default: mod.BackToTop })), {
+  ssr: false
+});
+
+const InlineNewsletter = dynamic(() => import('./InlineNewsletter').then(mod => ({ default: mod.InlineNewsletter })), {
+  loading: () => <div className="h-64 bg-gray-100 animate-pulse rounded" />
+});
+
 const LIMIT = 9;
 
 export function BlogGrid({ initialTag }: { initialTag?: string }) {

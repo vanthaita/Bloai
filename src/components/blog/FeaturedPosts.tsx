@@ -4,11 +4,11 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { getCldImageUrl } from 'next-cloudinary';
 import { FaEye, FaBookOpen, FaClock } from '@/components/icons';
 import { TrendingUp, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Prisma } from '@prisma/client';
+import { formatDate } from '@/lib/dateUtils';
 
 type Blog = Prisma.BlogGetPayload<{
   include: {
@@ -24,28 +24,21 @@ interface FeaturedPostsProps {
 /**
  * Build a Cloudinary-optimised URL from either a public ID or an already-full URL.
  * Falls back to a placeholder if src is empty.
+ * Uses manual URL construction to ensure consistent server/client rendering.
  */
 function buildCldUrl(
   src: string | null | undefined,
   width: number,
   height: number,
-  quality = 'auto:good',
+  quality = 'auto:eco',
 ): string {
   if (!src) {
     return `https://res.cloudinary.com/dq2z27agv/image/upload/w_${width},h_${height},c_fill,g_auto,q_auto,f_webp/default-placeholder`;
   }
   // If it's already a full URL (from another CDN / Unsplash etc.) return as-is
   if (src.startsWith('http')) return src;
-  // Cloudinary public ID → construct optimised URL
-  return getCldImageUrl({
-    src,
-    width,
-    height,
-    crop: 'fill',
-    gravity: 'auto',
-    quality,
-    format: 'webp',
-  });
+  // Cloudinary public ID → construct optimised URL manually for consistency
+  return `https://res.cloudinary.com/dq2z27agv/image/upload/w_${width},h_${height},c_fill,g_auto,q_${quality},f_webp/${src}`;
 }
 
 export function FeaturedPosts({ posts }: FeaturedPostsProps) {
@@ -56,7 +49,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
 
   const sidePosts = posts.slice(1, 3);
 
-  const heroUrl = buildCldUrl(mainPost.imageUrl, 1200, 750, 'auto:best');
+  const heroUrl = buildCldUrl(mainPost.imageUrl, 800, 450, 'auto:eco');
 
   return (
     <section className="pt-24 pb-8 lg:pt-32 lg:pb-12 bg-white">
@@ -88,9 +81,8 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
                 alt={mainPost.title ?? 'Featured post'}
                 fill
                 className="object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
-                // priority tells Next.js to emit <link rel="preload"> in <head>
-                // and adds fetchpriority="high" — the key LCP request-discovery fix
                 priority
+                fetchPriority="high"
                 sizes="(max-width: 1024px) 100vw, 66vw"
               />
             </div>
@@ -103,9 +95,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
                   ))}
                 </div>
                 <div className="text-gray-500 font-medium">
-                  {new Date(mainPost.publishDate).toLocaleDateString('en-US', {
-                    year: 'numeric', month: 'short', day: 'numeric',
-                  })}
+                  {formatDate(mainPost.publishDate, 'full')}
                 </div>
               </div>
 
@@ -136,7 +126,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
           {/* Side Featured Posts — lazy loaded */}
           <div className="lg:col-span-4 flex flex-col gap-6">
             {sidePosts.map((post, index) => {
-              const sideUrl = buildCldUrl(post.imageUrl, 600, 375, 'auto:good');
+              const sideUrl = buildCldUrl(post.imageUrl, 400, 250, 'auto:eco');
               return (
                 <Link
                   key={post.id}
@@ -162,9 +152,7 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
                         {post.tags[0]?.name}
                       </span>
                       <span className="text-gray-500 font-medium">
-                        {new Date(post.publishDate).toLocaleDateString('en-US', {
-                          month: 'short', day: 'numeric',
-                        })}
+                        {formatDate(post.publishDate, 'short')}
                       </span>
                     </div>
 

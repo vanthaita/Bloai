@@ -143,17 +143,7 @@ export default async function RootLayout({
       <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
         <head>
           <link rel="preconnect" href="https://res.cloudinary.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-          <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-          <link rel="dns-prefetch" href="https://vercel.live" />
-          <Script
-            type="text/partytown"
-            async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1872574461230356"
-            strategy="worker"
-            crossOrigin="anonymous"
-          />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
@@ -169,45 +159,39 @@ export default async function RootLayout({
         </head>
         <body className="bg-gray-50" suppressHydrationWarning>
           <TRPCReactProvider>
-            <main id="main-content" aria-label="Nội dung chính">
+            <div id="app-root">
               <AppSidebarProvider>
                 {children}
                 <ToastContainer position="bottom-right" />
                 <Analytics />
                 <SpeedInsights />
-                <Script
-                  type="text/partytown"
-                  id="gtag-base"
-                  strategy="worker"
-                  dangerouslySetInnerHTML={{
-                    __html: `
-                      window.dataLayer = window.dataLayer || [];
-                      function gtag(){dataLayer.push(arguments);}
-                      gtag('js', new Date());
-                      gtag('config', 'G-CL7D21ZY78');
-                    `
-                  }}
-                />
-                <Script
-                  type="text/partytown"
-                  src="https://www.googletagmanager.com/gtag/js?id=G-CL7D21ZY78"
-                  strategy="worker"
-                />
-                <Script
-                  type="text/partytown"
-                  id="gtm-script"
-                  strategy="worker"
-                  dangerouslySetInnerHTML={{
-                    __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                    })(window,document,'script','dataLayer','GTM-XXXXXXX');`
-                  }}
-                />
               </AppSidebarProvider>
-            </main>
+            </div>
           </TRPCReactProvider>
+          <Script
+            id="gtag-base"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-CL7D21ZY78', {
+                  page_path: window.location.pathname,
+                });
+              `
+            }}
+          />
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-CL7D21ZY78"
+            strategy="afterInteractive"
+          />
+          <Script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1872574461230356"
+            strategy="lazyOnload"
+            crossOrigin="anonymous"
+          />
         </body>
       </html>
     </SessionProvider>

@@ -15,15 +15,11 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
       {isAuthRoute || isNewPostRoute ? (
         <div>{children}</div>
       ) : (
-        <section className='flex flex-1'>
-          <main className='flex-1'>
-            {/* Navbar is sticky; no explicit spacer needed — the navbar occupies
-                natural flow height before pinning, preventing a CLS mismatch. */}
-            <Navbar />
-            {children}
-            <Footer />
-          </main>
-        </section>
+        <div className='flex flex-col flex-1'>
+          <Navbar />
+          {children}
+          <Footer />
+        </div>
       )}
     </>
   );
