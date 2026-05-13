@@ -10,7 +10,7 @@ const Logo = () => {
         alt="Bloai Logo"
         width={125}
         height={125}
-        className='object-cover'
+        className='object-cover w-[125px] h-[125px]'
         priority
       />
     </Link>
