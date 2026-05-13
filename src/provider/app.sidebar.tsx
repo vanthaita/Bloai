@@ -13,11 +13,13 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       {isAuthRoute || isNewPostRoute ? (
-        <div>{children}</div>
+        <div className="flex flex-col flex-1 w-full">{children}</div>
       ) : (
         <div className='flex flex-col flex-1'>
           <Navbar />
-          {children}
+          <div className="flex flex-col flex-1 w-full" id="main-content">
+            {children}
+          </div>
           <Footer />
         </div>
       )}
