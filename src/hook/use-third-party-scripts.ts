@@ -9,9 +9,16 @@ export function useThirdPartyScripts() {
     // Load AdSense ads if available
     if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
       try {
-        (window as any).adsbygoogle.push({});
+        // Only push if there are ad slots on the page
+        const adSlots = document.querySelectorAll('.adsbygoogle');
+        if (adSlots.length > 0) {
+          (window as any).adsbygoogle.push({});
+        }
       } catch (e) {
-        console.error('AdSense error:', e);
+        // Silently fail in production to avoid console errors
+        if (process.env.NODE_ENV === 'development') {
+          console.error('AdSense error:', e);
+        }
       }
     }
   }, []);
