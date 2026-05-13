@@ -25,12 +25,17 @@ export function OptimizedImage({
   quality = 'auto:eco',
   fill = false,
 }: OptimizedImageProps) {
-  const url = buildCldUrl(src, width, height, priority ? 'auto:good' : quality);
+  const loader = ({ src: loaderSrc, width: loaderWidth }: { src: string; width: number }) => {
+    // For fill images without intrinsic aspect ratio, we let Cloudinary determine height automatically (height=0)
+    const scaledHeight = (fill || !width || !height) ? 0 : Math.round((loaderWidth / width) * height);
+    return buildCldUrl(loaderSrc, loaderWidth, scaledHeight, priority ? 'auto:good' : (quality || 'auto:eco'));
+  };
 
   if (fill) {
     return (
       <Image
-        src={url}
+        loader={loader}
+        src={src}
         alt={alt}
         fill
         priority={priority}
@@ -44,7 +49,8 @@ export function OptimizedImage({
 
   return (
     <Image
-      src={url}
+      loader={loader}
+      src={src}
       alt={alt}
       width={width}
       height={height}

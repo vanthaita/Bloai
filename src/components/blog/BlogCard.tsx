@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { FaEye, FaBookOpen } from '@/components/icons';
 import { Prisma } from '@prisma/client';
 import { formatDate } from '@/lib/dateUtils';
-import { buildCldUrl } from '@/lib/cldUrl';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 type Blog = Prisma.BlogGetPayload<{
   include: {
@@ -22,8 +22,6 @@ interface BlogCardProps {
 }
 
 export function BlogCard({ blog, onClick, isNavigating, priority = false }: BlogCardProps) {
-  const imgUrl = buildCldUrl(blog.imageUrl, 750, 422, 'auto:eco');
-
   return (
     <div
       onClick={onClick}
@@ -31,14 +29,12 @@ export function BlogCard({ blog, onClick, isNavigating, priority = false }: Blog
     >
       <div className="group relative bg-white h-full flex flex-col">
         <div className="relative aspect-video mb-4 overflow-hidden bg-gray-100">
-          <Image
-            src={imgUrl}
+          <OptimizedImage
+            src={blog.imageUrl || ''}
             alt={blog.title ?? 'Blog post image'}
             fill
             className="object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
-            loading={priority ? 'eager' : 'lazy'}
             priority={priority}
-            fetchPriority={priority ? 'high' : 'low'}
             sizes="(max-width: 480px) calc(100vw - 32px), (max-width: 768px) calc(50vw - 24px), (max-width: 1280px) calc(33vw - 24px), 364px"
           />
         </div>

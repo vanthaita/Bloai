@@ -9,6 +9,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter } from 'next/font/google';
 import { ToastContainer } from 'react-toastify';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import Script from "next/script";
 
 export const metadata: Metadata = {
@@ -169,24 +170,7 @@ export default async function RootLayout({
             </div>
           </SessionProvider>
         </TRPCReactProvider>
-        <Script
-          id="gtag-base"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-CL7D21ZY78', {
-                page_path: window.location.pathname,
-              });
-            `
-          }}
-        />
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-CL7D21ZY78"
-          strategy="afterInteractive"
-        />
+        <GoogleAnalytics gaId="G-CL7D21ZY78" />
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1872574461230356"

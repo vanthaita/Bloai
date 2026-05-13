@@ -9,7 +9,7 @@ import { TrendingUp, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Prisma } from '@prisma/client';
 import { formatDate } from '@/lib/dateUtils';
-import { buildCldUrl } from '@/lib/cldUrl';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 type Blog = Prisma.BlogGetPayload<{
   include: {
@@ -31,8 +31,6 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
   if (!mainPost) return null;
 
   const sidePosts = posts.slice(1, 3);
-
-  const heroUrl = buildCldUrl(mainPost.imageUrl, 1200, 675, 'auto:eco');
 
   return (
     <section className="pt-24 pb-8 lg:pt-32 lg:pb-12 bg-white">
@@ -59,13 +57,12 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
             className="lg:col-span-8 group flex flex-col"
           >
             <div className="relative aspect-video lg:aspect-[16/9] mb-4 overflow-hidden bg-gray-100">
-              <Image
-                src={heroUrl}
+              <OptimizedImage
+                src={mainPost.imageUrl || ''}
                 alt={mainPost.title ?? 'Featured post'}
                 fill
                 className="object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
                 priority
-                fetchPriority="high"
                 sizes="(max-width: 1024px) 100vw, 66vw"
               />
             </div>
@@ -109,7 +106,6 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
           {/* Side Featured Posts — lazy loaded */}
           <div className="lg:col-span-4 flex flex-col gap-6">
             {sidePosts.map((post, index) => {
-              const sideUrl = buildCldUrl(post.imageUrl, 800, 450, 'auto:eco');
               return (
                 <Link
                   key={post.id}
@@ -119,12 +115,11 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
                   }`}
                 >
                   <div className="relative aspect-video sm:w-48 lg:w-full flex-shrink-0 overflow-hidden bg-gray-100">
-                    <Image
-                      src={sideUrl}
+                    <OptimizedImage
+                      src={post.imageUrl || ''}
                       alt={post.title ?? 'Featured post'}
                       fill
                       className="object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
-                      loading="lazy"
                       sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1024px) 192px, calc(33vw - 32px)"
                     />
                   </div>

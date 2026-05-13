@@ -2,8 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { buildCldUrl } from "@/lib/cldUrl";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import { FaUser, FaCalendarAlt } from "@/components/icons";
 
 
@@ -62,13 +61,12 @@ export function SearchResultItem({ result, searchTerm }: SearchResultItemProps) 
       <div className="flex items-start space-x-3">
         {result.imageUrl && (
           <div className="flex-shrink-0 w-16 h-16 relative border-[1.5px] border-black">
-            <Image
-              src={buildCldUrl(result.imageUrl, 64, 64, 'auto:eco')}
+            <OptimizedImage
+              src={result.imageUrl}
               alt={result.imageAlt || result.title}
               width={64}
               height={64}
               className="w-full h-full object-cover"
-              loading="lazy"
               sizes="64px"
             />
           </div>

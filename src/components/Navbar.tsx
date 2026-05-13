@@ -3,7 +3,6 @@
 import { useCurrentUser } from "@/hook/use-current-user";
 import Link from "next/link";
 import { FaSearch } from "@/components/icons";
-import { useIsMobile } from "@/hook/use-mobile";
 import { cn } from "@/lib/utils";
 import Logo from "@/components/logo";
 import Search from "./Search";
@@ -25,7 +24,6 @@ const NAV_LINKS = [
 
 const Navbar = () => {
   const user = useCurrentUser();
-  const isMobile = useIsMobile();
   const pathname = usePathname();
 
   return (
@@ -35,21 +33,18 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 min-[375px]:px-6 md:px-8 w-full flex items-center justify-between h-14 md:h-16">
           {/* Left: Search */}
           <div className="flex-1 flex items-center justify-start">
-            {!isMobile ? (
-              <div className="w-56">
-                <Search />
-              </div>
-            ) : (
-              <Link
-                href="/search"
-                className={cn(
-                  "flex items-center justify-center w-8 h-8 border border-black hover:bg-black hover:text-white transition-colors",
-                  pathname === "/search" && "bg-black text-white"
-                )}
-              >
-                <FaSearch className="w-3.5 h-3.5" aria-label="Search" />
-              </Link>
-            )}
+            <div className="hidden md:block w-56">
+              <Search />
+            </div>
+            <Link
+              href="/search"
+              className={cn(
+                "md:hidden flex items-center justify-center w-8 h-8 border border-black hover:bg-black hover:text-white transition-colors",
+                pathname === "/search" && "bg-black text-white"
+              )}
+            >
+              <FaSearch className="w-3.5 h-3.5" aria-label="Search" />
+            </Link>
           </div>
 
           {/* Center: Logo */}
@@ -77,27 +72,25 @@ const Navbar = () => {
       </div>
 
       {/* Bottom Tier: Category Navigation (Desktop) */}
-      {!isMobile && (
-        <div className="bg-white border-b border-black">
-          <nav
-            className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-center space-x-12 py-2.5"
-            aria-label="Category navigation"
-          >
-            {NAV_LINKS.map((item) => (
-              <Link
-                key={item.path}
-                href={item.path}
-                className={cn(
-                  "text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-black hover:underline underline-offset-[4px] decoration-1 transition-all",
-                  pathname === item.path && "underline"
-                )}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
+      <div className="hidden md:block bg-white border-b border-black">
+        <nav
+          className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-center space-x-12 py-2.5"
+          aria-label="Category navigation"
+        >
+          {NAV_LINKS.map((item) => (
+            <Link
+              key={item.path}
+              href={item.path}
+              className={cn(
+                "text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-black hover:underline underline-offset-[4px] decoration-1 transition-all",
+                pathname === item.path && "underline"
+              )}
+            >
+              {item.name}
+            </Link>
+          ))}
+        </nav>
+      </div>
 
       {/* News Ticker */}
       <NewsTicker />

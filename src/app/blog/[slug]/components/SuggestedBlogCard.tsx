@@ -1,18 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { SuggestedBlog } from '@/types/helper.type';
-import { buildCldUrl } from '@/lib/cldUrl';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 interface SuggestedBlogCardProps {
     post: SuggestedBlog;
 }
 
 const SuggestedBlogCard: React.FC<SuggestedBlogCardProps> = ({ post }) => {
-    const imgUrl = post.imageUrl
-        ? buildCldUrl(post.imageUrl, 750, 422, 'auto:eco')
-        : null;
-
     return (
         <article key={post.slug} className="group h-full border-[1.5px] border-black bg-white hover:-translate-y-1 transition-transform">
             <Link
@@ -20,16 +15,14 @@ const SuggestedBlogCard: React.FC<SuggestedBlogCardProps> = ({ post }) => {
                 className="flex flex-col h-full"
                 aria-label={`Đọc bài viết: ${post.title}`}
             >
-                {imgUrl && (
+                {post.imageUrl && (
                     <div className="w-full aspect-video relative border-b-[1.5px] border-black overflow-hidden bg-white">
-                        <Image
-                            src={imgUrl}
+                        <OptimizedImage
+                            src={post.imageUrl}
                             alt={post.imageAlt || `Thumbnail for ${post.title}`}
                             fill
                             className="object-cover transition-transform duration-500 group-hover:scale-105"
-                            loading="lazy"
                             sizes="(max-width: 480px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 24px), 400px"
-                            fetchPriority="low"
                         />
                     </div>
                 )}
