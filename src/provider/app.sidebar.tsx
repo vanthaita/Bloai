@@ -17,9 +17,9 @@ const AppSidebarProvider = ({ children }: { children: React.ReactNode }) => {
       ) : (
         <section className='flex flex-1'>
           <main className='flex-1'>
-            <div className='h-16 mb-4'>
-              <Navbar />
-            </div>
+            {/* Navbar is sticky; no explicit spacer needed — the navbar occupies
+                natural flow height before pinning, preventing a CLS mismatch. */}
+            <Navbar />
             {children}
             <Footer />
           </main>

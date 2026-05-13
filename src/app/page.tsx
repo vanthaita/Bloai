@@ -82,7 +82,7 @@ export default async function Home() {
                 )}
 
                 {/* All Blog Posts & Sidebar */}
-                <section className="max-w-7xl mx-auto w-full px-4 min-[375px]:px-6 md:px-8 py-10 lg:py-12">
+                <section className="cv-auto max-w-7xl mx-auto w-full px-4 min-[375px]:px-6 md:px-8 py-10 lg:py-12">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
                         {/* Main Content Area */}
                         <div className="lg:col-span-8 xl:col-span-9 flex flex-col">

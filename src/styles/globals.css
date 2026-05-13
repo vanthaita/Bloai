@@ -56,24 +56,12 @@
         --chart-5: 340 75% 55%;
     }
 }
-/* @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-  }
-} */
+/* content-visibility: skip rendering of off-screen sections — reduces
+   long main-thread tasks identified by the Lighthouse audit. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px; /* estimate to avoid layout shift */
+}
 
 html,
 body {

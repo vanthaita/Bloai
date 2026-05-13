@@ -139,10 +139,17 @@ export default async function RootLayout({
     <SessionProvider session={session}>
       <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
         <head>
+          {/* Resource hints: warm up connections before browser discovers assets */}
+          <link rel="preconnect" href="https://res.cloudinary.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+          <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+          <link rel="dns-prefetch" href="https://vercel.live" />
+          {/* AdSense: lazyOnload so it doesn't compete with LCP */}
           <Script
             async
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1872574461230356"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             crossOrigin="anonymous"
           ></Script>
           <script

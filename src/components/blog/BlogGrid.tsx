@@ -70,13 +70,12 @@ export function BlogGrid({ initialTag }: { initialTag?: string }) {
       params.set('page', newPage.toString());
     }
     router.push(`?${params.toString()}`, { scroll: false });
-    
+
+    // Use scrollIntoView instead of getBoundingClientRect+scrollTo to avoid
+    // forced reflow (a Lighthouse "long main-thread task" culprit).
     const element = document.getElementById('latest-news');
     if (element) {
-      const headerOffset = 100;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - headerOffset;
-      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }

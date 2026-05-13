@@ -1,7 +1,10 @@
-'use client';
+// Server Component — no 'use client' directive.
+// This allows Next.js to emit <link rel="preload"> for the LCP hero image
+// in the server-rendered HTML, fixing the "LCP request discovery" audit.
 
 import React from 'react';
-import { CldImage } from 'next-cloudinary';
+import Image from 'next/image';
+import { getCldImageUrl } from 'next-cloudinary';
 import { FaEye, FaBookOpen, FaClock } from 'react-icons/fa';
 import { TrendingUp, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -18,13 +21,42 @@ interface FeaturedPostsProps {
   posts: Blog[];
 }
 
+/**
+ * Build a Cloudinary-optimised URL from either a public ID or an already-full URL.
+ * Falls back to a placeholder if src is empty.
+ */
+function buildCldUrl(
+  src: string | null | undefined,
+  width: number,
+  height: number,
+  quality = 'auto:good',
+): string {
+  if (!src) {
+    return `https://res.cloudinary.com/dq2z27agv/image/upload/w_${width},h_${height},c_fill,g_auto,q_auto,f_webp/default-placeholder`;
+  }
+  // If it's already a full URL (from another CDN / Unsplash etc.) return as-is
+  if (src.startsWith('http')) return src;
+  // Cloudinary public ID → construct optimised URL
+  return getCldImageUrl({
+    src,
+    width,
+    height,
+    crop: 'fill',
+    gravity: 'auto',
+    quality,
+    format: 'webp',
+  });
+}
+
 export function FeaturedPosts({ posts }: FeaturedPostsProps) {
   if (!posts || posts.length === 0) return null;
 
   const mainPost = posts[0];
   if (!mainPost) return null;
-  
+
   const sidePosts = posts.slice(1, 3);
+
+  const heroUrl = buildCldUrl(mainPost.imageUrl, 1200, 750, 'auto:best');
 
   return (
     <section className="pt-24 pb-8 lg:pt-32 lg:pb-12 bg-white">
@@ -45,27 +77,24 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
 
         {/* Featured Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Main Featured Post */}
+          {/* Main Featured Post — LCP candidate */}
           <Link
             href={`/blog/${mainPost.slug}`}
             className="lg:col-span-8 group flex flex-col"
           >
             <div className="relative aspect-video lg:aspect-[16/9] mb-4 overflow-hidden bg-gray-100">
-              <CldImage
-                width={800}
-                height={500}
-                src={mainPost.imageUrl ?? 'default-placeholder'}
+              <Image
+                src={heroUrl}
                 alt={mainPost.title ?? 'Featured post'}
-                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
-                loading="eager"
+                fill
+                className="object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
+                // priority tells Next.js to emit <link rel="preload"> in <head>
+                // and adds fetchpriority="high" — the key LCP request-discovery fix
+                priority
                 sizes="(max-width: 1024px) 100vw, 66vw"
-                crop="fill"
-                gravity="auto"
-                quality="auto:best"
-                format="webp"
               />
             </div>
-            
+
             <div className="flex flex-col flex-grow">
               <div className="flex items-center gap-4 mb-3 text-xs font-bold uppercase tracking-wider">
                 <div className="flex gap-2 text-black">
@@ -75,19 +104,19 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
                 </div>
                 <div className="text-gray-500 font-medium">
                   {new Date(mainPost.publishDate).toLocaleDateString('en-US', {
-                    year: 'numeric', month: 'short', day: 'numeric'
+                    year: 'numeric', month: 'short', day: 'numeric',
                   })}
                 </div>
               </div>
-              
+
               <h3 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 group-hover:underline transition-all line-clamp-3 leading-tight text-black">
                 {mainPost.title}
               </h3>
-              
+
               <p className="text-gray-700 text-base lg:text-lg mb-6 line-clamp-3">
                 {mainPost.metaDescription || 'Khám phá nội dung thú vị trong bài viết này...'}
               </p>
-              
+
               <div className="mt-auto flex items-center gap-4 text-sm font-medium text-gray-500 pt-4 border-t border-gray-200">
                 {mainPost.author && (
                   <span className="text-gray-900">{mainPost.author.name}</span>
@@ -104,59 +133,58 @@ export function FeaturedPosts({ posts }: FeaturedPostsProps) {
             </div>
           </Link>
 
-          {/* Side Featured Posts */}
+          {/* Side Featured Posts — lazy loaded */}
           <div className="lg:col-span-4 flex flex-col gap-6">
-            {sidePosts.map((post, index) => (
-              <Link
-                key={post.id}
-                href={`/blog/${post.slug}`}
-                className={`group flex flex-col sm:flex-row lg:flex-col gap-4 pb-6 ${
-                  index !== sidePosts.length - 1 ? 'border-b border-gray-200' : ''
-                }`}
-              >
-                <div className="relative aspect-video sm:w-48 lg:w-full flex-shrink-0 overflow-hidden bg-gray-100">
-                  <CldImage
-                    width={400}
-                    height={250}
-                    src={post.imageUrl ?? 'default-placeholder'}
-                    alt={post.title ?? 'Featured post'}
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
-                    loading="lazy"
-                    crop="fill"
-                    gravity="auto"
-                    quality="auto:good"
-                    format="webp"
-                  />
-                </div>
-                
-                <div className="flex-1 flex flex-col justify-center">
-                  <div className="flex items-center gap-3 mb-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
-                    <span className="text-black">
-                      {post.tags[0]?.name}
-                    </span>
-                    <span className="text-gray-500 font-medium">
-                      {new Date(post.publishDate).toLocaleDateString('en-US', {
-                        month: 'short', day: 'numeric'
-                      })}
-                    </span>
+            {sidePosts.map((post, index) => {
+              const sideUrl = buildCldUrl(post.imageUrl, 600, 375, 'auto:good');
+              return (
+                <Link
+                  key={post.id}
+                  href={`/blog/${post.slug}`}
+                  className={`group flex flex-col sm:flex-row lg:flex-col gap-4 pb-6 ${
+                    index !== sidePosts.length - 1 ? 'border-b border-gray-200' : ''
+                  }`}
+                >
+                  <div className="relative aspect-video sm:w-48 lg:w-full flex-shrink-0 overflow-hidden bg-gray-100">
+                    <Image
+                      src={sideUrl}
+                      alt={post.title ?? 'Featured post'}
+                      fill
+                      className="object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
+                      loading="lazy"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 192px, 33vw"
+                    />
                   </div>
-                  
-                  <h4 className="text-lg sm:text-xl font-bold text-black group-hover:underline transition-all line-clamp-3 mb-3 leading-snug">
-                    {post.title}
-                  </h4>
-                  
-                  <div className="mt-auto flex items-center gap-3 text-xs text-gray-500 font-medium">
-                    {post.author && (
-                      <span className="text-gray-800">{post.author.name}</span>
-                    )}
-                    <span className="flex items-center gap-1">
-                      <FaClock className="h-3 w-3" />
-                      {post.readTime} min
-                    </span>
+
+                  <div className="flex-1 flex flex-col justify-center">
+                    <div className="flex items-center gap-3 mb-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
+                      <span className="text-black">
+                        {post.tags[0]?.name}
+                      </span>
+                      <span className="text-gray-500 font-medium">
+                        {new Date(post.publishDate).toLocaleDateString('en-US', {
+                          month: 'short', day: 'numeric',
+                        })}
+                      </span>
+                    </div>
+
+                    <h4 className="text-lg sm:text-xl font-bold text-black group-hover:underline transition-all line-clamp-3 mb-3 leading-snug">
+                      {post.title}
+                    </h4>
+
+                    <div className="mt-auto flex items-center gap-3 text-xs text-gray-500 font-medium">
+                      {post.author && (
+                        <span className="text-gray-800">{post.author.name}</span>
+                      )}
+                      <span className="flex items-center gap-1">
+                        <FaClock className="h-3 w-3" />
+                        {post.readTime} min
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

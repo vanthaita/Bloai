@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { motion } from "motion/react";
 import React, { HTMLAttributes, useCallback, useMemo } from "react";
 
 interface WarpBackgroundProps extends HTMLAttributes<HTMLDivElement> {
@@ -30,7 +29,7 @@ const Beam = ({
   const ar = Math.floor(Math.random() * 10) + 1;
 
   return (
-    <motion.div
+    <div
       style={
         {
           "--x": `${x}`,
@@ -40,14 +39,6 @@ const Beam = ({
         } as React.CSSProperties
       }
       className={`absolute left-[var(--x)] top-0 [aspect-ratio:1/var(--aspect-ratio)] [background:var(--background)] [width:var(--width)]`}
-      initial={{ y: "100cqmax", x: "-50%" }}
-      animate={{ y: "-100%", x: "-50%" }}
-      transition={{
-        duration,
-        delay,
-        repeat: Infinity,
-        ease: "linear",
-      }}
     />
   );
 };

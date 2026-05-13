@@ -40,9 +40,9 @@ export function BlogCard({ blog, onClick, isNavigating, priority = false }: Blog
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
             crop="fill"
             gravity="auto"
-            quality="auto:best"
+            quality={priority ? "auto:good" : "auto:eco"}
             format="webp"
-            dpr="auto" 
+            dpr="auto"
           />
         </div>
 
