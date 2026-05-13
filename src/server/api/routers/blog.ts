@@ -5,7 +5,7 @@ import { Prisma } from "@prisma/client";
 import { Resend } from "resend";
 import { sendBlogNotifications, sendConfirmationEmail } from "@/lib/notifySubscribers";
 import { revalidateTag } from "next/cache";
-import { getCachedData, CACHE_TTL, redis } from "@/lib/redis";
+import { getCachedData, CACHE_TTL, redis, invalidatePatterns, incrementViewInRedis, getViewFromRedis } from "@/lib/redis";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -192,11 +192,11 @@ export const blogRouter = createTRPCRouter({
           });
         }
 
-        if (redis) {
-          await redis.del('blogs:all:*');
-          await redis.del('tags:all:*');
-          await redis.del('leaderboard:*');
-        }
+        await invalidatePatterns([
+          'blogs:all:*',
+          'tags:all:*',
+          'leaderboard:*',
+        ]);
 
         revalidateTag("blog");
 
@@ -298,13 +298,14 @@ export const blogRouter = createTRPCRouter({
           timeout: 10000,
         });
 
-        if (redis) {
-          await redis.del(`blog:${input.slug}`);
-          await redis.del('blogs:all:*');
-          await redis.del('blogs:tag:*');
-          await redis.del('tags:all:*');
-          await redis.del('leaderboard:*');
-        }
+        await invalidatePatterns([
+          `blog:${input.slug}`,
+          'blogs:all:*',
+          'blogs:tag:*',
+          'tags:all:*',
+          'leaderboard:*',
+          `suggested:*`,
+        ]);
 
         revalidateTag("blog");
 
@@ -514,68 +515,74 @@ export const blogRouter = createTRPCRouter({
       }))
     .query(async ({ ctx, input }) => {
       try {
-        const currentBlog = await ctx.db.blog.findUnique({
-          where: { slug: input.slug },
-          select: { tags: { select: { id: true } } }
-        });
+        return getCachedData(
+          `suggested:${input.slug}:${input.limit}`,
+          async () => {
+            const currentBlog = await ctx.db.blog.findUnique({
+              where: { slug: input.slug },
+              select: { tags: { select: { id: true } } }
+            });
 
-        if (!currentBlog) {
-          throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
-        }
-
-        const currentTagIds = currentBlog.tags.map(tag => tag.id);
-        let suggestedBlogs;
-
-        if (currentTagIds.length === 0) {
-          suggestedBlogs = await ctx.db.blog.findMany({
-            where: { slug: { not: input.slug } },
-            take: input.limit,
-            orderBy: { publishDate: 'desc' },
-            select: { 
-              slug: true,
-              title: true,
-              imageUrl: true,
-              imageAlt: true,
-              publishDate: true,
-              readTime: true,
-              metaDescription: true,
-              author: { select: { name: true, image: true } },
-              tags: { select: { name: true } }
+            if (!currentBlog) {
+              throw new TRPCError({ code: "NOT_FOUND", message: "Blog not found" });
             }
-          });
-        } else {
-          suggestedBlogs = await ctx.db.$queryRaw`
-          SELECT 
-            b."slug",
-            b."title",
-            b."imageUrl",
-            b."imageAlt",
-            b."publishDate",
-            b."readTime",
-            b."metaDescription",
-            json_build_object('name', a."name", 'image', a."image") as author,
-            COALESCE(
-              json_agg(json_build_object('name', t."name")) 
-              FILTER (WHERE t."id" IS NOT NULL), 
-              '[]'::json
-            ) as tags
-          FROM "Blog" b
-          INNER JOIN "User" a ON b."authorId" = a."id" 
-          LEFT JOIN "_BlogToTag" bt ON b."id" = bt."A"  
-          LEFT JOIN "Tag" t ON bt."B" = t."id"         
-          LEFT JOIN "_BlogToTag" bt_overlap 
-            ON b."id" = bt_overlap."A" 
-            AND bt_overlap."B" IN (${Prisma.join(currentTagIds)})  
-          WHERE b."slug" != ${input.slug}
-          GROUP BY b."id", a."id"
-          ORDER BY 
-            COUNT(bt_overlap."B") DESC, 
-            b."publishDate" DESC
-          LIMIT ${input.limit};
-        `;
-        }
 
-        return suggestedBlogs;
+            const currentTagIds = currentBlog.tags.map(tag => tag.id);
+            let suggestedBlogs;
+
+            if (currentTagIds.length === 0) {
+              suggestedBlogs = await ctx.db.blog.findMany({
+                where: { slug: { not: input.slug } },
+                take: input.limit,
+                orderBy: { publishDate: 'desc' },
+                select: { 
+                  slug: true,
+                  title: true,
+                  imageUrl: true,
+                  imageAlt: true,
+                  publishDate: true,
+                  readTime: true,
+                  metaDescription: true,
+                  author: { select: { name: true, image: true } },
+                  tags: { select: { name: true } }
+                }
+              });
+            } else {
+              suggestedBlogs = await ctx.db.$queryRaw`
+              SELECT 
+                b."slug",
+                b."title",
+                b."imageUrl",
+                b."imageAlt",
+                b."publishDate",
+                b."readTime",
+                b."metaDescription",
+                json_build_object('name', a."name", 'image', a."image") as author,
+                COALESCE(
+                  json_agg(json_build_object('name', t."name")) 
+                  FILTER (WHERE t."id" IS NOT NULL), 
+                  '[]'::json
+                ) as tags
+              FROM "Blog" b
+              INNER JOIN "User" a ON b."authorId" = a."id" 
+              LEFT JOIN "_BlogToTag" bt ON b."id" = bt."A"  
+              LEFT JOIN "Tag" t ON bt."B" = t."id"         
+              LEFT JOIN "_BlogToTag" bt_overlap 
+                ON b."id" = bt_overlap."A" 
+                AND bt_overlap."B" IN (${Prisma.join(currentTagIds)})  
+              WHERE b."slug" != ${input.slug}
+              GROUP BY b."id", a."id"
+              ORDER BY 
+                COUNT(bt_overlap."B") DESC, 
+                b."publishDate" DESC
+              LIMIT ${input.limit};
+            `;
+            }
+
+            return suggestedBlogs;
+          },
+          CACHE_TTL.SUGGESTED
+        );
       } catch (error) {
         if (error instanceof TRPCError) {
           throw error;
@@ -591,35 +598,41 @@ export const blogRouter = createTRPCRouter({
     .input(z.object({ slug: z.string() }))
     .query(async ({ input, ctx }) => {
       const decodedSlug = decodeURIComponent(input.slug)
-      const tag = await ctx.db.tag.findFirst({
-        where: { name: decodedSlug },
-        include: {
-          blogs: {
-            select: {
-              id: true,
-              title: true,
-              slug: true,
-              metaDescription: true,
-              imageUrl: true,
-              imageAlt: true,
-              publishDate: true,
-              readTime: true,
-              author: true,
-              tags: true,
+      return getCachedData(
+        `tag:detail:${decodedSlug}`,
+        async () => {
+          const tag = await ctx.db.tag.findFirst({
+            where: { name: decodedSlug },
+            include: {
+              blogs: {
+                select: {
+                  id: true,
+                  title: true,
+                  slug: true,
+                  metaDescription: true,
+                  imageUrl: true,
+                  imageAlt: true,
+                  publishDate: true,
+                  readTime: true,
+                  author: true,
+                  tags: true,
+                },
+                orderBy: { publishDate: 'desc' },
+              },
             },
-            orderBy: { publishDate: 'desc' },
-          },
+          })
+
+          if (!tag) {
+            throw new TRPCError({
+              code: 'NOT_FOUND',
+              message: 'Tag not found',
+            })
+          }
+
+          return tag
         },
-      })
-
-      if (!tag) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Tag not found',
-        })
-      }
-
-      return tag
+        CACHE_TTL.TAG_DETAIL
+      )
     }),
 
 
@@ -633,56 +646,60 @@ export const blogRouter = createTRPCRouter({
   }))
   .query(async ({ ctx, input }) => {
     try {
-      const whereClause: Prisma.BlogWhereInput = {
-        OR: [
-          { title: { contains: input.searchTerm, mode: 'insensitive' } },
-          // { content: { contains: input.searchTerm, mode: 'insensitive' } },
-          { tags: { some: { name: { contains: input.searchTerm, mode: 'insensitive' } } } },
-          // { keywords: { has: input.searchTerm } } 
-        ],
-        ...(input.slug && { slug: { contains: input.slug, mode: 'insensitive' } })
-      };
-      const skipValue = (input.page - 1) * input.limit;
-      const [results, totalCount] = await ctx.db.$transaction([
-        ctx.db.blog.findMany({
-          where: whereClause,
-          select: { 
-            id: true,
-            title: true,
-            slug: true,
-            metaDescription: true, 
-            imageUrl: true,
-            imageAlt: true,
-            publishDate: true,
-            author: { 
-              select: {
+      const cacheKey = `search:${input.searchTerm}:${input.slug ?? ''}:${input.page}:${input.limit}`;
+      return getCachedData(
+        cacheKey,
+        async () => {
+          const whereClause: Prisma.BlogWhereInput = {
+            OR: [
+              { title: { contains: input.searchTerm, mode: 'insensitive' } },
+              // { content: { contains: input.searchTerm, mode: 'insensitive' } },
+              { tags: { some: { name: { contains: input.searchTerm, mode: 'insensitive' } } } },
+              // { keywords: { has: input.searchTerm } } 
+            ],
+            ...(input.slug && { slug: { contains: input.slug, mode: 'insensitive' } })
+          };
+          const skipValue = (input.page - 1) * input.limit;
+          const [results, totalCount] = await ctx.db.$transaction([
+            ctx.db.blog.findMany({
+              where: whereClause,
+              select: { 
                 id: true,
-                name: true,
-                image: true
-              }
-            },
-            tags: { 
-              select: {
-                id: true,
-                name: true
-              }
-            },
-          },
-          orderBy: {
-            publishDate: 'desc'
-          },
-          take: input.limit,
-          skip: skipValue,
-        }),
-        ctx.db.blog.count({ where: whereClause })
-      ]);
-      return {
-        results,
-        totalCount,
-        currentPage: input.page,
-        totalPages: Math.ceil(totalCount / input.limit),
-      };
-
+                title: true,
+                slug: true,
+                metaDescription: true, 
+                imageUrl: true,
+                imageAlt: true,
+                publishDate: true,
+                author: { 
+                  select: {
+                    id: true,
+                    name: true,
+                    image: true
+                  }
+                },
+                tags: { 
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                },
+              },
+              orderBy: { publishDate: 'desc' },
+              take: input.limit,
+              skip: skipValue,
+            }),
+            ctx.db.blog.count({ where: whereClause })
+          ]);
+          return {
+            results,
+            totalCount,
+            currentPage: input.page,
+            totalPages: Math.ceil(totalCount / input.limit),
+          };
+        },
+        CACHE_TTL.SEARCH
+      );
     } catch (error) {
       console.error('Error in fullTextSearch:', error);
       if (error instanceof TRPCError) {
@@ -701,27 +718,50 @@ export const blogRouter = createTRPCRouter({
     .input(z.object({ slug: z.string() }))
     .mutation(async ({ input, ctx }) => { 
       const decodedSlug = decodeURIComponent(input.slug);
+
+      // 1. Tăng nhanh trong Redis (non-blocking với DB)
+      const redisCount = await incrementViewInRedis(decodedSlug);
+
+      // 2. Đồng bộ về DB bất đồng bộ (không block response)
+      setImmediate(async () => {
+        try {
+          const blog = await ctx.db.blog.findUnique({
+            where: { slug: decodedSlug },
+            select: { id: true, views: true },
+          });
+          if (blog) {
+            await ctx.db.blog.update({
+              where: { id: blog.id },
+              data: { views: blog.views + 1 },
+            });
+          }
+        } catch (e) {
+          console.error('[viewCount] DB sync failed:', e);
+        }
+      });
+
+      // 3. Trả về ngay từ Redis (nếu có) hoặc fallback DB
+      if (redisCount !== null) return redisCount;
+
       const blog = await ctx.db.blog.findUnique({
         where: { slug: decodedSlug },
-        select: { id: true, views: true }
+        select: { views: true },
       });
-
-      if (!blog) throw new Error("Blog not found");
-
-      const updateBlog = await ctx.db.blog.update({
-        where: { id: blog.id },
-        data: { views: blog.views + 1 },
-        select: { views: true }
-      });
-      
-      return updateBlog.views;
+      return (blog?.views ?? 0) + 1;
   }),
 
   getViews: publicProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ input, ctx }) => {
+      const decodedSlug = decodeURIComponent(input.slug);
+
+      // Thử Redis trước (realtime counter)
+      const redisViews = await getViewFromRedis(decodedSlug);
+      if (redisViews !== null) return redisViews;
+
+      // Fallback về DB
       const blog = await ctx.db.blog.findUnique({
-        where: { slug: decodeURIComponent(input.slug) },
+        where: { slug: decodedSlug },
         select: { views: true }
       });
       return blog?.views ?? 0;
@@ -831,9 +871,7 @@ export const blogRouter = createTRPCRouter({
       },
     })
     
-    if (redis) {
-      await redis.del(`blog:${input.slug}`);
-    }
+    await invalidatePatterns([`blog:${input.slug}`]);
     
     revalidateTag("blog");
     
@@ -842,14 +880,14 @@ export const blogRouter = createTRPCRouter({
   listBySlug: publicProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ input, ctx }) => {
-      return ctx.db.comment.findMany({
-        where: { 
-          blog: {
-            slug: input.slug
-          }
-        },
-        include: { author: true },
-        orderBy: { createdAt: 'desc' },
-      })
+      return getCachedData(
+        `comments:${input.slug}`,
+        async () => ctx.db.comment.findMany({
+          where: { blog: { slug: input.slug } },
+          include: { author: true },
+          orderBy: { createdAt: 'desc' },
+        }),
+        CACHE_TTL.COMMENTS
+      );
   }),
 });
