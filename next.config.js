@@ -23,7 +23,8 @@ const config = {
       '@radix-ui/react-tabs',
       '@radix-ui/react-tooltip',
       'react-toastify',
-      '@tanstack/react-query',
+      // NOTE: @tanstack/react-query intentionally excluded — it is not a barrel-export
+      // package and including it here can break QueryClientProvider initialization order.
     ],
     webpackBuildWorker: true,
     parallelServerCompiles: true,
@@ -32,7 +33,6 @@ const config = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  swcMinify: true,
   reactStrictMode: true,
   poweredByHeader: false,
   images: {

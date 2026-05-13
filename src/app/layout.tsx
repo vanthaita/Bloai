@@ -80,10 +80,9 @@ export const metadata: Metadata = {
 const inter = Inter({
   subsets: ['vietnamese'],
   variable: '--font-inter',
-  // 'optional' = browser uses fallback if font not cached; no mid-paint swap → zero font CLS
   display: 'optional',
   preload: true,
-  adjustFontFallback: true, // auto-adjusts fallback metrics to minimize layout shift
+  adjustFontFallback: true,
 });
 
 const websiteSchema = {
@@ -133,66 +132,68 @@ const breadcrumbSchema = {
   ]
 };
 
+const isVercel = !!process.env.VERCEL_URL || process.env.NODE_ENV === 'production';
+
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await auth();
   return (
-    <SessionProvider session={session}>
-      <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
-        <head>
-          <link rel="preconnect" href="https://res.cloudinary.com" />
-          <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
-          />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }}
-          />
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
-          />
-        </head>
-        <body className="bg-gray-50" suppressHydrationWarning>
-          <TRPCReactProvider>
+    <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
+        />
+      </head>
+      <body className="bg-gray-50" suppressHydrationWarning>
+        <TRPCReactProvider>
+          <SessionProvider session={session}>
             <div id="app-root">
               <AppSidebarProvider>
                 {children}
                 <ToastContainer position="bottom-right" />
-                <Analytics />
-                <SpeedInsights />
+                {isVercel && <Analytics />}
+                {isVercel && <SpeedInsights />}
               </AppSidebarProvider>
             </div>
-          </TRPCReactProvider>
-          <Script
-            id="gtag-base"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-CL7D21ZY78', {
-                  page_path: window.location.pathname,
-                });
-              `
-            }}
-          />
-          <Script
-            src="https://www.googletagmanager.com/gtag/js?id=G-CL7D21ZY78"
-            strategy="afterInteractive"
-          />
-          <Script
-            async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1872574461230356"
-            strategy="lazyOnload"
-            crossOrigin="anonymous"
-          />
-        </body>
-      </html>
-    </SessionProvider>
+          </SessionProvider>
+        </TRPCReactProvider>
+        <Script
+          id="gtag-base"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-CL7D21ZY78', {
+                page_path: window.location.pathname,
+              });
+            `
+          }}
+        />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-CL7D21ZY78"
+          strategy="afterInteractive"
+        />
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1872574461230356"
+          strategy="lazyOnload"
+          crossOrigin="anonymous"
+        />
+      </body>
+    </html>
   );
 }
