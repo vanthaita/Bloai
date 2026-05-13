@@ -3,10 +3,12 @@ import { api } from '@/trpc/react';
 import Link from 'next/link';
 
 export function NewsTicker() {
-  const { data } = api.blog.getAllBlog.useQuery({ limit: 5 });
+  const { data, isLoading } = api.blog.getAllBlog.useQuery({ limit: 5 });
   const blogs = data?.blogs || [];
 
-  if (blogs.length === 0) return null;
+  if (isLoading || blogs.length === 0) {
+    return <div className="bg-black h-8 w-full" />;
+  }
 
   return (
     <div className="bg-black text-white flex overflow-hidden whitespace-nowrap text-xs font-bold uppercase tracking-wider">
