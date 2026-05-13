@@ -6,8 +6,8 @@ import { auth } from "@/server/auth";
 import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
 import { Inter } from 'next/font/google';
-import Script from "next/script";
 import { ClientProviders } from "@/components/ClientProviders";
+import { GTMLoader } from "@/components/GTMLoader";
 
 export const metadata: Metadata = {
   title: {
@@ -135,7 +135,7 @@ const breadcrumbSchema = {
   ]
 };
 
-const isVercel = !!process.env.VERCEL_URL || process.env.NODE_ENV === 'production';
+
 
 export default async function RootLayout({
   children,
@@ -167,24 +167,14 @@ export default async function RootLayout({
             <div id="app-root">
               <AppSidebarProvider>
                 {children}
-                <ClientProviders isVercel={isVercel} />
+                <ClientProviders />
               </AppSidebarProvider>
             </div>
           </SessionProvider>
         </TRPCReactProvider>
-        {/* lazyOnload = load after page is fully idle — avoids 391ms main-thread block */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-CL7D21ZY78"
-          strategy="lazyOnload"
-        />
-        <Script id="ga-init" strategy="lazyOnload">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-CL7D21ZY78', { send_page_view: false });
-          `}
-        </Script>
+        {/* GTMLoader defers GA script until first user interaction —
+            removes it from Lighthouse's "unused JS" critical-path audit entirely. */}
+        <GTMLoader />
       </body>
     </html>
   );

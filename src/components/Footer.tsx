@@ -11,7 +11,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-white text-black border-t-2 border-black mt-12 max-w-[100vw] overflow-x-hidden">
+    <footer className="footer-stable bg-white text-black border-t-2 border-black mt-12 max-w-[100vw] overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Main Footer Content - Newspaper Grid Style */}
         <div className="grid grid-cols-1 md:grid-cols-12 border-b border-black">

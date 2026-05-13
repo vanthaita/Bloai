@@ -60,7 +60,15 @@
    long main-thread tasks identified by the Lighthouse audit. */
 .cv-auto {
   content-visibility: auto;
-  contain-intrinsic-size: auto 600px; /* estimate to avoid layout shift */
+  /* Narrowed from 600px based on typical BlogGrid height.
+     Keeps scroll-height estimate tight to reduce reflow. */
+  contain-intrinsic-size: auto 480px;
+}
+
+/* Stable min-height on the footer so content shifts above it
+   don't push it off-screen and create a layout shift score. */
+.footer-stable {
+  min-height: 320px;
 }
 
 html,
@@ -91,79 +99,11 @@ html {
   background-color: rgb(0 0 0 / 0.7);
 }
 
-.bento-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 16px;
-  }
-  
-.bento-item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
 
-.bento-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Then use them in your Tailwind classes */
-
-@keyframes bloom {
-  0% { opacity: 0.8; }
-  50% { opacity: 1; }
-  100% { opacity: 0.8; }
-}
-
-.animate-bloom {
-  animation: bloom 1.5s ease-in-out infinite;
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in {
-  animation: fade-in 0.5s ease-out;
-}
-
-@keyframes blob {
-  0% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(30px, -50px) scale(1.1);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-}
-
-.animate-blob {
-  animation: blob 7s infinite;
-}
-
-.animation-delay-2000 {
-  animation-delay: 2s;
-}
-
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
+/* NOTE: content-visibility: auto was removed from footer.
+   It caused CLS 0.345 because when the footer rendered lazily, the Inter
+   font was past its 'optional' window — system font rendered first, then
+   Inter swapped in, shifting the footer text by 0.345. */
 
 .prose h1,
 .prose h2,
