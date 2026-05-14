@@ -57,13 +57,14 @@ const HeroSection: React.FC = () => {
           <div className="flex flex-col items-center">
             <div className="flex -space-x-2 overflow-hidden mb-3">
               {[1, 2, 3, 4, 5].map((i) => (
-                <img 
+                <Image 
                   key={i}
                   className="inline-block h-10 w-10 rounded-full ring-2 ring-white"
                   src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i+20}.jpg`}
                   alt="User avatar"
                   width={40}
                   height={40}
+                  unoptimized={false}
                 />
               ))}
             </div>

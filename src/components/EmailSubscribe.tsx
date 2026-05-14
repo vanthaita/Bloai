@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Mail, ArrowRight } from 'lucide-react';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { api } from '@/trpc/react';
 
 interface EmailSubscribeSectionProps {

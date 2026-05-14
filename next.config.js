@@ -38,6 +38,7 @@ const config = {
   },
   reactStrictMode: true,
   poweredByHeader: false,
+  compress: true,
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -50,6 +51,7 @@ const config = {
       { protocol: 'https', hostname: 'i.imgur.com' },
       { protocol: 'https', hostname: 'miro.medium.com' },
       { protocol: 'https', hostname: 'placeholder.com' },
+      { protocol: 'https', hostname: 'randomuser.me' },
     ],
     minimumCacheTTL: 31536000,
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
@@ -69,13 +71,13 @@ const config = {
       {
         source: '/images/:path*',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' },
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
       {
         source: '/favicon.ico',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=86400' },
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
       {

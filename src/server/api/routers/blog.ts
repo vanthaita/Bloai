@@ -6,6 +6,7 @@ import { Resend } from "resend";
 import { sendBlogNotifications, sendConfirmationEmail } from "@/lib/notifySubscribers";
 import { revalidateTag } from "next/cache";
 import { getCachedData, CACHE_TTL, redis, invalidatePatterns, incrementViewInRedis, getViewFromRedis } from "@/lib/redis";
+import { auth } from "@/server/auth";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -843,7 +844,8 @@ export const blogRouter = createTRPCRouter({
     email: z.string().email().optional(), 
   }))
   .mutation(async ({ input, ctx }) => {
-    if (!ctx.session?.user && (!input.name || !input.email)) {
+    const session = await auth();
+    if (!session?.user && (!input.name || !input.email)) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
         message: 'Name and email are required for guest comments',
@@ -857,8 +859,8 @@ export const blogRouter = createTRPCRouter({
             slug: input.slug
           }
         },
-        author: ctx.session?.user
-          ? { connect: { id: ctx.session.user.id } }
+        author: session?.user
+          ? { connect: { id: session.user.id } }
           : {
               create: {
                 name: input.name!,

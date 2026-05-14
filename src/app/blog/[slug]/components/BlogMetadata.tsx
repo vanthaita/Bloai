@@ -89,7 +89,6 @@ const BlogMetadata: React.FC<BlogMetadataProps> = ({ blog, suggestedBlogs }) => 
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
                 />
             )}
-            <link rel="preconnect" href="https://res.cloudinary.com" />
             {suggestedBlogs?.map(post => (
                 <link key={`prefetch-${post.slug}`} rel="prefetch" href={`/blog/${post.slug}`} as="document" />
             ))}

@@ -3,6 +3,7 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { revalidateTag } from "next/cache";
 import { getCachedData, CACHE_TTL, invalidatePatterns } from "@/lib/redis";
+import { auth } from "@/server/auth";
 
 export const commentsRouter = createTRPCRouter({
   addComment: publicProcedure
@@ -15,7 +16,8 @@ export const commentsRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.session?.user && (!input.name || !input.email)) {
+      const session = await auth();
+      if (!session?.user && (!input.name || !input.email)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Name and email are required for guest comments",
@@ -26,8 +28,8 @@ export const commentsRouter = createTRPCRouter({
         data: {
           content: input.content,
           blog: { connect: { slug: input.slug } },
-          author: ctx.session?.user
-            ? { connect: { id: ctx.session.user.id } }
+          author: session?.user
+            ? { connect: { id: session.user.id } }
             : { create: { name: input.name!, email: input.email! } },
         },
         include: { author: true },

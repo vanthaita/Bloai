@@ -6,75 +6,41 @@
  * Google brand icon is not in lucide — provided as a tiny inline SVG component.
  */
 import React from 'react';
-import {
-  Search,
-  User,
-  LogOut,
-  PenLine,
-  Home,
-  Calendar,
-  Github,
-  Facebook,
-  Youtube,
-  Lightbulb,
-  Users,
-  ShieldCheck,
-  Wand2,
-  ArrowLeft,
-  AlertTriangle,
-  ArrowUp,
-  Twitter,
-  Linkedin,
-  Eye,
-  BookOpen,
-  Clock,
-  HelpCircle,
-  ArrowRight,
-  Mail,
-  ChevronDown,
-  Bot,
-  Brain,
-  Code2,
-  TrendingUp,
-  Heart,
-  Book,
-  Loader2,
+export {
+  Search as FaSearch,
+  User as FaUser,
+  LogOut as FaSignOutAlt,
+  PenLine as FaPenAlt,
+  Home as FaHome,
+  Calendar as FaCalendarAlt,
+  Github as FaGithub,
+  Facebook as FaFacebook,
+  Youtube as FaYoutube,
+  Lightbulb as FaRegLightbulb,
+  Users as FaUsers,
+  ShieldCheck as FaShieldAlt,
+  Wand2 as FaMagic,
+  ArrowLeft as FaArrowLeft,
+  AlertTriangle as FaExclamationTriangle,
+  ArrowUp as FaArrowUp,
+  Twitter as FaTwitter,
+  Twitter as FaXTwitter,
+  Linkedin as FaLinkedin,
+  Eye as FaEye,
+  BookOpen as FaBookOpen,
+  Clock as FaClock,
+  HelpCircle as FaQuestionCircle,
+  ArrowRight as FaArrowRight,
+  Mail as FaEnvelope,
+  ChevronDown as FaChevronDown,
+  Bot as FaRobot,
+  Brain as FaBrain,
+  Code2 as FaCode,
+  TrendingUp as FaChartLine,
+  Heart as FaHeart,
+  Book as FaBook,
+  Loader2 as FiLoader,
 } from 'lucide-react';
-
-// ── Aliases (react-icons/fa names → lucide components) ──────────────────────
-export const FaSearch           = Search;
-export const FaUser             = User;
-export const FaSignOutAlt       = LogOut;
-export const FaPenAlt           = PenLine;
-export const FaHome             = Home;
-export const FaCalendarAlt      = Calendar;
-export const FaGithub           = Github;
-export const FaFacebook         = Facebook;
-export const FaYoutube          = Youtube;
-export const FaRegLightbulb     = Lightbulb;
-export const FaUsers            = Users;
-export const FaShieldAlt        = ShieldCheck;
-export const FaMagic            = Wand2;
-export const FaArrowLeft        = ArrowLeft;
-export const FaExclamationTriangle = AlertTriangle;
-export const FaArrowUp          = ArrowUp;
-export const FaTwitter          = Twitter;
-export const FaXTwitter         = Twitter;   // X / Twitter rebrand
-export const FaLinkedin         = Linkedin;
-export const FaEye              = Eye;
-export const FaBookOpen         = BookOpen;
-export const FaClock            = Clock;
-export const FaQuestionCircle   = HelpCircle;
-export const FaArrowRight       = ArrowRight;
-export const FaEnvelope         = Mail;
-export const FaChevronDown      = ChevronDown;
-export const FaRobot            = Bot;
-export const FaBrain            = Brain;
-export const FaCode             = Code2;
-export const FaChartLine        = TrendingUp;
-export const FaHeart            = Heart;
-export const FaBook             = Book;
-export const FiLoader           = Loader2;
 
 // ── Google brand icon (inline SVG, ~500 B, no extra package) ────────────────
 export function FcGoogle({

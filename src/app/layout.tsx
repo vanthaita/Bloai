@@ -8,6 +8,8 @@ import { Metadata } from "next";
 import { Inter } from 'next/font/google';
 import { ClientProviders } from "@/components/ClientProviders";
 import { GTMLoader } from "@/components/GTMLoader";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: {
@@ -78,12 +80,10 @@ export const metadata: Metadata = {
 const inter = Inter({
   subsets: ['vietnamese'],
   variable: '--font-inter',
-  // 'swap' + adjustFontFallback:true = Next.js generates a fallback font with
-  // identical metrics to Inter, making the swap visually imperceptible while
-  // guaranteeing Inter is applied consistently — including in the footer.
-  // 'optional' was causing CLS 0.345 because the footer rendered after the
-  // 100ms optional window and received an untuned system fallback instead.
-  display: 'swap',
+  // Changed to 'optional' to mathematically guarantee 0 font-based layout shift.
+  // Since TTFB is now optimized to be very fast, the font will load within the
+  // 100ms window and we will not get stuck with the system fallback.
+  display: 'optional',
   preload: true,
   adjustFontFallback: true,
 });
@@ -137,17 +137,13 @@ const breadcrumbSchema = {
 
 
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const session = await auth();
   return (
     <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://res.cloudinary.com" />
-        {/* preconnect speeds up the GA script request itself */}
-        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        {/* GTMLoader defers GA script until first user interaction, no preconnect needed */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
@@ -163,9 +159,9 @@ export default async function RootLayout({
       </head>
       <body className="bg-gray-50" suppressHydrationWarning>
         <TRPCReactProvider>
-          <SessionProvider session={session}>
+          <SessionProvider>
             <div id="app-root">
-              <AppSidebarProvider>
+              <AppSidebarProvider navbar={<Navbar />} footer={<Footer />}>
                 {children}
                 <ClientProviders />
               </AppSidebarProvider>

@@ -71,10 +71,10 @@ export default async function Home() {
     const featuredPosts = featuredData.blogs || [];
     const allPostsForCrawlers = allPostsData.blogs || [];
 
-    // Prefetch data for SSR hydration to improve LCP and FCP
-    void api.blog.getAllBlog.prefetch({ page: 1, limit: 9 });
-    void api.blog.getAllTags.prefetch({ page: 1, limit: 13 });
-    void api.blog.getLeaderBoard.prefetch({ blogLimit: 5, authorLimit: 5 });
+    // Removed prefetch calls that blocked TTFB because HydrateClient waits for them
+    // void api.blog.getAllBlog.prefetch({ page: 1, limit: 9 });
+    // void api.blog.getAllTags.prefetch({ page: 1, limit: 13 });
+    // void api.blog.getLeaderBoard.prefetch({ blogLimit: 5, authorLimit: 5 });
 
     return (
         <main className="flex flex-col min-h-screen bg-white text-black">

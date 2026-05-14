@@ -5,10 +5,10 @@ import Link from "next/link";
 import { FaSearch } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import Logo from "@/components/logo";
-import Search from "./Search";
-import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
-import { UserDropdown } from "./navbar/UserDropdown";
+import { usePathname } from "next/navigation";
+const Search = dynamic(() => import("./Search"), { ssr: false, loading: () => <div className="w-full h-8 bg-gray-100 animate-pulse border border-gray-200" /> });
+const UserDropdown = dynamic(() => import("./navbar/UserDropdown").then(m => m.UserDropdown), { ssr: false, loading: () => <div className="w-8 h-8 bg-gray-200 animate-pulse rounded-full" /> });
 
 // Lazy-load so the ticker's tRPC fetch doesn't block Navbar hydration
 const NewsTicker = dynamic(
