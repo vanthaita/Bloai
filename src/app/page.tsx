@@ -78,6 +78,7 @@ export default async function Home() {
 
     return (
         <main className="flex flex-col min-h-screen bg-white text-black">
+            <h1 className="sr-only">Bloai Blog - Tin tức AI và công nghệ mới nhất</h1>
             <HydrateClient>
                 {/* Featured Posts */}
                 {featuredPosts.length > 0 && (
@@ -91,9 +92,9 @@ export default async function Home() {
                         <div className="lg:col-span-8 xl:col-span-9 flex flex-col">
                             <div id="latest-news" className="mb-8 flex items-center border-t-[3px] border-black pt-6">
                                 <div className="w-2 h-8 md:h-10 bg-black mr-4"></div>
-                                <h1 className="text-2xl md:text-4xl font-extrabold tracking-widest uppercase text-black">
+                                <h2 className="text-2xl md:text-4xl font-extrabold tracking-widest uppercase text-black">
                                     Tin mới nhất
-                                </h1>
+                                </h2>
                             </div>
                             <Suspense fallback={<Loading />}>
                                 <BlogGrid />

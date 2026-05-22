@@ -26,7 +26,7 @@ const Footer = () => {
 
             {/* Newsletter */}
             <div className="space-y-3">
-              <h3 className="font-bold text-black uppercase tracking-wider text-[11px]">Đăng ký nhận tin</h3>
+              <p className="font-bold text-black uppercase tracking-wider text-[11px]">Đăng ký nhận tin</p>
               {/* Only the form needs client JS — everything else stays server-rendered */}
               <FooterNewsletterForm />
             </div>
@@ -36,10 +36,10 @@ const Footer = () => {
           <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2">
             {/* Links */}
             <div className="p-5 md:p-8 border-b sm:border-b-0 sm:border-r border-black">
-              <h3 className="font-bold text-black mb-5 uppercase tracking-wider text-[11px] flex items-center">
+              <p className="font-bold text-black mb-5 uppercase tracking-wider text-[11px] flex items-center">
                 <span className="w-2.5 h-2.5 bg-black mr-2.5 inline-block"></span>
                 Liên kết
-              </h3>
+              </p>
               <ul className="space-y-3">
                 {[
                   { label: 'Trang chủ', href: '/' },
@@ -63,10 +63,10 @@ const Footer = () => {
             {/* Contact & Socials */}
             <div className="p-5 md:p-8 flex flex-col justify-between space-y-6">
               <div>
-                <h3 className="font-bold text-black mb-5 uppercase tracking-wider text-[11px] flex items-center">
+                <p className="font-bold text-black mb-5 uppercase tracking-wider text-[11px] flex items-center">
                   <span className="w-2.5 h-2.5 border border-black mr-2.5 inline-block"></span>
                   Thông tin
-                </h3>
+                </p>
                 <ul className="space-y-3">
                   {[
                     { label: 'FAQs', href: '/faqs' },
@@ -86,7 +86,7 @@ const Footer = () => {
 
               {/* Social Links */}
               <div>
-                <h3 className="font-bold text-black mb-3 uppercase tracking-wider text-[11px]">Kết nối</h3>
+                <p className="font-bold text-black mb-3 uppercase tracking-wider text-[11px]">Kết nối</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { icon: FaXTwitter, href: 'https://twitter.com', label: 'Twitter' },

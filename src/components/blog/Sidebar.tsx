@@ -24,10 +24,10 @@ export function Sidebar() {
       {/* Top Read Widget */}
       <div className="flex flex-col">
         <div className="border-b-[1.5px] border-black pb-2 mb-6">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-black flex items-center">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-black flex items-center">
             <span className="w-3 h-3 bg-black mr-3 inline-block"></span>
             Tin đọc nhiều
-          </h3>
+          </h2>
         </div>
 
         {isLoadingLeaderBoard ? (
@@ -68,9 +68,9 @@ export function Sidebar() {
         <div className="w-8 h-8 border-2 border-white mb-4 flex items-center justify-center">
           <span className="text-white text-lg font-bold">B</span>
         </div>
-        <h3 className="text-sm font-bold uppercase tracking-widest mb-3 leading-relaxed">
+        <h2 className="text-sm font-bold uppercase tracking-widest mb-3 leading-relaxed">
           Trở thành tác giả của Bloai
-        </h3>
+        </h2>
         <p className="text-xs text-gray-400 font-medium mb-6 leading-relaxed">
           Chia sẻ kiến thức, mở rộng góc nhìn và đóng góp vào cộng đồng công nghệ.
         </p>
@@ -82,10 +82,10 @@ export function Sidebar() {
       {/* Popular Tags Widget */}
       <div className="flex flex-col">
         <div className="border-b-[1.5px] border-black pb-2 mb-6">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-black flex items-center">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-black flex items-center">
             <span className="w-3 h-3 border-[1.5px] border-black mr-3 inline-block"></span>
             Chủ đề nổi bật
-          </h3>
+          </h2>
         </div>
 
         {isLoadingTags ? (

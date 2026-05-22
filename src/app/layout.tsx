@@ -5,7 +5,6 @@ import AppSidebarProvider from "@/provider/app.sidebar";
 import { auth } from "@/server/auth";
 import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
-import { Inter } from 'next/font/google';
 import { ClientProviders } from "@/components/ClientProviders";
 import { GTMLoader } from "@/components/GTMLoader";
 import Navbar from "@/components/Navbar";
@@ -77,17 +76,6 @@ export const metadata: Metadata = {
   },
 };
 
-const inter = Inter({
-  subsets: ['vietnamese'],
-  variable: '--font-inter',
-  // Changed to 'optional' to mathematically guarantee 0 font-based layout shift.
-  // Since TTFB is now optimized to be very fast, the font will load within the
-  // 100ms window and we will not get stuck with the system fallback.
-  display: 'optional',
-  preload: true,
-  adjustFontFallback: true,
-});
-
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -141,7 +129,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi" className={`${inter.className} antialiased scroll-custom`} suppressHydrationWarning>
+    <html lang="vi" className="antialiased scroll-custom" suppressHydrationWarning>
       <head>
         {/* GTMLoader defers GA script until first user interaction, no preconnect needed */}
         <script

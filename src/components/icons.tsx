@@ -46,14 +46,20 @@ export {
 export function FcGoogle({
   className,
   style,
+  width = 20,
+  height = 20,
 }: {
   className?: string;
   style?: React.CSSProperties;
+  width?: number;
+  height?: number;
 }) {
   return (
     <svg
       className={className}
       style={style}
+      width={width}
+      height={height}
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
