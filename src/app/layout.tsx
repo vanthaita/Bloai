@@ -6,7 +6,7 @@ import { auth } from "@/server/auth";
 import { SessionProvider } from "next-auth/react";
 import { Metadata } from "next";
 import { ClientProviders } from "@/components/ClientProviders";
-import { GTMLoader } from "@/components/GTMLoader";
+import { GoogleTag } from "@/components/GoogleTag";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -131,7 +131,7 @@ export default function RootLayout({
   return (
     <html lang="vi" className="antialiased scroll-custom" suppressHydrationWarning>
       <head>
-        {/* GTMLoader defers GA script until first user interaction, no preconnect needed */}
+        <GoogleTag />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
@@ -156,9 +156,6 @@ export default function RootLayout({
             </div>
           </SessionProvider>
         </TRPCReactProvider>
-        {/* GTMLoader defers GA script until first user interaction —
-            removes it from Lighthouse's "unused JS" critical-path audit entirely. */}
-        <GTMLoader />
       </body>
     </html>
   );
