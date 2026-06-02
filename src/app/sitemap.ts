@@ -1,6 +1,31 @@
 import { MetadataRoute } from 'next';
 import { db } from '@/server/db';
 
+function getSitemapBlogUrl(baseUrl: string, slug: string, canonicalUrl?: string | null) {
+    const selfUrl = `${baseUrl}/blog/${slug}`;
+
+    if (!canonicalUrl) {
+        return selfUrl;
+    }
+
+    try {
+        const baseOrigin = new URL(baseUrl).origin;
+        const parsedCanonical = new URL(canonicalUrl, baseOrigin);
+
+        if (parsedCanonical.origin !== baseOrigin) {
+            return selfUrl;
+        }
+
+        if (parsedCanonical.pathname !== `/blog/${slug}`) {
+            return selfUrl;
+        }
+
+        return parsedCanonical.toString();
+    } catch {
+        return selfUrl;
+    }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
 
@@ -26,21 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const blogEntries: MetadataRoute.Sitemap = [];
 
     for (const blog of blogs) {
-        const internalUrl = `${baseUrl}/blog/${blog.slug}`;
-        const canonicalUrl = blog.canonicalUrl;
-
-        // Determine the URL to put in the sitemap:
-        // - If no canonical set, use the standard slug URL
-        // - If canonical is internal (same domain), use the canonical
-        // - If canonical is external (different domain), use the standard slug URL
-        let sitemapUrl = internalUrl;
-        if (canonicalUrl) {
-            const isInternal = canonicalUrl.startsWith(baseUrl) || canonicalUrl.startsWith('/');
-            if (isInternal) {
-                sitemapUrl = canonicalUrl.startsWith('/') ? `${baseUrl}${canonicalUrl}` : canonicalUrl;
-            }
-            // If canonical is external, we still include our page URL in the sitemap
-        }
+        const sitemapUrl = getSitemapBlogUrl(baseUrl, blog.slug, blog.canonicalUrl);
 
         // Deduplicate — don't include the same URL twice
         if (seenUrls.has(sitemapUrl)) continue;

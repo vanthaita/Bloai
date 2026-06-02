@@ -5,12 +5,49 @@ import BlogPostClientWrapper from './components/BlogPostClientWrapper';
 import { Blog, SuggestedBlog } from '@/types/helper.type';
 import { unstable_cache } from 'next/cache';
 import Link from 'next/link';
+import { db } from '@/server/db';
 
 export const revalidate = 3600; // ISR: revalidate every hour for better performance
 
 type Props = {
     params: Promise<{ slug: string }>
 }
+
+function getCanonicalBlogUrl(appUrl: string, slug: string, canonicalUrl?: string | null) {
+    const selfUrl = `${appUrl}/blog/${slug}`;
+
+    if (!canonicalUrl) {
+        return selfUrl;
+    }
+
+    try {
+        const appOrigin = new URL(appUrl).origin;
+        const parsedCanonical = new URL(canonicalUrl, appOrigin);
+
+        if (parsedCanonical.origin === appOrigin && parsedCanonical.pathname !== `/blog/${slug}`) {
+            return selfUrl;
+        }
+
+        return parsedCanonical.toString();
+    } catch {
+        return selfUrl;
+    }
+}
+
+export async function generateStaticParams() {
+    const blogs = await db.blog.findMany({
+        select: { slug: true },
+        orderBy: { publishDate: 'desc' },
+    }).catch((error) => {
+        console.error("Failed to generate blog static params:", error);
+        return [];
+    });
+
+    return blogs.map((blog) => ({
+        slug: blog.slug,
+    }));
+}
+
 const getCachedBlog = unstable_cache(
     async (slug: string) => {
         console.log(`*** Actually Fetching Blog for slug: ${slug} (via cache wrapper) ***`);
@@ -35,7 +72,7 @@ export async function generateMetadata(
         };
     }
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'; 
-    const blogUrl = blog.canonicalUrl || `${appUrl}/blog/${blog.slug}`;
+    const blogUrl = getCanonicalBlogUrl(appUrl, blog.slug, blog.canonicalUrl);
 
     const getTopKeywords = (tags: { name: string; relevance?: number }[], count = 5) => {
         if (!tags || tags.length === 0) {

@@ -2,6 +2,7 @@ import { BlogGrid } from "@/components/blog/BlogGrid";
 import Loading from "@/components/loading";
 import { Suspense } from "react";
 import { api, HydrateClient } from "@/trpc/server";
+import { db } from "@/server/db";
 
 export const revalidate = 300;
 
@@ -41,14 +42,21 @@ export const metadata = {
 };
 
 export default async function BlogPage() {
-    // Parallel prefetch and fetch
-    const [allPostsData] = await Promise.all([
-        api.blog.getAllBlog({ page: 1, limit: 100 }), // Reduced from 1000 to 100
+    // Keep every published post discoverable in the initial HTML for crawlers.
+    const [allPostsForCrawlers] = await Promise.all([
+        db.blog.findMany({
+            select: {
+                slug: true,
+                title: true,
+            },
+            orderBy: { publishDate: "desc" },
+        }).catch((error) => {
+            console.error("Failed to fetch crawler blog index:", error);
+            return [];
+        }),
         api.blog.getAllBlog.prefetch({ page: 1, limit: 9 }),
         api.blog.getAllTags.prefetch({ page: 1, limit: 13 }),
     ]);
-    
-    const allPostsForCrawlers = allPostsData.blogs || [];
 
     return (
         <main className="flex flex-col min-h-screen bg-white">
