@@ -51,7 +51,37 @@ export async function generateStaticParams() {
 const getCachedBlog = unstable_cache(
     async (slug: string) => {
         console.log(`*** Actually Fetching Blog for slug: ${slug} (via cache wrapper) ***`);
-        return await api.blog.getBlog({ slug });
+        return db.blog.findUnique({
+            where: { slug },
+            select: {
+                id: true,
+                title: true,
+                slug: true,
+                content: true,
+                imageUrl: true,
+                imageAlt: true,
+                publishDate: true,
+                updatedAt: true,
+                readTime: true,
+                canonicalUrl: true,
+                metaDescription: true,
+                ogTitle: true,
+                ogDescription: true,
+                ogImageUrl: true,
+                authorId: true,
+                tags: { select: { id: true, name: true } },
+                author: { select: { id: true, name: true, image: true } },
+                comments: {
+                    select: {
+                        id: true,
+                        content: true,
+                        createdAt: true,
+                        author: { select: { id: true, name: true, image: true } },
+                    },
+                    orderBy: { createdAt: "desc" },
+                },
+            },
+        });
     },
     ['blog-by-slug'], 
     {
@@ -66,10 +96,7 @@ export async function generateMetadata(
     const blog = await getCachedBlog(slug);
 
     if (!blog) {
-        return {
-            title: 'Blog Post Not Found | BloAI Technology Blog',
-            description: 'The blog post you are looking for could not be found.',
-        };
+        notFound();
     }
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'; 
     const blogUrl = getCanonicalBlogUrl(appUrl, blog.slug, blog.canonicalUrl);
@@ -205,14 +232,13 @@ export async function generateMetadata(
 export default async function BlogPostPage({ params }: Props) {
     const { slug } = await params; 
 
-    const [blog, suggestedBlogsResult] = await Promise.all([
-        getCachedBlog(slug),
-        api.blog.getSuggestedBlogs({ slug, limit: 6 }) 
-    ]);
+    const blog = await getCachedBlog(slug);
+
     if (!blog) {
         notFound();
     }
 
+    const suggestedBlogsResult = await api.blog.getSuggestedBlogs({ slug, limit: 6 });
     const suggestedBlogs = (suggestedBlogsResult ?? []) as SuggestedBlog[]; 
 
     return (
