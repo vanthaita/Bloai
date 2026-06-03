@@ -72,8 +72,8 @@ const ContactPage = () => {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Email hỗ trợ</p>
-                    <a href="mailto:ie204seo@gmail.com" className="text-lg font-medium text-gray-700 hover:text-primary transition-colors">
-                      ie204seo@gmail.com
+                    <a href="mailto:22521330uit@gmail.com" className="text-lg font-medium text-gray-700 hover:text-primary transition-colors">
+                      22521330uit@gmail.com
                     </a>
                   </div>
                 </div>

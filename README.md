@@ -39,7 +39,7 @@ Dự án được phát triển bởi nhóm sinh viên Đại học Công Nghệ
 *Nhóm BloAI - Nhà phát triển & Content Creator*
 
 **Liên hệ qua email:**  
-[ie204seo@gmail.com](mailto:ie204seo@gmail.com)
+[22521330uit@gmail.com](mailto:22521330uit@gmail.com)
 
 **Theo dõi chúng tôi:**  
 [Social media links]

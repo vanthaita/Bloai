@@ -240,7 +240,7 @@ const AboutPage = () => {
               </div>
               <div>
                 <p className="font-bold text-[10px] uppercase tracking-widest text-gray-300 mb-1">Đường dây nóng / Hộp thư điện tử</p>
-                <a href="mailto:ie204seo@gmail.com" className="text-xl font-bold tracking-wider hover:underline">ie204seo@gmail.com</a>
+                <a href="mailto:22521330uit@gmail.com" className="text-xl font-bold tracking-wider hover:underline">22521330uit@gmail.com</a>
               </div>
             </div>
 

@@ -79,7 +79,7 @@ export const organizationSchemaLd = {
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "customer service",
-    "email": "ie204seo@gmail.com",
+    "email": "22521330uit@gmail.com",
     "availableLanguage": ["Vietnamese"]
   },
   "sameAs": [
@@ -219,7 +219,7 @@ export const contactPageSchemaLd = {
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "customer service",
-    "email": "ie204seo@gmail.com",
+    "email": "22521330uit@gmail.com",
     "availableLanguage": "Vietnamese",
     "areaServed": "VN"
   },
