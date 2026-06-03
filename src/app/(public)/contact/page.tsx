@@ -170,7 +170,7 @@ const ContactPage = () => {
                   <span className="block font-semibold text-lg mb-2 text-gray-800">Trường Đại học CNTT - ĐHQG TP.HCM</span>
                   Khu phố 6, Phường Linh Trung<br />
                   Thành phố Thủ Đức, TP.HCM<br />
-                  <span className="block mt-2 text-primary">✆ Hotline: (028) 372 52002</span>
+                  <span className="block mt-2 text-primary">✆ Hotline: 0374 985 716</span>
                 </p>
               </div>
               

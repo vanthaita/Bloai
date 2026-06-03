@@ -103,7 +103,7 @@ const organizationSchema = {
   ],
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+84-xxx-xxx-xxxx",
+    "telephone": "+84-374-985-716",
     "contactType": "customer service",
     "areaServed": "VN",
     "availableLanguage": "Vietnamese"
