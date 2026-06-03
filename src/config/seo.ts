@@ -85,8 +85,7 @@ export const organizationSchemaLd = {
   "sameAs": [
     "https://www.facebook.com/bloai/",
     "https://x.com/Bloai_Team",
-    "https://www.youtube.com/channel/UCi396lyYi5FURzdp-W93lHg",
-    "https://github.com/TDevUIT/Bloai"
+    "https://www.youtube.com/channel/UCi396lyYi5FURzdp-W93lHg"
   ]
 };
 // Blog 

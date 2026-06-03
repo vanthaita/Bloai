@@ -185,7 +185,6 @@ const AboutPage = () => {
                   <div className="flex gap-4 pt-2">
                     {[
                       { icon: <FaLinkedin className="h-5 w-5" />, href: "#" },
-                      { icon: <FaGithub className="h-5 w-5" />, href: "https://github.com/TDevUIT/Bloai" },
                     ].map((item, index) => (
                       <a
                         key={index}
@@ -249,7 +248,6 @@ const AboutPage = () => {
               <div className="flex gap-4">
                 {[
                   { icon: <FaLinkedin className="h-5 w-5" />, href: "#", label: "LinkedIn" },
-                  { icon: <FaGithub className="h-5 w-5" />, href: "https://github.com/TDevUIT/Bloai", label: "GitHub" },
                 ].map((item, index) => (
                   <a
                     key={index}

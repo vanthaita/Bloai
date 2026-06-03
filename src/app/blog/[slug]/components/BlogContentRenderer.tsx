@@ -88,14 +88,11 @@ const BlogContentRenderer: React.FC<BlogContentRendererProps> = ({ content, head
                     },
                     // Convert relative markdown links (e.g. docs/windows.md) to absolute GitHub links to fix 404s
                     a: ({ node, href, ...props }) => {
-                        const isRelativeMd = href && !href.startsWith('http') && !href.startsWith('mailto:') && !href.startsWith('#');
-                        // If it's a relative link (like docs/setup.md), point it to the GitHub repository to avoid 404s
-                        const finalHref = isRelativeMd ? `https://github.com/TDevUIT/Bloai/tree/main/${href}` : href;
                         return (
                             <a 
-                                href={finalHref} 
-                                target={isRelativeMd || href?.startsWith('http') ? '_blank' : undefined} 
-                                rel={isRelativeMd || href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                                href={href} 
+                                target={href?.startsWith('http') ? '_blank' : undefined} 
+                                rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
                                 {...props} 
                             />
                         );
