@@ -96,7 +96,7 @@ const organizationSchema = {
   "url": "https://www.bloai.blog",
   "logo": "https://www.bloai.blog/images/Logo/android-chrome-512x512.png",
   "sameAs": [
-    "https://www.facebook.com/bloaiblog",
+    "https://www.facebook.com/blogbloai",
     "https://twitter.com/bloaiblog",
     "https://www.linkedin.com/company/bloaiblog",
     "https://www.youtube.com/@bloaiblog"

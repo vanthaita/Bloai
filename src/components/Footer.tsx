@@ -91,7 +91,7 @@ const Footer = () => {
                   {[
                     { icon: FaXTwitter, href: 'https://twitter.com', label: 'Twitter' },
                     { icon: FaGithub, href: 'https://github.com', label: 'GitHub' },
-                    { icon: FaFacebook, href: 'https://facebook.com', label: 'Facebook' },
+                    { icon: FaFacebook, href: 'https://www.facebook.com/blogbloai', label: 'Facebook' },
                     { icon: FaYoutube, href: 'https://youtube.com', label: 'YouTube' },
                   ].map((social) => (
                     <a

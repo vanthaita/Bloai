@@ -83,7 +83,7 @@ export const organizationSchemaLd = {
     "availableLanguage": ["Vietnamese"]
   },
   "sameAs": [
-    "https://www.facebook.com/bloai/",
+    "https://www.facebook.com/blogbloai",
     "https://x.com/Bloai_Team",
     "https://www.youtube.com/channel/UCi396lyYi5FURzdp-W93lHg"
   ]
