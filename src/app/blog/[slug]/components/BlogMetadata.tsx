@@ -19,7 +19,8 @@ const BlogMetadata: React.FC<BlogMetadataProps> = ({ blog, suggestedBlogs }) => 
             "height": 400
         };
 
-        const blogUrl = blog.canonicalUrl || (typeof window !== 'undefined' ? window.location.href : '');
+        const cleanAppUrl = (env.NEXT_PUBLIC_APP_URL || 'https://www.bloai.blog').replace(/\/$/, '');
+        const blogUrl = blog.canonicalUrl || `${cleanAppUrl}/blog/${blog.slug}`;
 
         const mainEntity: any = {
             "@context": "https://schema.org",

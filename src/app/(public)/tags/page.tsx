@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import React from 'react'
 import TagsContent from './TagsContent'
+import { api, HydrateClient } from "@/trpc/server"
 
 export const revalidate = 300;
 
@@ -38,10 +39,18 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   }
 }
-const TagPage = () => {
+const TagPage = async () => {
+  await api.blog.getAllTags.prefetch({
+    page: 1,
+    limit: 100,
+  });
+
   return (
-    <TagsContent />
+    <HydrateClient>
+      <TagsContent />
+    </HydrateClient>
   )
 }
 
 export default TagPage
+
