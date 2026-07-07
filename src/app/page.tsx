@@ -27,8 +27,8 @@ function SidebarSkeleton() {
 export const revalidate = 300;
 
 export const metadata = {
-    title: 'Bloai Blog - Tin Tức AI & Công Nghệ Mới Nhất',
-    description: 'Bloai Blog — Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam. Cập nhật xu hướng ChatGPT, Midjourney, AI Generative và ứng dụng AI trong đời sống.',
+    title: 'Bloai Blog - Tin Tức Công Nghệ, Lập Trình & AI Mới Nhất',
+    description: 'Bloai Blog — Trang tin tức hàng đầu về Lập trình, Công nghệ, AI và SEO tại Việt Nam. Cập nhật xu hướng phát triển web, hướng dẫn ChatGPT, Midjourney và tối ưu hiệu suất.',
     alternates: {
         canonical: 'https://www.bloai.blog',
         languages: {
@@ -40,23 +40,23 @@ export const metadata = {
         type: 'website' as const,
         url: 'https://www.bloai.blog',
         siteName: 'Bloai Blog',
-        title: 'Bloai Blog - Tin Tức AI & Công Nghệ Mới Nhất',
-        description: 'Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam.',
+        title: 'Bloai Blog - Tin Tức Công Nghệ, Lập Trình & AI Mới Nhất',
+        description: 'Trang tin tức hàng đầu về Lập trình, Công nghệ, AI và SEO tại Việt Nam.',
         locale: 'vi_VN',
         images: [
             {
                 url: 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png',
                 width: 1200,
                 height: 630,
-                alt: 'Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ',
+                alt: 'Bloai Blog - Công Nghệ, Lập Trình & AI',
             },
         ],
     },
     twitter: {
         card: 'summary_large_image' as const,
         site: '@Bloai_Team',
-        title: 'Bloai Blog - Tin Tức AI & Công Nghệ Mới Nhất',
-        description: 'Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam.',
+        title: 'Bloai Blog - Tin Tức Công Nghệ, Lập Trình & AI Mới Nhất',
+        description: 'Trang tin tức hàng đầu về Lập trình, Công nghệ, AI và SEO tại Việt Nam.',
         images: ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
     },
 };
@@ -71,13 +71,8 @@ export default async function Home() {
     const featuredPosts = featuredData.blogs || [];
     const allPostsForCrawlers = allPostsData.blogs || [];
 
-    // Removed prefetch calls that blocked TTFB because HydrateClient waits for them
-    // void api.blog.getAllBlog.prefetch({ page: 1, limit: 9 });
-    // void api.blog.getAllTags.prefetch({ page: 1, limit: 13 });
-    // void api.blog.getLeaderBoard.prefetch({ blogLimit: 5, authorLimit: 5 });
-
     return (
-        <main className="flex flex-col min-h-screen bg-white text-black">
+        <main className="flex flex-col min-h-screen bg-slate-50/50 text-slate-900 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px]">
             <h1 className="sr-only">Bloai Blog - Tin tức AI và công nghệ mới nhất</h1>
             <HydrateClient>
                 {/* Featured Posts */}
@@ -90,11 +85,13 @@ export default async function Home() {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
                         {/* Main Content Area */}
                         <div className="lg:col-span-8 xl:col-span-9 flex flex-col">
-                            <div id="latest-news" className="mb-8 flex items-center border-t-[3px] border-black pt-6">
-                                <div className="w-2 h-8 md:h-10 bg-black mr-4"></div>
-                                <h2 className="text-2xl md:text-4xl font-extrabold tracking-widest uppercase text-black">
-                                    Tin mới nhất
-                                </h2>
+                            <div id="latest-news" className="mb-8 flex items-center justify-between pb-4 border-b border-slate-200/80">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-1.5 h-8 bg-gradient-to-b from-blue-600 to-indigo-600 rounded-full"></div>
+                                    <h2 className="text-xl md:text-3xl font-extrabold tracking-tight text-slate-900">
+                                        Tin mới nhất
+                                    </h2>
+                                </div>
                             </div>
                             <Suspense fallback={<Loading />}>
                                 <BlogGrid />

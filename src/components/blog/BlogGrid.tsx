@@ -124,13 +124,13 @@ export function BlogGrid({ initialTag }: { initialTag?: string }) {
   if (error) {
     return (
       <div className='min-h-[600px] w-full flex justify-center items-center text-center px-4'>
-        <div className="max-w-md">
-          <div className="text-6xl mb-4">😕</div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">Oops! Có lỗi xảy ra</h3>
-          <p className="text-gray-600 mb-4">
+        <div className="max-w-md bg-white p-8 border border-slate-100 rounded-2xl shadow-sm">
+          <div className="text-5xl mb-4">😕</div>
+          <h3 className="text-xl font-bold text-slate-800 mb-2">Oops! Có lỗi xảy ra</h3>
+          <p className="text-slate-500 text-sm mb-6">
             {error ? `${error.message}` : 'Không thể tải bài viết. Vui lòng thử lại sau.'}
           </p>
-          <Button onClick={() => window.location.reload()} className="bg-black text-white hover:bg-gray-800 rounded-none border-[1.5px] border-black">
+          <Button onClick={() => window.location.reload()} className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:opacity-95 rounded-full px-6 font-semibold shadow-md shadow-blue-500/10 text-xs h-10">
             Thử lại
           </Button>
         </div>
@@ -144,12 +144,14 @@ export function BlogGrid({ initialTag }: { initialTag?: string }) {
       
       {/* Category Filter Tabs */}
       {tagsData && tagsData.tags.length > 0 && (
-        <div className="w-full overflow-x-auto pb-4 mb-4 scroll-custom">
-          <div className="flex items-center gap-2 min-w-max">
+        <div className="w-full overflow-x-auto pb-4 mb-6 scroll-custom">
+          <div className="flex items-center gap-2.5 min-w-max py-1.5 px-0.5">
             <button
               onClick={clearFilter}
-              className={`px-4 py-2 text-[10px] md:text-xs font-bold uppercase tracking-widest border-[1.5px] border-black rounded-none transition-colors ${
-                !activeFilter ? 'bg-black text-white' : 'bg-white text-black hover:bg-black hover:text-white'
+              className={`px-4 py-2 text-xs font-semibold rounded-full transition-all shadow-sm ${
+                !activeFilter 
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/10' 
+                  : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
               Tất cả
@@ -158,8 +160,10 @@ export function BlogGrid({ initialTag }: { initialTag?: string }) {
               <button
                 key={tag.id}
                 onClick={() => handleFilterChange(tag.name)}
-                className={`px-4 py-2 text-[10px] md:text-xs font-bold uppercase tracking-widest border-[1.5px] border-black rounded-none transition-colors ${
-                  activeFilter === tag.name ? 'bg-black text-white' : 'bg-white text-black hover:bg-black hover:text-white'
+                className={`px-4 py-2 text-xs font-semibold rounded-full transition-all shadow-sm ${
+                  activeFilter === tag.name 
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/10' 
+                    : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50 hover:text-slate-900'
                 }`}
               >
                 {tag.name}
@@ -169,7 +173,7 @@ export function BlogGrid({ initialTag }: { initialTag?: string }) {
         </div>
       )}
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-12 px-0 pb-16 pt-8 border-t-2 border-black">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-8 px-0 pb-16 pt-2">
         {currentBlogs.length > 0 ? (
           currentBlogs.map((blog, index) => (
             <React.Fragment key={blog.id}>
@@ -191,20 +195,20 @@ export function BlogGrid({ initialTag }: { initialTag?: string }) {
             </React.Fragment>
           ))
         ) : (
-          <div className="col-span-full text-center py-16 border-b border-black">
-            <div className="text-6xl mb-4">📝</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2 uppercase tracking-widest">
+          <div className="col-span-full text-center py-16 bg-white border border-slate-100 rounded-2xl shadow-sm">
+            <div className="text-5xl mb-4">📝</div>
+            <h3 className="text-xl font-bold text-slate-800 mb-2">
               {activeFilter ? 'Không tìm thấy bài viết' : 'Chưa có bài viết nào'}
             </h3>
-            <p className="text-gray-600 mb-4 font-medium">
+            <p className="text-slate-500 text-sm mb-6 max-w-sm mx-auto leading-relaxed">
               {activeFilter
-                ? `Không có bài viết nào với tag "${activeFilter.replace(/-/g, ' ')}".`
-                : 'Hãy quay lại sau để xem nội dung mới.'}
+                ? `Không tìm thấy bài viết nào tương thích với chủ đề "${activeFilter.replace(/-/g, ' ')}".`
+                : 'Trang chưa cập nhật bài viết mới cho chủ đề này.'}
             </p>
             {activeFilter && (
               <Button 
                 onClick={clearFilter} 
-                className="bg-black text-white hover:bg-gray-800 rounded-none border border-black uppercase tracking-widest text-xs font-bold"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:opacity-95 rounded-full px-6 font-semibold shadow-md shadow-blue-500/10 text-xs h-9"
               >
                 Xóa bộ lọc
               </Button>

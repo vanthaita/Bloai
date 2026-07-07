@@ -2,10 +2,10 @@ import { Metadata } from 'next';
 
 export const rootLayoutMetadata: Metadata = {
   title: {
-    default: "Bloai Blog - Trung tâm Kiến thức AI hàng đầu Việt Nam",
+    default: "Bloai Blog - Tin Tức Công Nghệ, Lập Trình & AI Mới Nhất",
     template: "%s | Bloai Blog"
   },
-  description: "Bloai Blog - Nền tảng chia sẻ kiến thức chuyên sâu về Trí Tuệ Nhân Tạo (AI) và ứng dụng thực tiễn. Cập nhật xu hướng ChatGPT, Midjourney, Generative AI với hướng dẫn chi tiết từ cơ bản đến nâng cao. Đồng hành cùng cộng đồng AI Việt Nam phát triển công nghệ tương lai!",
+  description: "Bloai Blog - Nền tảng chia sẻ kiến thức chuyên sâu về Công nghệ, Lập trình, AI và SEO. Cập nhật xu hướng phát triển phần mềm, hướng dẫn ChatGPT, Midjourney, Generative AI với hướng dẫn chi tiết từ cơ bản đến nâng cao. Đồng hành cùng cộng đồng công nghệ Việt Nam!",
   metadataBase: new URL('https://www.bloai.blog'),
   openGraph: {
     images: '/images/Logo/android-chrome-512x512.png',
@@ -17,7 +17,7 @@ export const websiteSchemaLd = {
   "@type": "WebSite",
   "name": "Bloai Blog",
   "url": "https://www.bloai.blog",
-  "description": "Trung tâm kiến thức và ứng dụng Trí Tuệ Nhân Tạo hàng đầu Việt Nam",
+  "description": "Trung tâm kiến thức Công nghệ, Lập trình, AI và SEO hàng đầu Việt Nam",
   "inLanguage": "vi",
   "potentialAction": {
     "@type": "SearchAction",
@@ -90,22 +90,14 @@ export const organizationSchemaLd = {
 };
 // Blog 
 export const blogPageMetadata: Metadata = {
-  title: "Bloai Blog - Hướng Dẫn AI Từ Cơ Bản Đến Nâng Cao | Kiến Thức Công Nghệ Mới Nhất",
-  description: "Bloai Blog cung cấp kiến thức AI toàn diện từ cơ bản đến nâng cao. Khám phá hướng dẫn ChatGPT, Machine Learning, Deep Learning và ứng dụng AI trong kinh doanh, y tế, giáo dục. Cập nhật xu hướng AI 2024 và công cụ AI miễn phí.",
+  title: "Bloai Blog - Hướng Dẫn Lập Trình, Công Nghệ, AI & SEO Từ Cơ Bản Đến Nâng Cao",
+  description: "Bloai Blog cung cấp kiến thức toàn diện về Lập trình, Công nghệ, AI và SEO từ cơ bản đến nâng cao. Khám phá hướng dẫn lập trình, tối ưu hiệu suất, ChatGPT, Machine Learning và các công cụ công nghệ mới nhất.",
   keywords: [
     "Ứng dụng AI",
-    "AI cho Doanh nghiệp",
-    "AI trong Y tế",
-    "AI Giáo dục",
-    "AI Marketing",
-    "AI trong Fintech",
-    "AI trong Logistics",
-    "Chuyển đổi số với AI",
-    "Smart Assistant",
-    "Robotics AI",
-    "Tự động hóa với AI",
-    "AI và IoT",
-    "Hướng dẫn AI",
+    "Hướng dẫn lập trình",
+    "Học lập trình web",
+    "Tối ưu SEO",
+    "Kiến thức công nghệ",
     "ChatGPT Hướng dẫn",
     "Midjourney Tips",
     "AI Coding",
@@ -114,16 +106,13 @@ export const blogPageMetadata: Metadata = {
     "Công cụ AI miễn phí",
     "AutoML",
     "Tối ưu hóa AI",
-    "Xu hướng AI 2024",
-    "Đạo đức AI",
-    "AI Ethics",
-    "AI Startup",
+    "Xu hướng công nghệ",
     "Phát triển AI",
     "Công nghệ AI",
     "AI Việt Nam",
     "Computer Vision",
     "Xử lý ngôn ngữ tự nhiên",
-    "AI Model"
+    "Phát triển phần mềm"
   ],
   authors: [{ name: "Bloai Team" }],
   openGraph: {
@@ -131,13 +120,13 @@ export const blogPageMetadata: Metadata = {
     locale: 'vi_VN',
     url: 'https://www.bloai.blog',
     siteName: 'Bloai Blog',
-    title: "Bloai Blog - Trung Tâm Kiến Thức AI Hàng Đầu Việt Nam",
-    description: "Hướng dẫn toàn diện về Trí tuệ Nhân tạo từ cơ bản đến nâng cao. Cập nhật xu hướng AI mới nhất và ứng dụng thực tiễn trong mọi lĩnh vực đời sống.",
+    title: "Bloai Blog - Trung Tâm Kiến Thức Công Nghệ, Lập Trình & AI Hàng Đầu Việt Nam",
+    description: "Hướng dẫn toàn diện về Lập trình, Công nghệ, AI và SEO từ cơ bản đến nâng cao. Cập nhật xu hướng công nghệ mới nhất và ứng dụng thực tiễn trong đời sống.",
     images: [{ url: 'https://www.bloai.blog/images/Logo/android-chrome-512x512.png' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Bloai Blog - Hướng Dẫn AI Từ Cơ Bản Đến Nâng Cao",
+    title: "Bloai Blog - Hướng Dẫn Lập Trình, Công Nghệ, AI & SEO Từ Cơ Bản Đến Nâng Cao",
     images: ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
   },
   alternates: {
@@ -150,9 +139,9 @@ export const blogPageMetadata: Metadata = {
 export const blogSchema = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  "name": "Blog AI - Tin tức Công nghệ",
+  "name": "Bloai Blog - Lập trình, AI & Công nghệ",
   "url": "https://www.bloai.blog/",
-  "description": "Tổng hợp các bài viết mới nhất về trí tuệ nhân tạo và công nghệ",
+  "description": "Tổng hợp các bài viết mới nhất về công nghệ, lập trình, trí tuệ nhân tạo và SEO",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.bloai.blog/" },
   "publisher": {
     "@type": "Organization",
@@ -200,7 +189,7 @@ export const aboutPageSchemaLd = {
   "@context": "https://schema.org",
   "@type": "AboutPage",
   "name": "Giới thiệu Bloai Blog",
-  "description": "Tìm hiểu về sứ mệnh và đội ngũ đứng sau Bloai Blog - Nền tảng kiến thức AI hàng đầu Việt Nam",
+  "description": "Tìm hiểu về sứ mệnh và đội ngũ đứng sau Bloai Blog - Nền tảng kiến thức Lập trình, Công nghệ và AI hàng đầu Việt Nam",
   "publisher": organizationSchemaLd, 
   "mainEntityOfPage": {
     "@type": "WebPage",
@@ -214,7 +203,7 @@ export const contactPageSchemaLd = {
   "@context": "https://schema.org",
   "@type": "ContactPage",
   "name": "Liên hệ hợp tác cùng Bloai Blog",
-  "description": "Kết nối với chuyên gia AI và cộng đồng công nghệ tại Việt Nam thông qua Bloai Blog",
+  "description": "Kết nối với chuyên gia Công nghệ, Lập trình, AI và cộng đồng tại Việt Nam thông qua Bloai Blog",
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "customer service",
@@ -230,7 +219,7 @@ export const homePageSchemaLd = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   "name": "Trang chủ Bloai Blog",
-  "description": "Cập nhật tin tức và bài viết mới nhất về AI, Machine Learning và công nghệ tiên tiến tại Việt Nam",
+  "description": "Cập nhật tin tức và bài viết mới nhất về Công nghệ, Lập trình, AI và SEO tiên tiến tại Việt Nam",
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": "https://www.bloai.blog"

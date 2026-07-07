@@ -434,20 +434,20 @@ export const aiEnhanceContentBlogForSEO = async (content: string, p0: { signal: 
 }
 export const aiGenerateFactAndknowledge = async (title: string, modelAi?: string): Promise<string | null> => {
   const prompt = `
-    **Mục tiêu:** Tạo MỘT thông tin thú vị hoặc kiến thức chuyên sâu ngắn gọn, liên quan trực tiếp đến chủ đề AI của bài blog dựa trên tiêu đề đã cho. Mục đích là cung cấp một điểm nhấn đáng chú ý, có thể dùng làm "Did You Know?" hoặc một fact nhanh.
+    **Mục tiêu:** Tạo MỘT thông tin thú vị hoặc kiến thức chuyên sâu ngắn gọn, liên quan trực tiếp đến chủ đề (AI, Lập trình, Công nghệ, SEO, v.v.) của bài blog dựa trên tiêu đề đã cho. Mục đích là cung cấp một điểm nhấn đáng chú ý, có thể dùng làm \"Did You Know?\" hoặc một fact nhanh.
 
     **Nội dung cần phân tích (Dựa TRỰC TIẾP vào đây):**
     Tiêu đề bài blog: "${title}"
     **Yêu cầu NGHIÊM NGẶT (TUYỆT ĐỐI tuân thủ):**
     1.  **Đầu ra:** CHỈ và CHỈ gồm MỘT chuỗi văn bản DUY NHẤT là thông tin/kiến thức đó. KHÔNG THÊM bất kỳ lời giải thích, lời mở đầu hay kết thúc nào về quá trình tạo. CHỈ TRẢ VỀ THÔNG TIN.
     2.  **Nội dung:**
-        *   Phải liên quan MỘT CÁCH CHẶT CHẼ đến chủ đề AI được thể hiện trong tiêu đề.
-        *   Có thể là một sự thật ít biết, một thống kê ấn tượng (nếu có thể suy luận hợp lý từ chủ đề), một khái niệm cốt lõi được giải thích cực kỳ ngắn gọn, hoặc một ứng dụng nổi bật của AI trong lĩnh vực đó.
+        *   Phải liên quan MỘT CÁCH CHẶT CHẼ đến chủ đề được thể hiện trong tiêu đề.
+        *   Có thể là một sự thật ít biết, một thống kê ấn tượng (nếu có thể suy luận hợp lý từ chủ đề), một khái niệm cốt lõi được giải thích cực kỳ ngắn gọn, hoặc một ứng dụng nổi bật của chủ đề đó.
         *   Sử dụng ngôn ngữ tiếng Việt tự nhiên, dễ hiểu, hấp dẫn.
         *   Nên cung cấp một giá trị nhỏ hoặc gây tò mò liên quan đến chủ đề chính.
     3.  **Độ dài:** Cực kỳ ngắn gọn, lý tưởng là 1-2 câu. KHÔNG VƯỢT QUÁ 150 ký tự. Hãy đếm ký tự của đầu ra cuối cùng để đảm bảo.
     4.  **Định dạng:** Văn bản thuần túy. KHÔNG Markdown (headings, bold, lists, code blocks), KHÔNG emoji, KHÔNG dấu ngoặc kép quanh câu trả lời.
-    5.  **Đảm bảo:** Thông tin cung cấp phải có vẻ chính xác và đáng tin cậy dựa trên kiến thức chung về AI và chủ đề tiêu đề.
+    5.  **Đảm bảo:** Thông tin cung cấp phải có vẻ chính xác và đáng tin cậy dựa trên kiến thức chung về chủ đề đó.
     6.  **Không bắt đầu bằng "Bạn có biết" Or "Did you know":** Trong Template đã có sẵn "Bạn có biết" Chỉ output ra nội dung.
     **Đầu ra CHỈ và CHỈ gồm DUY NHẤT chuỗi thông tin/kiến thức theo định dạng yêu cầu. KHÔNG BẤT KỲ THÔNG TIN NÀO KHÁC.**
 

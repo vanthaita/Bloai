@@ -9,23 +9,33 @@ import { ClientProviders } from "@/components/ClientProviders";
 import { GoogleTag } from "@/components/GoogleTag";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Be_Vietnam_Pro } from "next/font/google";
+
+const beVietnamPro = Be_Vietnam_Pro({
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["vietnamese", "latin"],
+  variable: "--font-be-vietnam-pro",
+  display: "swap",
+});
+
 
 export const metadata: Metadata = {
   title: {
-    default: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ Mới Nhất",
+    default: "Bloai Blog - Tin Tức Công Nghệ, Lập Trình & AI Mới Nhất",
     template: "%s | Bloai Blog"
   },
-  description: "Bloai Blog - Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam. Cập nhật xu hướng công nghệ mới nhất, hướng dẫn sử dụng ChatGPT, Midjourney, AI Generative và ứng dụng AI trong đời sống, kinh doanh, giáo dục.",
+  description: "Bloai Blog - Trang tin tức hàng đầu về Lập trình, Công nghệ, AI và SEO tại Việt Nam. Cập nhật xu hướng phát triển web, hướng dẫn ChatGPT, Midjourney, tối ưu hóa SEO và hiệu suất phần mềm.",
   keywords: [
-    "AI Việt Nam",
+    "Bloai",
+    "Tin tức công nghệ",
+    "Hướng dẫn lập trình",
     "Trí tuệ nhân tạo",
     "ChatGPT",
-    "Midjourney",
-    "AI Generative",
-    "Công nghệ AI",
-    "Hướng dẫn AI",
-    "Tin tức công nghệ",
-    "Ứng dụng AI"
+    "Tối ưu SEO",
+    "Phát triển web",
+    "Công nghệ mới nhất",
+    "AI Việt Nam",
+    "Học lập trình"
   ],
   alternates: {
     types: {
@@ -34,8 +44,8 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL('https://www.bloai.blog'),
   openGraph: {
-    title: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ Mới Nhất",
-    description: "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",
+    title: "Bloai Blog - Tin Tức Công Nghệ, Lập Trình & AI Mới Nhất",
+    description: "Trang tin tức hàng đầu về Lập trình, Công nghệ, AI và SEO tại Việt Nam",
     url: "https://www.bloai.blog",
     siteName: "Bloai Blog",
     images: [
@@ -43,7 +53,7 @@ export const metadata: Metadata = {
         url: "https://www.bloai.blog/images/Logo/android-chrome-512x512.png",
         width: 1200,
         height: 630,
-        alt: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ",
+        alt: "Bloai Blog - Công Nghệ, Lập Trình & AI",
       },
     ],
     locale: "vi_VN",
@@ -51,8 +61,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bloai Blog - Trí Tuệ Nhân Tạo & Công Nghệ Mới Nhất",
-    description: "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",
+    title: "Bloai Blog - Tin Tức Công Nghệ, Lập Trình & AI Mới Nhất",
+    description: "Trang tin tức hàng đầu về Lập trình, Công nghệ, AI và SEO tại Việt Nam",
     images: ["https://www.bloai.blog/images/Logo/android-chrome-512x512.png"],
     site: "@bloaiblog",
     creator: "@bloaiblog",
@@ -81,7 +91,7 @@ const websiteSchema = {
   "@type": "WebSite",
   "name": "Bloai Blog",
   "url": "https://www.bloai.blog",
-  "description": "Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam",
+  "description": "Trang tin tức hàng đầu về Lập trình, Công nghệ, AI và SEO tại Việt Nam",
   "potentialAction": {
     "@type": "SearchAction",
     "target": "https://www.bloai.blog/search?q={search_term_string}",
@@ -129,7 +139,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi" className="antialiased scroll-custom" suppressHydrationWarning>
+    <html lang="vi" className={`antialiased scroll-custom ${beVietnamPro.variable}`} suppressHydrationWarning>
       <head>
         <GoogleTag />
         <script

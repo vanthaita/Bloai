@@ -5,8 +5,8 @@ import { FaGithub, FaLinkedin } from "@/components/icons"
 import { aboutPageSchemaLd, safeJsonLdStringify } from "@/config/seo"
 
 export const metadata: Metadata = {
-  title: 'Về Bloai Blog — Trang Tin Tức AI Việt Nam',
-  description: 'Bloai Blog là trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam. Đọc phân tích chuyên sâu, hướng dẫn thực tế và cập nhật xu hướng công nghệ AI mới nhất.',
+  title: 'Giới thiệu Bloai Blog — Tin Tức Công Nghệ, Lập Trình & AI',
+  description: 'Bloai Blog là trang tin tức hàng đầu về Lập trình, Công nghệ, AI và SEO tại Việt Nam. Đọc phân tích chuyên sâu, hướng dẫn thực tế và cập nhật xu hướng công nghệ mới nhất.',
   alternates: {
     canonical: 'https://www.bloai.blog/about',
   },
@@ -14,8 +14,8 @@ export const metadata: Metadata = {
     type: 'website',
     url: 'https://www.bloai.blog/about',
     siteName: 'Bloai Blog',
-    title: 'Về Bloai Blog — Trang Tin Tức AI Việt Nam',
-    description: 'Bloai Blog là trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam. Phân tích chuyên sâu, xu hướng mới nhất.',
+    title: 'Giới thiệu Bloai Blog — Tin Tức Công Nghệ, Lập Trình & AI',
+    description: 'Bloai Blog là trang tin tức hàng đầu về Lập trình, Công nghệ, AI và SEO tại Việt Nam. Phân tích chuyên sâu, xu hướng mới nhất.',
     locale: 'vi_VN',
     images: [
       {
@@ -29,8 +29,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     site: '@Bloai_Team',
-    title: 'Về Bloai Blog — Trang Tin Tức AI Việt Nam',
-    description: 'Trang tin tức hàng đầu về Trí Tuệ Nhân Tạo (AI) tại Việt Nam.',
+    title: 'Giới thiệu Bloai Blog — Tin Tức Công Nghệ, Lập Trình & AI',
+    description: 'Trang tin tức hàng đầu về Lập trình, Công nghệ, AI và SEO tại Việt Nam.',
     images: ['https://www.bloai.blog/images/Logo/android-chrome-512x512.png'],
   },
 };
@@ -50,31 +50,31 @@ interface Feature {
 
 const features: Feature[] = [
   {
-    icon: <Bot className="text-black h-6 w-6" />,
+    icon: <Code className="text-black h-6 w-6" />,
     title: "KIẾN THỨC CỐT LÕI",
-    desc: "Các bài viết phân tích chuyên sâu về công nghệ AI, từ thuật toán cơ sở đến các mô hình ngôn ngữ lớn (LLMs).",
+    desc: "Các bài viết phân tích chuyên sâu về Lập trình, AI, SEO và Công nghệ, từ thuật toán cơ sở đến ứng dụng thực tiễn.",
   },
   {
     icon: <Brain className="text-black h-6 w-6" />,
     title: "ỨNG DỤNG THỰC TẾ",
-    desc: "Phân tích và mổ xẻ cách AI đang tái định hình các ngành công nghiệp, y tế, giáo dục và sáng tạo nghệ thuật.",
+    desc: "Phân tích và mổ xẻ cách Công nghệ và AI đang tái định hình các ngành công nghiệp, phát triển phần mềm và sáng tạo.",
   },
   {
-    icon: <Code className="text-black h-6 w-6" />,
+    icon: <Bot className="text-black h-6 w-6" />,
     title: "BẢN TIN CÔNG NGHỆ",
     desc: "Cập nhật liên tục 24/7 về các nghiên cứu đột phá, các thương vụ sáp nhập và tin tức độc quyền từ Thung lũng Silicon.",
   },
   {
     icon: <TrendingUp className="text-black h-6 w-6" />,
     title: "CÔNG CỤ TỐI ƯU",
-    desc: "Đánh giá khách quan và thử nghiệm thực tế các công cụ AI mới nhất trên thị trường để tối ưu hóa năng suất làm việc.",
+    desc: "Đánh giá khách quan và thử nghiệm thực tế các công cụ Lập trình, SEO và AI mới nhất để tối ưu hóa hiệu suất.",
   },
 ];
 
 const teamMembers: TeamMember[] = [
   {
     name: "TÒA SOẠN BLOAI",
-    role: "Tổng Biên Tập & Chuyên gia AI",
+    role: "Tổng Biên Tập & Chuyên gia Công nghệ",
     bio: "Nhóm chuyên gia định hướng nội dung và phát triển nền tảng",
     avatar: "/images/Logo/android-chrome-512x512.png",
   },
@@ -119,7 +119,7 @@ const AboutPage = () => {
             {[
               {
                 title: "KHÁCH QUAN & ĐỘC LẬP",
-                desc: "Thông tin được kiểm chứng đa chiều, không thiên vị, mang đến góc nhìn trung thực nhất về bức tranh AI toàn cầu."
+                desc: "Thông tin được kiểm chứng đa chiều, không thiên vị, mang đến góc nhìn trung thực nhất về bức tranh Công nghệ toàn cầu."
               },
               {
                 title: "CHUYÊN SÂU & ĐẮT GIÁ",

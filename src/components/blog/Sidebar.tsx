@@ -23,9 +23,9 @@ export function Sidebar() {
       
       {/* Top Read Widget */}
       <div className="flex flex-col">
-        <div className="border-b-[1.5px] border-black pb-2 mb-6">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-black flex items-center">
-            <span className="w-3 h-3 bg-black mr-3 inline-block"></span>
+        <div className="flex items-center gap-2 pb-3 mb-6 border-b border-slate-200/80">
+          <div className="w-1.5 h-5 bg-gradient-to-b from-blue-600 to-indigo-600 rounded-full"></div>
+          <h2 className="text-base font-bold text-slate-900 tracking-tight">
             Tin đọc nhiều
           </h2>
         </div>
@@ -34,26 +34,31 @@ export function Sidebar() {
           <div className="space-y-4">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="flex gap-4 animate-pulse">
-                <div className="w-8 h-8 bg-gray-200 shrink-0"></div>
+                <div className="w-6 h-6 rounded-full bg-slate-100 shrink-0"></div>
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-200 w-full"></div>
-                  <div className="h-4 bg-gray-200 w-2/3"></div>
+                  <div className="h-4 bg-slate-100 w-full rounded"></div>
+                  <div className="h-3 bg-slate-100 w-2/3 rounded"></div>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-5">
             {topBlogs.map((blog, index) => (
-              <Link href={`/blog/${blog.slug}`} key={blog.id} className="flex gap-4 group items-start">
-                <div className="text-3xl font-extrabold text-transparent transition-colors" style={{ WebkitTextStroke: '1px black', color: 'transparent' }}>
-                  {String(index + 1).padStart(2, '0')}
+              <Link href={`/blog/${blog.slug}`} key={blog.id} className="flex gap-3 group items-start">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 shadow-sm transition-all ${
+                  index === 0 ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white' :
+                  index === 1 ? 'bg-slate-800 text-white' :
+                  index === 2 ? 'bg-slate-600 text-white' :
+                  'bg-slate-100 text-slate-500'
+                }`}>
+                  {index + 1}
                 </div>
-                <div className="flex flex-col gap-1 pt-1">
-                  <h4 className="text-sm font-bold text-black group-hover:underline underline-offset-4 decoration-[1.5px] line-clamp-3 leading-snug transition-all">
+                <div className="flex flex-col gap-0.5 pt-0.5">
+                  <h4 className="text-sm font-bold text-slate-800 group-hover:text-blue-600 line-clamp-2 leading-snug transition-colors">
                     {blog.title}
                   </h4>
-                  <span className="text-[10px] uppercase tracking-widest font-bold text-gray-500 mt-1">
+                  <span className="text-[10px] font-medium text-slate-400 mt-1">
                     {formatDateVi(blog.publish_day)}
                   </span>
                 </div>
@@ -63,27 +68,11 @@ export function Sidebar() {
         )}
       </div>
 
-      {/* Promo Banner Widget */}
-      <div className="bg-black text-white p-6 border-[1.5px] border-black flex flex-col items-center text-center">
-        <div className="w-8 h-8 border-2 border-white mb-4 flex items-center justify-center">
-          <span className="text-white text-lg font-bold">B</span>
-        </div>
-        <h2 className="text-sm font-bold uppercase tracking-widest mb-3 leading-relaxed">
-          Trở thành tác giả của Bloai
-        </h2>
-        <p className="text-xs text-gray-400 font-medium mb-6 leading-relaxed">
-          Chia sẻ kiến thức, mở rộng góc nhìn và đóng góp vào cộng đồng công nghệ.
-        </p>
-        <Button asChild className="w-full bg-white text-black border border-white rounded-none hover:bg-black hover:text-white hover:border-white transition-all text-xs font-bold uppercase tracking-widest h-10">
-          <Link href="/auth/signin">Đăng Ký Ngay</Link>
-        </Button>
-      </div>
-
       {/* Popular Tags Widget */}
       <div className="flex flex-col">
-        <div className="border-b-[1.5px] border-black pb-2 mb-6">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-black flex items-center">
-            <span className="w-3 h-3 border-[1.5px] border-black mr-3 inline-block"></span>
+        <div className="flex items-center gap-2 pb-3 mb-6 border-b border-slate-200/80">
+          <div className="w-1.5 h-5 bg-gradient-to-b from-blue-600 to-indigo-600 rounded-full"></div>
+          <h2 className="text-base font-bold text-slate-900 tracking-tight">
             Chủ đề nổi bật
           </h2>
         </div>
@@ -91,7 +80,7 @@ export function Sidebar() {
         {isLoadingTags ? (
           <div className="flex flex-wrap gap-2 animate-pulse">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-8 w-20 bg-gray-200"></div>
+              <div key={i} className="h-7 w-16 bg-slate-100 rounded-full"></div>
             ))}
           </div>
         ) : (
@@ -100,14 +89,14 @@ export function Sidebar() {
               <Link
                 key={tag.id}
                 href={`/blog?tag=${encodeURIComponent(tag.name)}`}
-                className="px-3 py-1.5 border-[1.5px] border-black text-[10px] font-bold uppercase tracking-wider text-black bg-white hover:bg-black hover:text-white transition-colors"
+                className="px-3.5 py-1.5 rounded-full border border-slate-200 text-xs font-medium text-slate-600 bg-white hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm"
               >
                 {tag.name}
               </Link>
             ))}
             <Link
               href="/tags"
-              className="px-3 py-1.5 border-[1.5px] border-black text-[10px] font-bold uppercase tracking-wider text-black bg-gray-100 hover:bg-black hover:text-white transition-colors"
+              className="px-3.5 py-1.5 rounded-full border border-slate-200 text-xs font-medium text-slate-500 bg-slate-50 hover:bg-slate-100 hover:text-slate-800 hover:border-slate-300 transition-all shadow-sm"
             >
               Tất cả →
             </Link>

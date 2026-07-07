@@ -17,8 +17,8 @@ export default {
   	},
   	fontFamily: {
   		sans: [
-  			'var(--font-inter)',
-  			'sans-serif'
+  			'var(--font-be-vietnam-pro)',
+  			...fontFamily.sans
   		]
   	},
   	screens: {
@@ -27,12 +27,6 @@ export default {
   		lg: '1200px'
   	},
   	extend: {
-  		fontFamily: {
-  			sans: [
-  				'var(--font-geist-sans)',
-                    ...fontFamily.sans
-                ]
-  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
