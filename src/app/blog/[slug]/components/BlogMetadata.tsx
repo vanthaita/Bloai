@@ -1,7 +1,7 @@
 'use client';
 import React, { useMemo } from 'react';
-import { env } from '@/env';
 import { BlogCore, SuggestedBlog } from '@/types/helper.type';
+import { CANONICAL_SITE_URL, getCanonicalBlogUrl, getBlogUrl } from '@/lib/seo-url';
 
 interface BlogMetadataProps {
     blog: BlogCore | null;
@@ -19,8 +19,7 @@ const BlogMetadata: React.FC<BlogMetadataProps> = ({ blog, suggestedBlogs }) => 
             "height": 400
         };
 
-        const cleanAppUrl = (env.NEXT_PUBLIC_APP_URL || 'https://www.bloai.blog').replace(/\/$/, '');
-        const blogUrl = blog.canonicalUrl || `${cleanAppUrl}/blog/${blog.slug}`;
+        const blogUrl = getCanonicalBlogUrl(blog.slug, blog.canonicalUrl);
 
         const mainEntity: any = {
             "@context": "https://schema.org",
@@ -61,7 +60,7 @@ const BlogMetadata: React.FC<BlogMetadataProps> = ({ blog, suggestedBlogs }) => 
             "@context": "https://schema.org",
             "@type": "Article",
             "headline": post.title,
-            "url": `${env.NEXT_PUBLIC_APP_URL}/blog/${post.slug}`, 
+            "url": getBlogUrl(post.slug), 
             "image": post.imageUrl ? [post.imageUrl] : [],
             "datePublished": post.publishDate ? new Date(post.publishDate).toISOString() : undefined,
             "author": post.author?.name ? {
@@ -91,7 +90,7 @@ const BlogMetadata: React.FC<BlogMetadataProps> = ({ blog, suggestedBlogs }) => 
                 />
             )}
             {suggestedBlogs?.map(post => (
-                <link key={`prefetch-${post.slug}`} rel="prefetch" href={`/blog/${post.slug}`} as="document" />
+                <link key={`prefetch-${post.slug}`} rel="prefetch" href={`${CANONICAL_SITE_URL}/blog/${post.slug}`} as="document" />
             ))}
         </>
     );

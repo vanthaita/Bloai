@@ -36,6 +36,19 @@ function removedBlogResponse(slug: string) {
 export default auth(async function middleware(req) {
   const { nextUrl } = req;
 
+  if (nextUrl.hostname === "bloai.blog") {
+    const url = nextUrl.clone();
+    url.hostname = "www.bloai.blog";
+    url.protocol = "https:";
+    return NextResponse.redirect(url, 301);
+  }
+
+  if (nextUrl.pathname === "/blog" && nextUrl.search) {
+    const response = NextResponse.next();
+    response.headers.set("X-Robots-Tag", "noindex, follow");
+    return response;
+  }
+
   if (nextUrl.pathname === '/$') {
     return NextResponse.redirect(new URL('/', nextUrl));
   }
@@ -63,7 +76,8 @@ export default auth(async function middleware(req) {
                         nextUrl.pathname.startsWith('/faqs') ||
                         nextUrl.pathname.startsWith('/contact') ||
                         nextUrl.pathname.startsWith('/landing') ||
-                        nextUrl.pathname.startsWith('/about');
+                        nextUrl.pathname.startsWith('/about') ||
+                        nextUrl.pathname.startsWith('/images');
   const isAuthRoute = AUTH_ROUTES.includes(nextUrl.pathname);
 
   if (isApiAuthRoute) {
@@ -86,6 +100,6 @@ export default auth(async function middleware(req) {
 export const config = {
   matcher: [
     /* Match all pathnames except for API routes and static files */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)'
+    '/((?!api|_next/static|_next/image|images|favicon.ico).*)'
   ],
 }

@@ -6,6 +6,7 @@ import { api } from '@/trpc/react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tag, FolderOpen, BookOpenText, AlertTriangle, ArrowRight } from 'lucide-react';
 import { slugify } from '@/types/helper.type';
+import { CANONICAL_SITE_URL } from '@/lib/seo-url';
 
 const TagsContent = () => {
   const { data, isLoading, error } = api.blog.getAllTags.useQuery({
@@ -16,15 +17,15 @@ const TagsContent = () => {
   const generateSchemaItemList = () => {
     if (!data || !data.tags || data.tags.length === 0) {
       return [
-        { "@type": "ListItem", "position": 1, "name": "AI Tổng Quát", url: "https://bloai.blog/tags/ai-tong-quat" },
-        { "@type": "ListItem", "position": 2, "name": "Xử Lý Ngôn Ngữ Tự Nhiên", url: "https://bloai.blog/tags/xu-ly-ngon-ngu-tu-nhien" },
+        { "@type": "ListItem", "position": 1, "name": "AI Tong Quat", url: `${CANONICAL_SITE_URL}/tag/ai-tong-quat` },
+        { "@type": "ListItem", "position": 2, "name": "Xu Ly Ngon Ngu Tu Nhien", url: `${CANONICAL_SITE_URL}/tag/xu-ly-ngon-ngu-tu-nhien` },
       ];
     }
     return data.tags.slice(0, 10).map((tag, index) => ({ 
       "@type": "ListItem",
       "position": index + 1,
       "name": tag.name,
-      "url": `https://bloai.blog/tag/${slugify(tag.name)}`
+      "url": `${CANONICAL_SITE_URL}/tag/${slugify(tag.name)}`
     }));
   };
 

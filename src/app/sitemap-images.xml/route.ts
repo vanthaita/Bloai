@@ -1,9 +1,10 @@
 import { db } from "@/server/db";
+import { escapeXml, getCanonicalBlogUrl, getCanonicalSiteUrl } from "@/lib/seo-url";
 import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.bloai.blog';
+        const baseUrl = getCanonicalSiteUrl();
         
         const blogs = await db.blog.findMany({
             select: {
@@ -11,9 +12,12 @@ export async function GET() {
                 imageUrl: true,
                 imageAlt: true,
                 title: true,
+                canonicalUrl: true,
+                content: true,
             },
             where: {
-                imageUrl: { not: '' }
+                imageUrl: { not: '' },
+                content: { not: '' },
             },
             orderBy: { publishDate: 'desc' },
         });
@@ -23,9 +27,9 @@ export async function GET() {
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   ${blogs.map((blog) => `
   <url>
-    <loc>${baseUrl}/blog/${blog.slug}</loc>
+    <loc>${escapeXml(getCanonicalBlogUrl(blog.slug, blog.canonicalUrl))}</loc>
     <image:image>
-      <image:loc>${blog.imageUrl.replace(/&/g, '&amp;')}</image:loc>
+      <image:loc>${escapeXml(blog.imageUrl)}</image:loc>
       <image:title><![CDATA[${blog.title}]]></image:title>
       ${blog.imageAlt ? `<image:caption><![CDATA[${blog.imageAlt}]]></image:caption>` : ''}
     </image:image>

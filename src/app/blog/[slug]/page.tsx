@@ -6,32 +6,12 @@ import { Blog, SuggestedBlog } from '@/types/helper.type';
 import { unstable_cache } from 'next/cache';
 import Link from 'next/link';
 import { db } from '@/server/db';
+import { getCanonicalBlogUrl } from '@/lib/seo-url';
 
 export const revalidate = 3600; // ISR: revalidate every hour for better performance
 
 type Props = {
     params: Promise<{ slug: string }>
-}
-
-function getCanonicalBlogUrl(appUrl: string, slug: string, canonicalUrl?: string | null) {
-    const selfUrl = `${appUrl}/blog/${slug}`;
-
-    if (!canonicalUrl) {
-        return selfUrl;
-    }
-
-    try {
-        const appOrigin = new URL(appUrl).origin;
-        const parsedCanonical = new URL(canonicalUrl, appOrigin);
-
-        if (parsedCanonical.origin === appOrigin && parsedCanonical.pathname !== `/blog/${slug}`) {
-            return selfUrl;
-        }
-
-        return parsedCanonical.toString();
-    } catch {
-        return selfUrl;
-    }
 }
 
 export async function generateStaticParams() {
@@ -98,8 +78,7 @@ export async function generateMetadata(
     if (!blog) {
         notFound();
     }
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'; 
-    const blogUrl = getCanonicalBlogUrl(appUrl, blog.slug, blog.canonicalUrl);
+    const blogUrl = getCanonicalBlogUrl(blog.slug, blog.canonicalUrl);
 
     const getTopKeywords = (tags: { name: string; relevance?: number }[], count = 5) => {
         if (!tags || tags.length === 0) {

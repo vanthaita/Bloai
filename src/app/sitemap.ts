@@ -1,43 +1,17 @@
 import { MetadataRoute } from 'next';
 import { db } from '@/server/db';
-
-function getSitemapBlogUrl(baseUrl: string, slug: string, canonicalUrl?: string | null) {
-    const selfUrl = `${baseUrl}/blog/${slug}`;
-
-    if (!canonicalUrl) {
-        return selfUrl;
-    }
-
-    try {
-        const baseOrigin = new URL(baseUrl).origin;
-        const parsedCanonical = new URL(canonicalUrl, baseOrigin);
-
-        if (parsedCanonical.origin !== baseOrigin) {
-            return selfUrl;
-        }
-
-        if (parsedCanonical.pathname !== `/blog/${slug}`) {
-            return selfUrl;
-        }
-
-        return parsedCanonical.toString();
-    } catch {
-        return selfUrl;
-    }
-}
+import { getCanonicalBlogUrl, getCanonicalSiteUrl } from '@/lib/seo-url';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
-
-    if (!baseUrl) {
-        throw new Error("Missing NEXT_PUBLIC_APP_URL environment variable for sitemap generation.");
-    }
+    const baseUrl = getCanonicalSiteUrl();
 
     const blogs = await db.blog.findMany({
         select: {
             slug: true,
             updatedAt: true,
             canonicalUrl: true,
+            content: true,
+            imageUrl: true,
         },
         orderBy: { updatedAt: 'desc' },
     }).catch(error => {
@@ -51,7 +25,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const blogEntries: MetadataRoute.Sitemap = [];
 
     for (const blog of blogs) {
-        const sitemapUrl = getSitemapBlogUrl(baseUrl, blog.slug, blog.canonicalUrl);
+        if (!blog.content?.trim() || !blog.imageUrl?.trim()) continue;
+
+        const sitemapUrl = getCanonicalBlogUrl(blog.slug, blog.canonicalUrl);
 
         // Deduplicate — don't include the same URL twice
         if (seenUrls.has(sitemapUrl)) continue;

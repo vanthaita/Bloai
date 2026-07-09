@@ -1,9 +1,10 @@
 import { api } from "@/trpc/server";
+import { escapeXml, getBlogUrl, getCanonicalSiteUrl } from "@/lib/seo-url";
 import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.bloai.blog';
+        const baseUrl = getCanonicalSiteUrl();
         
         // Fetch latest blogs
         const data = await api.blog.getAllBlog({
@@ -25,8 +26,8 @@ export async function GET() {
     ${blogs.map((blog) => `
     <item>
       <title><![CDATA[${blog.title}]]></title>
-      <link>${baseUrl}/blog/${blog.slug}</link>
-      <guid isPermaLink="true">${baseUrl}/blog/${blog.slug}</guid>
+      <link>${escapeXml(getBlogUrl(blog.slug))}</link>
+      <guid isPermaLink="true">${escapeXml(getBlogUrl(blog.slug))}</guid>
       <description><![CDATA[${blog.metaDescription || ''}]]></description>
       <pubDate>${new Date(blog.publishDate).toUTCString()}</pubDate>
       ${blog.author?.name ? `<author><![CDATA[${blog.author.name}]]></author>` : ''}

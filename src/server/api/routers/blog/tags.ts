@@ -3,6 +3,7 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import { Prisma } from "@prisma/client";
 import { getCachedData, CACHE_TTL } from "@/lib/redis";
+import { slugify } from "@/types/helper.type";
 
 export const tagsRouter = createTRPCRouter({
   getAllTags: publicProcedure
@@ -17,13 +18,37 @@ export const tagsRouter = createTRPCRouter({
         `tags:all:${input.page}:${input.limit}`,
         async () => {
           const skip = (input.page - 1) * input.limit;
-          const tags = await ctx.db.tag.findMany({
-            skip,
-            take: input.limit,
+          const rawTags = await ctx.db.tag.findMany({
             include: { _count: { select: { blogs: true } } },
             orderBy: { blogs: { _count: "desc" } },
           });
-          const totalTags = await ctx.db.tag.count();
+          const groupedTags = new Map<string, (typeof rawTags)[number]>();
+
+          for (const tag of rawTags) {
+            const key = slugify(tag.name) || tag.name.toLowerCase();
+            const existingTag = groupedTags.get(key);
+
+            if (!existingTag) {
+              groupedTags.set(key, { ...tag, _count: { blogs: tag._count.blogs } });
+              continue;
+            }
+
+            existingTag._count.blogs += tag._count.blogs;
+            if (!existingTag.description && tag.description) {
+              existingTag.description = tag.description;
+            }
+          }
+
+          const uniqueTags = Array.from(groupedTags.values()).sort((a, b) => {
+            if (b._count.blogs !== a._count.blogs) {
+              return b._count.blogs - a._count.blogs;
+            }
+
+            return a.name.localeCompare(b.name);
+          });
+          const tags = uniqueTags.slice(skip, skip + input.limit);
+          const totalTags = uniqueTags.length;
+
           return {
             tags,
             totalTags,
